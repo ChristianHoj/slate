@@ -1,168 +1,376 @@
 ---
-title: API Reference
+title: Providi API Reference
 
 language_tabs:
-  - shell
-  - ruby
-  - python
-
-toc_footers:
-  - <a href='#'>Sign Up for a Developer Key</a>
-  - <a href='http://github.com/tripit/slate'>Documentation Powered by Slate</a>
-
-includes:
-  - errors
-
-search: true
+  - php: PHP
+  - javascript: Javascript
 ---
 
 # Introduction
+The Providi API consists of the described endpoints/functions that return responses according to the [{json:api} specification](http://jsonapi.org).
 
-Welcome to the Kittn API! You can use our API to access Kittn API endpoints, which can get information on various cats, kittens, and breeds in our database.
-
-We have language bindings in Shell, Ruby, and Python! You can view code examples in the dark area to the right, and you can switch the programming language of the examples with the tabs in the top right.
-
-This example API documentation page was created with [Slate](http://github.com/tripit/slate). Feel free to edit it and use it as a base for your own API's documentation.
+Every call to the API must contain an authentication token (`token`) provided by an initial call to the [`authenticate`](#authentication) endpoint (of course this call will not include `token`).
 
 # Authentication
 
-> To authorize, use this code:
+```php
+// Example of usage in WordPress
+<?php
+$username = "chrhoj";
+$password = "asd";
+$response = wp_safe_remote_post( "api.providi.com/authenticate.php", array( 'body' => array( 'user' => $username, 'pass' => $password ) ) );
+$ext_auth = json_decode( $response['body'], true );
+if( isset( $ext_auth['data'] ) ) {
+  // External user exists, try to load the user info from the WordPress user table
+  $userobj = new WP_User();
+  $user = $userobj->get_data_by( 'email', $ext_auth['data']['attributes']['email'] );
+  $user = new WP_User($user->ID); // Attempt to load up the user with that ID
 
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-```
-
-```shell
-# With shell, you can just pass the correct header with each request
-curl "api_endpoint_here"
-  -H "Authorization: meowmeowmeow"
-```
-
-> Make sure to replace `meowmeowmeow` with your API key.
-
-Kittn uses API keys to allow access to the API. You can register a new Kittn API key at our [developer portal](http://example.com/developers).
-
-Kittn expects for the API key to be included in all API requests to the server in a header that looks like the following:
-
-`Authorization: meowmeowmeow`
-
-<aside class="notice">
-You must replace <code>meowmeowmeow</code> with your personal API key.
-</aside>
-
-# Kittens
-
-## Get All Kittens
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get()
-```
-
-```shell
-curl "http://example.com/api/kittens"
-  -H "Authorization: meowmeowmeow"
-```
-
-> The above command returns JSON structured like this:
-
-```json
-[
-  {
-    "id": 1,
-    "name": "Fluffums",
-    "breed": "calico",
-    "fluffiness": 6,
-    "cuteness": 7
-  },
-  {
-    "id": 2,
-    "name": "Isis",
-    "breed": "unknown",
-    "fluffiness": 5,
-    "cuteness": 10
-  }
-]
-```
-
-This endpoint retrieves all kittens.
-
-### HTTP Request
-
-`GET http://example.com/api/kittens`
-
-### Query Parameters
-
-Parameter | Default | Description
---------- | ------- | -----------
-include_cats | false | If set to true, the result will also include cats.
-available | true | If set to false, the result will include kittens that have already been adopted.
-
-<aside class="success">
-Remember — a happy kitten is an authenticated kitten!
-</aside>
-
-## Get a Specific Kitten
-
-```ruby
-require 'kittn'
-
-api = Kittn::APIClient.authorize!('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```python
-import kittn
-
-api = kittn.authorize('meowmeowmeow')
-api.kittens.get(2)
-```
-
-```shell
-curl "http://example.com/api/kittens/2"
-  -H "Authorization: meowmeowmeow"
-```
-
-> The above command returns JSON structured like this:
-
-```json
-{
-  "id": 2,
-  "name": "Isis",
-  "breed": "unknown",
-  "fluffiness": 5,
-  "cuteness": 10
+  // ...
+} else if( isset( $ext_auth['error'] ) ) {
+  // User does not exist, show an error message
+  $user = new WP_Error( 'denied', __("ERROR: User/pass bad") );
 }
 ```
 
-This endpoint retrieves a specific kitten.
+> Response data at successful authentication
 
-<aside class="warning">If you're not using an administrator API key, note that some kittens will return 403 Forbidden if they are hidden for admins only.</aside>
+```json
+{
+  "data": {
+    "type": "user",
+    "id": "123456",
+    "attributes": {
+      "username": "chrhoj",
+      "first_name": "Christian",
+      "last_name": "Høj",
+      "email": "cbh@nightcirque.com",
+      "auth_token": "iuTaoiy78wksjERk9qe"
+    }
+  }
+}
+```
+
+> Response data at failed authentication
+
+```json
+{
+  "errors": [{
+    "status": "401 Unauthorized"
+  }]
+}
+```
+
+<aside class="warning">
+  <strong>Not implemented</strong>
+</aside>
+
+This endpoint is used to authenticate a user against the Providi database. Upon successful authentication the response includes a `auth_token` that must be used in all subsequent calls to the API.
 
 ### HTTP Request
+`POST https://api.providi.com/authenticate.php`
 
-`GET http://example.com/kittens/<ID>`
+### Request Parameters
+Parameter | Required? | Description
+--------- | --------- | -----------
+user | Required | The username to be authenticated
+pass | Required | The password to use for authentication
 
-### URL Parameters
 
-Parameter | Description
---------- | -----------
-ID | The ID of the kitten to retrieve
+# Leaderboard
 
+```js
+jQuery.ajax({
+  url: "https://api.providi.com/leaderboard.php",
+  data: {
+    period: ['this-week', 'previous-week', 'last-30-days'],
+    userId: 1,
+    token: 'tokenAsdf'
+  }
+});
+```
+
+> Successful response
+
+```json
+{
+  "data": {
+    "id": 0,
+    "type": "leaderboards",
+    "attributes": {
+      "thisWeek": {
+        "period": {
+          "from": "09/07/2015",
+          "until": "09/13/2015"
+        },
+        "positions": [
+          {
+            "position": 2,
+            "name": "tw Gabriel Muresan 2 222",
+            "newMembers": 2,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 1,
+            "name": "tw Gabriel Muresan 1",
+            "newMembers": 1,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 3,
+            "name": "tw Gabriel Muresan 3",
+            "newMembers": 3,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 5,
+            "name": "tw Gabriel Muresan 5",
+            "newMembers": 5,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 6,
+            "name": "tw Gabriel Muresan 6",
+            "newMembers": 6,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 7,
+            "name": "tw Gabriel Muresan 7",
+            "newMembers": 7,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 8,
+            "name": "tw Gabriel Muresan 8",
+            "newMembers": 8,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 9,
+            "name": "tw Gabriel Muresan 9",
+            "newMembers": 9,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 10,
+            "name": "tw Gabriel Muresan 10",
+            "newMembers": 10,
+            "image": "http://example.com/default-avatar.jpg"
+          }
+        ]
+      },
+      "previousWeek": {
+        "period": {
+          "from": "",
+          "until": ""
+        },
+        "positions": [
+          {
+            "position": 1,
+            "name": "pw Gabriel Muresan 1",
+            "newMembers": 1,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 2,
+            "name": "pw Gabriel Muresan 2",
+            "newMembers": 2,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 3,
+            "name": "pw Gabriel Muresan 3",
+            "newMembers": 3,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 4,
+            "name": "pw Gabriel Muresan 4",
+            "newMembers": 4,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 5,
+            "name": "pw Gabriel Muresan 5",
+            "newMembers": 5,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 6,
+            "name": "pw Gabriel Muresan 6",
+            "newMembers": 6,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 7,
+            "name": "pw Gabriel Muresan 7",
+            "newMembers": 7,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 8,
+            "name": "pw Gabriel Muresan 8",
+            "newMembers": 8,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 9,
+            "name": "pw Gabriel Muresan 9",
+            "newMembers": 9,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 10,
+            "name": "pw Gabriel Muresan 10",
+            "newMembers": 10,
+            "image": "http://example.com/default-avatar.jpg"
+          }
+        ]
+      },
+      "last30Days": {
+        "period": {
+          "from": "",
+          "until": ""
+        },
+        "positions": [
+          {
+            "position": 1,
+            "name": "l3d Gabriel Muresan 1",
+            "newMembers": 1,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 3,
+            "name": "l3d Gabriel Muresan 3",
+            "newMembers": 3,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 4,
+            "name": "l3d Gabriel Muresan 4",
+            "newMembers": 4,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 5,
+            "name": "l3d Gabriel Muresan 5",
+            "newMembers": 5,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 6,
+            "name": "l3d Gabriel Muresan 6",
+            "newMembers": 6,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 7,
+            "name": "l3d Gabriel Muresan 7",
+            "newMembers": 7,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 8,
+            "name": "l3d Gabriel Muresan 8",
+            "newMembers": 8,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 9,
+            "name": "l3d Gabriel Muresan 9",
+            "newMembers": 9,
+            "image": "http://example.com/default-avatar.jpg"
+          },
+          {
+            "position": 10,
+            "name": "l3d Gabriel Muresan 10",
+            "newMembers": 10,
+            "image": "http://example.com/default-avatar.jpg"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+> Response data for failed request
+
+```json
+{
+  "errors": [{
+    "status": "401 Unauthorized"
+  }]
+}
+```
+
+<aside class="warning">
+  <strong>Not implemented</strong>
+</aside>
+
+This endpoint is used to get the top ten sellers in Providi for specified periods.
+
+### HTTP Request
+`GET https://api.providi.com/leaderboard.php`
+
+### Request Parameters
+Parameter | Required? | Description
+--------- | --------- | -----------
+period | Required | Array of requested lists. Valid values are `this-week`, `previous-week`, `last-30-days`.
+token | Required | The authentication token for the current user. Obtained from calling [`authenticate`](#authentication).
+userId | Required | The id of the current user. Must be paired with `token`.
+
+
+# User Profile
+
+```js
+jQuery.ajax({
+  url: "https://api.providi.com/profile.php",
+  data: {
+      userId: 1,
+      token: 'tokenAsdf'
+  }
+});
+```
+
+> Successful response
+
+```json
+{
+  "data": {
+    "type": "user",
+    "id": "SC000XXXXXXX",
+    "attributes": {
+      "imageUrl": "http://example.com/default-avatar.jpg",
+      "accountType": 0,
+      "name": "Gabriel Muresan"
+    }
+  }
+}
+```
+
+> Response data for failed request
+
+```json
+{
+  "errors": [{
+    "status": "401 Unauthorized"
+  }]
+}
+```
+
+<aside class="warning">
+  <strong>Not implemented</strong>
+</aside>
+
+This endpoint is used to get all profile information about a single user.
+
+### HTTP Request
+`GET https://api.providi.com/profile.php`
+
+### Request Parameters
+Parameter | Required? | Description
+--------- | --------- | -----------
+token | Required | The authentication token for the current user. Obtained from calling [`authenticate`](#authentication).
+userId | Required | The id of the current user. Must be paired with `token`.
