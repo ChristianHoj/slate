@@ -34,16 +34,6 @@ jQuery.ajax({
 }
 ```
 
-> Response data for failed request
-
-```json
-{
-  "errors": [{
-    "status": "401 Unauthorized"
-  }]
-}
-```
-
 <aside class="warning">
   <strong>Not implemented.</strong>
 </aside>
@@ -142,16 +132,6 @@ jQuery.ajax({
       ]
     }
   }
-}
-```
-
-> Response data for failed request
-
-```json
-{
-  "errors": [{
-    "status": "401 Unauthorized"
-  }]
 }
 ```
 

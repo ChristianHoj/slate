@@ -38,16 +38,6 @@ if( isset( $ext_auth['data'] ) ) {
 }
 ```
 
-> Response data at failed authentication
-
-```json
-{
-  "errors": [{
-    "status": "401 Unauthorized"
-  }]
-}
-```
-
 <aside class="">
   <strong>Implemented September 23 2015</strong>
 </aside>
@@ -64,3 +54,15 @@ Parameter | Required? | Description
 --------- | --------- | -----------
 user | Required | The username to be authenticated
 pass | Required | The password to use for authentication
+
+### Response fields
+The following information is included in the response:
+
+| Information           | Key in JSON response |
+| --------------------- | -------------------- |
+| Authentication token  | `auth_token`         |
+| Email                 | `email`              |
+| First name            | `first_name`         |
+| Last name             | `last_name`          |
+| User id               | `id`                 |
+| User name             | `username`           |

@@ -1,5 +1,15 @@
 # Errors
 
+> Response data for failed request
+
+```json
+{
+  "errors": [{
+    "status": "401 Unauthorized"
+  }]
+}
+```
+
 The Providi API uses the following error codes:
 
 Error Code | Meaning

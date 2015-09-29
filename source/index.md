@@ -8,6 +8,8 @@ language_tabs:
 includes:
   - authentication
   - user_profile
+  - marketing
+  - recruiting
   - leaderboard
   - promotions
   - errors
@@ -26,4 +28,4 @@ Responses that include dates and/or times will always use the [ISO 8601](https:/
 | ---- | ------- |
 | Date (September 28 2015) | 2015-09-28 |
 | Time in CEST time zone (UTC + 2 hours) | 13:49:16+02:00 |
-| Combined date and time: | 2015-09-28T13:49:16+02:00 |
+| Combined date and time | 2015-09-28T13:49:16+02:00 |
