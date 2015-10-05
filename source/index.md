@@ -9,6 +9,7 @@ includes:
   - authentication
   - user_profile
   - marketing
+  - voressundhed
   - recruiting
   - leaderboard
   - promotions
