@@ -38,8 +38,8 @@ if( isset( $ext_auth['data'] ) ) {
 }
 ```
 
-<aside class="">
-  <strong>Implemented September 23 2015</strong>
+<aside class="warning">
+  <strong>Not implemented</strong>
 </aside>
 
 Authenticate a user against the Providi database. Upon successful authentication the response includes a `auth_token` that must be used in all subsequent calls to the API.

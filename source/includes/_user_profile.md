@@ -64,29 +64,29 @@ Parameter | Required? | Description
 token | Required | The authentication token for the current user. Obtained from calling [`authenticate`](#authentication).
 userId | Required | The id of the current user. Must be paired with `token`.
 
-### Response fields
+### Response fields and POST Body
 The following information is included in the response and can be sent in the POST body when creating or updating a user:
 
-| Information                 | Key in JSON response   |
-| --------------------------- | ---------------------- |
-| Address                     | `address`              |
-| City                        | `city`                 |
-| Company Name                | `company_name`         |
-| Country                     | `country`              |
-| First name for recruitment  | `recruit_firstname`    |
-| Last name for recruitment   | `recruit_lastname`     |
-| Link to Vores Sundhed       | `vs_link`              |
-| Name on Vores Sundhed       | `vs_name`              |
-| Partner email               | `partner_email`        |
-| Partner name                | `partner_name`         |
-| Partner Skype id            | `partner_skype_id`     |
-| Paypal email                | `paypal_email`         |
-| Profile image URL           | `imageUrl`             |
-| Quickpay API key            | `quickpay_api_key`     |
-| Quickpay merchant ID        | `quickpay_merchant_id` |
-| Reference code              | `reference_code`       |
-| Shipping cost               | `shipping_cost`        |
-| Skype id                    | `skype_id`             |
-| User id                     | `id`                   |
-| User name                   | `name`                 |
-| Zipcode                     | `zipcode`              |
+| Information                | Key in JSON response   |
+| -------------------------- | ---------------------- |
+| Address                    | `address`              |
+| City                       | `city`                 |
+| Company Name               | `company_name`         |
+| Country                    | `country`              |
+| First name for recruitment | `recruit_firstname`    |
+| Last name for recruitment  | `recruit_lastname`     |
+| Link to Vores Sundhed      | `vs_link`              |
+| Name on Vores Sundhed      | `vs_name`              |
+| Partner email              | `partner_email`        |
+| Partner name               | `partner_name`         |
+| Partner Skype id           | `partner_skype_id`     |
+| Paypal email               | `paypal_email`         |
+| Profile image URL          | `imageUrl`             |
+| Quickpay API key           | `quickpay_api_key`     |
+| Quickpay merchant ID       | `quickpay_merchant_id` |
+| Reference code             | `reference_code`       |
+| Shipping cost              | `shipping_cost`        |
+| Skype id                   | `skype_id`             |
+| User id                    | `id`                   |
+| User name                  | `name`                 |
+| Zipcode                    | `zipcode`              |

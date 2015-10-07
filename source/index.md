@@ -14,6 +14,7 @@ includes:
   - leaderboard
   - promotions
   - errors
+  - changelog
 ---
 
 # Introduction
