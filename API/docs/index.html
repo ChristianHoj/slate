@@ -1,0 +1,1542 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>Providi API Reference</title>
+
+    <link href="stylesheets/screen.css" rel="stylesheet" type="text/css" media="screen" />
+    <link href="stylesheets/print.css" rel="stylesheet" type="text/css" media="print" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+      <script src="javascripts/all_nosearch.js" type="text/javascript"></script>
+
+      <script>
+        $(function() {
+          setupLanguages(["php","javascript"]);
+        });
+      </script>
+  </head>
+
+  <body class="index">
+    <a href="#" id="nav-button">
+      <span>
+        NAV
+        <img src="images/navbar.png" />
+      </span>
+    </a>
+    <div class="tocify-wrapper">
+      <img src="images/logo.png" />
+        <div class="lang-selector">
+              <a href="#" data-language-name="php">PHP</a>
+              <a href="#" data-language-name="javascript">Javascript</a>
+        </div>
+      <div id="toc">
+      </div>
+    </div>
+    <div class="page-wrapper">
+      <div class="dark-box"></div>
+      <div class="content">
+        <h1 id="introduction">Introduction</h1>
+
+<p>The Providi API consists of the described endpoints/functions that return responses according to the <a href="http://jsonapi.org">{json:api} specification</a>. All responses are encoded using UTF-8.</p>
+
+<p>Every request to the API must contain an authentication token (<code class="prettyprint">token</code>) provided by an initial request to the <a href="#authentication"><code class="prettyprint">authenticate</code></a> endpoint (of course this request will not include <code class="prettyprint">token</code>).</p>
+
+<p>Some requests will need to specify which country the request is concerning using the <code class="prettyprint">country</code> parameter with a <a href="https://www.iso.org/obp/ui/#search">ISO 3166-1 alpha-2</a> country code, e.g. <code class="prettyprint">DK</code> for Denmark or <code class="prettyprint">SI</code> for Slovenia. The code can be either upper case (<code class="prettyprint">DK</code>) or lower case (<code class="prettyprint">dk</code>).</p>
+
+<p>Responses that include dates and/or times will always use the <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a> format. Times will be shown with indication of offset from UTC.</p>
+
+<table><thead>
+<tr>
+<th> Type</th>
+<th>Example</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Date (September 28 2015)</td>
+<td>2015-09-28</td>
+</tr>
+<tr>
+<td>Time in CEST time zone (UTC + 2 hours)</td>
+<td>13:49:16+02:00</td>
+</tr>
+<tr>
+<td>Combined date and time</td>
+<td>2015-09-28T13:49:16+02:00</td>
+</tr>
+</tbody></table>
+
+<h2 id="questions">Questions</h2>
+
+<p>To make the transition gradual we would like to know how to access the following links since they rely on a user being logged in.</p>
+
+<ul>
+<li>Mail center (http://www.sc-support.dk/sc.support_mailcenter/distributor_mailcenter/index.php)</li>
+<li>Orders (http://www.sc-support.dk/sc.support_ny_ordrer/order.list.php)</li>
+<li>New targets (http://www.voressundhed.dk/personificeret/update.before_after_ny.php)</li>
+<li>Old targets  (http://providi.eu/sc.support_links/editCust.php)</li>
+</ul>
+
+          <h1 id="authentication">Authentication</h1>
+<pre class="highlight php"><code>// Example of usage in WordPress
+<span class="cp">&lt;?php</span>
+<span class="nv">$username</span> <span class="o">=</span> <span class="s2">"chrhoj"</span><span class="p">;</span>
+<span class="nv">$password</span> <span class="o">=</span> <span class="s2">"asd"</span><span class="p">;</span>
+<span class="nv">$response</span> <span class="o">=</span> <span class="nx">wp_safe_remote_post</span><span class="p">(</span> <span class="s2">"providi.eu/API/authenticate.php"</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span> <span class="s1">'body'</span> <span class="o">=&gt;</span> <span class="k">array</span><span class="p">(</span> <span class="s1">'user'</span> <span class="o">=&gt;</span> <span class="nv">$username</span><span class="p">,</span> <span class="s1">'pass'</span> <span class="o">=&gt;</span> <span class="nv">$password</span> <span class="p">)</span> <span class="p">)</span> <span class="p">);</span>
+<span class="nv">$ext_auth</span> <span class="o">=</span> <span class="nb">json_decode</span><span class="p">(</span> <span class="nv">$response</span><span class="p">[</span><span class="s1">'body'</span><span class="p">],</span> <span class="kc">true</span> <span class="p">);</span>
+<span class="k">if</span><span class="p">(</span> <span class="nb">isset</span><span class="p">(</span> <span class="nv">$ext_auth</span><span class="p">[</span><span class="s1">'data'</span><span class="p">]</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// External user exists, try to load the user info from the WordPress user table
+</span>  <span class="nv">$userobj</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WP_User</span><span class="p">();</span>
+  <span class="nv">$user</span> <span class="o">=</span> <span class="nv">$userobj</span><span class="o">-&gt;</span><span class="na">get_data_by</span><span class="p">(</span> <span class="s1">'email'</span><span class="p">,</span> <span class="nv">$ext_auth</span><span class="p">[</span><span class="s1">'data'</span><span class="p">][</span><span class="s1">'attributes'</span><span class="p">][</span><span class="s1">'email'</span><span class="p">]</span> <span class="p">);</span>
+  <span class="nv">$user</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WP_User</span><span class="p">(</span><span class="nv">$user</span><span class="o">-&gt;</span><span class="na">ID</span><span class="p">);</span> <span class="c1">// Attempt to load up the user with that ID
+</span>
+  <span class="c1">// ...
+</span><span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span> <span class="nb">isset</span><span class="p">(</span> <span class="nv">$ext_auth</span><span class="p">[</span><span class="s1">'error'</span><span class="p">]</span> <span class="p">)</span> <span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// User does not exist, show an error message
+</span>  <span class="nv">$user</span> <span class="o">=</span> <span class="k">new</span> <span class="nx">WP_Error</span><span class="p">(</span> <span class="s1">'denied'</span><span class="p">,</span> <span class="nx">__</span><span class="p">(</span><span class="s2">"ERROR: User/pass bad"</span><span class="p">)</span> <span class="p">);</span>
+<span class="p">}</span>
+</code></pre>
+
+<blockquote>
+<p>Response data at successful authentication</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123456"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"chrhoj"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Christian"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Høj"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"cbh@nightcirque.com"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"auth_token"</span><span class="p">:</span><span class="w"> </span><span class="s2">"iuTaoiy78wksjERk9qe"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<aside class="">
+  <strong>Implemented September 23 2015</strong>
+</aside>
+
+<p>Authenticate a user against the Providi database. Upon successful authentication the response includes a <code class="prettyprint">auth_token</code> that must be used in all subsequent calls to the API.</p>
+
+<p>The <code class="prettyprint">country</code> parameter is not required for this endpoint since users have globally unique ids.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">POST https://providi.eu/API/authenticate.php</code></p>
+
+<h3 id="request-parameters">Request Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Required?</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>user</td>
+<td>Required</td>
+<td>The username to be authenticated</td>
+</tr>
+<tr>
+<td>pass</td>
+<td>Required</td>
+<td> The password to use for authentication</td>
+</tr>
+</tbody></table>
+
+<h3 id="response-fields">Response fields</h3>
+
+<p>The following information is included in the response:</p>
+
+<table><thead>
+<tr>
+<th>Information</th>
+<th>Key in JSON response</th>
+</tr>
+</thead><tbody>
+<tr>
+<td> Authentication token</td>
+<td><code class="prettyprint">auth_token</code></td>
+</tr>
+<tr>
+<td>Email</td>
+<td><code class="prettyprint">email</code></td>
+</tr>
+<tr>
+<td>First name</td>
+<td><code class="prettyprint">first_name</code></td>
+</tr>
+<tr>
+<td>Last name</td>
+<td><code class="prettyprint">last_name</code></td>
+</tr>
+<tr>
+<td>User id</td>
+<td><code class="prettyprint">id</code></td>
+</tr>
+<tr>
+<td>User name</td>
+<td><code class="prettyprint">username</code></td>
+</tr>
+</tbody></table>
+
+          <h1 id="user-profile">User Profile</h1>
+<pre class="highlight javascript"><code><span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+  <span class="na">url</span><span class="p">:</span> <span class="s2">"https://providi.eu/API/profile.php"</span><span class="p">,</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">userId</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="na">token</span><span class="p">:</span> <span class="s1">'tokenAsdf'</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+
+<blockquote>
+<p>Successful response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SC000XXXXXXX"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"accountType"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Main Street 14"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"city"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Lovkotsk"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"company_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My Health Company"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"country"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Slovenia"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"imageUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Gabriel Muresan"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"partner_email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"partner@email.com"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"partner_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Partner Muresan"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"partner_skype_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"partner_skype"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"paypal_email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mypaypal@email.com"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"98765432"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"quickpay_api_key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"klusfiuysbf74oha4bfauua42"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"quickpay_merchant_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">765234776</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"recruit_firstname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Recruiter"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"recruit_lastname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Muresan"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"reference_code"</span><span class="p">:</span><span class="w"> </span><span class="mi">765384</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"shipping_cost"</span><span class="p">:</span><span class="w"> </span><span class="mi">80</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"skype_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"seller_skype"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"vs_link"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://www.voressundhed.dk/?customerID=12345678"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"vs_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My Vores Sundhed Name"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"zipcode"</span><span class="p">:</span><span class="w"> </span><span class="mi">9230</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<aside class="warning">
+  <strong>Not implemented</strong>
+</aside>
+
+<p>Manage profile information for a single user.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET https://providi.eu/API/profile.php</code></p>
+
+<p><code class="prettyprint">POST https://providi.eu/API/create_profile.php</code></p>
+
+<p><code class="prettyprint">POST https://providi.eu/API/update_profile.php</code></p>
+
+<h3 id="request-parameters">Request Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Required?</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>token</td>
+<td>Required</td>
+<td>The authentication token for the current user. Obtained from calling <a href="#authentication"><code class="prettyprint">authenticate</code></a>.</td>
+</tr>
+<tr>
+<td>userId</td>
+<td>Required</td>
+<td>The id of the current user. Must be paired with <code class="prettyprint">token</code>.</td>
+</tr>
+</tbody></table>
+
+<h3 id="response-fields-and-post-body">Response fields and POST Body</h3>
+
+<p>The following information is included in the response and can be sent in the POST body when creating or updating a user:</p>
+
+<table><thead>
+<tr>
+<th>Information</th>
+<th>Key in JSON response</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Address</td>
+<td><code class="prettyprint">address</code></td>
+</tr>
+<tr>
+<td>City</td>
+<td><code class="prettyprint">city</code></td>
+</tr>
+<tr>
+<td>Company Name</td>
+<td><code class="prettyprint">company_name</code></td>
+</tr>
+<tr>
+<td>Country</td>
+<td><code class="prettyprint">country</code></td>
+</tr>
+<tr>
+<td>First name for recruitment</td>
+<td><code class="prettyprint">recruit_firstname</code></td>
+</tr>
+<tr>
+<td>Last name for recruitment</td>
+<td><code class="prettyprint">recruit_lastname</code></td>
+</tr>
+<tr>
+<td>Link to Vores Sundhed</td>
+<td><code class="prettyprint">vs_link</code></td>
+</tr>
+<tr>
+<td>Name on Vores Sundhed</td>
+<td><code class="prettyprint">vs_name</code></td>
+</tr>
+<tr>
+<td>Partner email</td>
+<td><code class="prettyprint">partner_email</code></td>
+</tr>
+<tr>
+<td>Partner name</td>
+<td><code class="prettyprint">partner_name</code></td>
+</tr>
+<tr>
+<td>Partner Skype id</td>
+<td><code class="prettyprint">partner_skype_id</code></td>
+</tr>
+<tr>
+<td>Paypal email</td>
+<td><code class="prettyprint">paypal_email</code></td>
+</tr>
+<tr>
+<td>Profile image URL</td>
+<td><code class="prettyprint">imageUrl</code></td>
+</tr>
+<tr>
+<td>Quickpay API key</td>
+<td><code class="prettyprint">quickpay_api_key</code></td>
+</tr>
+<tr>
+<td>Quickpay merchant ID</td>
+<td><code class="prettyprint">quickpay_merchant_id</code></td>
+</tr>
+<tr>
+<td>Reference code</td>
+<td><code class="prettyprint">reference_code</code></td>
+</tr>
+<tr>
+<td>Shipping cost</td>
+<td><code class="prettyprint">shipping_cost</code></td>
+</tr>
+<tr>
+<td>Skype id</td>
+<td><code class="prettyprint">skype_id</code></td>
+</tr>
+<tr>
+<td>User id</td>
+<td><code class="prettyprint">id</code></td>
+</tr>
+<tr>
+<td>User name</td>
+<td><code class="prettyprint">name</code></td>
+</tr>
+<tr>
+<td>Zipcode</td>
+<td><code class="prettyprint">zipcode</code></td>
+</tr>
+</tbody></table>
+
+          <h1 id="marketing">Marketing</h1>
+
+<h2 id="view-leads">View Leads</h2>
+<pre class="highlight javascript"><code><span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+  <span class="na">url</span><span class="p">:</span> <span class="s2">"https://providi.eu/API/leads.php"</span><span class="p">,</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">userId</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="na">token</span><span class="p">:</span> <span class="s1">'tokenAsdf'</span><span class="p">,</span>
+      <span class="na">from_date</span><span class="p">:</span> <span class="s1">'2015-09-01'</span><span class="p">,</span>
+      <span class="na">to_date</span><span class="p">:</span> <span class="s1">'2015-09-15'</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+
+<blockquote>
+<p>Successful response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"leads"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"leads"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"candidate@email.com"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">123456</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"lead_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"own"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Some explanation of why weight loss is desired."</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Candi Date"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"order"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"origin"</span><span class="p">:</span><span class="w"> </span><span class="s2">"idealvaegt.dk"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"12345678"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"serious"</span><span class="p">:</span><span class="w"> </span><span class="s2">"yes"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"signed_up"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"weight_loss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10-15"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"zipcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9235"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"candidate2@email.com"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">7654432</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"lead_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bonus"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Text from questionnaire"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Will Buyer"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"order"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"origin"</span><span class="p">:</span><span class="w"> </span><span class="s2">"idealvaegt.dk"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"87654321"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"serious"</span><span class="p">:</span><span class="w"> </span><span class="s2">"maybe"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"weight_loss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2-5"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"zipcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"54329"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<aside class="warning">
+  <strong>Not implemented</strong>
+</aside>
+
+<p>Get all leads the seller has acquired both by own marketing efforts and as bonus for specified period.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET https://providi.eu/API/leads.php</code></p>
+
+<h3 id="request-parameters">Request Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Required?</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>token</td>
+<td>Required</td>
+<td>The authentication token for the current user. Obtained from calling <a href="#authentication"><code class="prettyprint">authenticate</code></a>.</td>
+</tr>
+<tr>
+<td>userId</td>
+<td>Required</td>
+<td>The id of the current user. Must be paired with <code class="prettyprint">token</code>.</td>
+</tr>
+<tr>
+<td>from_date</td>
+<td>Optional</td>
+<td>Date for earliest lead signup.</td>
+</tr>
+<tr>
+<td>to_date</td>
+<td>Optional</td>
+<td>Date for latest lead signup.</td>
+</tr>
+</tbody></table>
+
+<p>If either <code class="prettyprint">from_date</code> or <code class="prettyprint">to_date</code> is not supplied the response will be for the past 7 days.</p>
+
+<h3 id="response-fields">Response fields</h3>
+
+<p>The following information is included in the response:</p>
+
+<table><thead>
+<tr>
+<th>Information</th>
+<th>Key in JSON response</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Array of leads</td>
+<td><code class="prettyprint">leads</code></td>
+</tr>
+</tbody></table>
+
+<table><thead>
+<tr>
+<th>Lead Information</th>
+<th>Key in JSON response</th>
+<th>Possible values</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Email</td>
+<td><code class="prettyprint">email</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Expected weight loss</td>
+<td><code class="prettyprint">weight_loss</code></td>
+<td></td>
+</tr>
+<tr>
+<td>ID</td>
+<td><code class="prettyprint">id</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Lead type</td>
+<td><code class="prettyprint">lead_type</code></td>
+<td><code class="prettyprint">bonus</code>, <code class="prettyprint">own</code></td>
+</tr>
+<tr>
+<td>Message from lead</td>
+<td><code class="prettyprint">message</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Name</td>
+<td><code class="prettyprint">name</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Phone</td>
+<td><code class="prettyprint">phone</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Sort order</td>
+<td><code class="prettyprint">order</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Status</td>
+<td><code class="prettyprint">status</code></td>
+<td>&ldquo;&rdquo;, <code class="prettyprint">signed_up</code>, <code class="prettyprint">not_available</code>, <code class="prettyprint">no_show</code>, <code class="prettyprint">no_money</code>, <code class="prettyprint">not_interested</code>, <code class="prettyprint">non_existing</code>, <code class="prettyprint">never_asked_for_contact</code>, <code class="prettyprint">no</code></td>
+</tr>
+<tr>
+<td>Weight loss interest</td>
+<td><code class="prettyprint">serious</code></td>
+<td><code class="prettyprint">yes</code>, <code class="prettyprint">maybe</code>, <code class="prettyprint">no</code></td>
+</tr>
+<tr>
+<td>Zipcode</td>
+<td><code class="prettyprint">zipcode</code></td>
+<td></td>
+</tr>
+</tbody></table>
+
+<h2 id="update-lead">Update Lead</h2>
+<pre class="highlight javascript"><code><span class="nx">jQuery</span><span class="p">.</span><span class="nx">post</span><span class="p">({</span>
+  <span class="na">url</span><span class="p">:</span> <span class="s2">"https://providi.eu/API/update_lead.php"</span><span class="p">,</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">userId</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="na">token</span><span class="p">:</span> <span class="s1">'tokenAsdf'</span><span class="p">,</span>
+      <span class="na">leadId</span><span class="p">:</span> <span class="mi">123456</span><span class="p">,</span>
+      <span class="na">status</span><span class="p">:</span> <span class="s1">'non_existing'</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+
+<blockquote>
+<p>Successful response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"update_lead"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">123456</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<aside class="warning">
+  <strong>Not implemented</strong>
+</aside>
+
+<p>Update status for specific lead.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">POST https://providi.eu/API/update_lead.php</code></p>
+
+<h3 id="request-parameters">Request Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Required?</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>token</td>
+<td>Required</td>
+<td>The authentication token for the current user. Obtained from calling <a href="#authentication"><code class="prettyprint">authenticate</code></a>.</td>
+</tr>
+<tr>
+<td>userId</td>
+<td>Required</td>
+<td>The id of the current user. Must be paired with <code class="prettyprint">token</code>.</td>
+</tr>
+<tr>
+<td>leadId</td>
+<td>Required</td>
+<td>The id of the lead to update.</td>
+</tr>
+<tr>
+<td>status</td>
+<td>Required</td>
+<td>Possible values: &ldquo;&rdquo;, <code class="prettyprint">signed_up</code>, <code class="prettyprint">not_available</code>, <code class="prettyprint">no_show</code>, <code class="prettyprint">no_money</code>, <code class="prettyprint">not_interested</code>, <code class="prettyprint">non_existing</code>, <code class="prettyprint">never_asked_for_contact</code>, <code class="prettyprint">no</code></td>
+</tr>
+</tbody></table>
+
+          <h1 id="vores-sundhed">Vores Sundhed</h1>
+
+<h2 id="members">Members</h2>
+<pre class="highlight javascript"><code><span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+  <span class="na">url</span><span class="p">:</span> <span class="s2">"https://providi.eu/API/vs_members.php"</span><span class="p">,</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">userId</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="na">token</span><span class="p">:</span> <span class="s1">'tokenAsdf'</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+
+<blockquote>
+<p>Successful response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vs_members"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"members"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Main Street 17"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">123456</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"kalorie_login"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://www.kalorieregnskab.dk/login.php?customerID=313214470001&amp;vu=1444061739&amp;hash=d966c33806b0f28a7d2bbbe"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Carina Holm"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"new_target_link"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://www.voressundhed.dk/distributor/login.php?reference=31321447&amp;hash=da305792bc0d113bd63e9&amp;redirect=http%3A%2F%2Fwww.voressundhed.dk%2Fpersonificeret%2Fupdate.before_after_ny.php%3FcustRef%3D313214470001"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"old_target_link"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://providi.eu/sc.support_links/editCust.php?id=55229&amp;refer=313214470001"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"12345678"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"abcd@email.com"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"vs_login_link"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://www.voressundhed.dk/distributor/customer_login.php?customerID=313212270001&amp;vu=1444051539&amp;hash=d18a31acfb7e2a1c6410d30bd"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="err">...</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<aside class="warning">
+  <strong>Not implemented</strong>
+</aside>
+
+<p>Get all members of Vores Sundhed that the seller has signed up.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET https://providi.eu/API/vs_members.php</code></p>
+
+<h3 id="request-parameters">Request Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Required?</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>token</td>
+<td>Required</td>
+<td>The authentication token for the current user. Obtained from calling <a href="#authentication"><code class="prettyprint">authenticate</code></a>.</td>
+</tr>
+<tr>
+<td>userId</td>
+<td>Required</td>
+<td>The id of the current user. Must be paired with <code class="prettyprint">token</code>.</td>
+</tr>
+</tbody></table>
+
+<h3 id="response-fields">Response fields</h3>
+
+<p>The following information is included in the response:</p>
+
+<table><thead>
+<tr>
+<th>Information</th>
+<th>Key in JSON response</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Array of members</td>
+<td><code class="prettyprint">members</code></td>
+</tr>
+</tbody></table>
+
+<table><thead>
+<tr>
+<th>Member Information</th>
+<th>Key in JSON response</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Address</td>
+<td><code class="prettyprint">address</code></td>
+</tr>
+<tr>
+<td>Link to Kalorieregnskab</td>
+<td><code class="prettyprint">kalorie_login</code></td>
+</tr>
+<tr>
+<td>Link to new targets</td>
+<td><code class="prettyprint">new_target_link</code></td>
+</tr>
+<tr>
+<td>Link to old targets</td>
+<td><code class="prettyprint">old_target_link</code></td>
+</tr>
+<tr>
+<td>Link to Vores Sundhed</td>
+<td><code class="prettyprint">vs_login_link</code></td>
+</tr>
+<tr>
+<td>Member ID</td>
+<td><code class="prettyprint">id</code></td>
+</tr>
+<tr>
+<td>Member user name</td>
+<td><code class="prettyprint">username</code></td>
+</tr>
+<tr>
+<td>Name</td>
+<td><code class="prettyprint">name</code></td>
+</tr>
+<tr>
+<td>Phone</td>
+<td><code class="prettyprint">phone</code></td>
+</tr>
+</tbody></table>
+
+          <h1 id="recruiting">Recruiting</h1>
+
+<h2 id="view-leads">View Leads</h2>
+<pre class="highlight javascript"><code><span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+  <span class="na">url</span><span class="p">:</span> <span class="s2">"https://providi.eu/API/organization_leads.php"</span><span class="p">,</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">userId</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="na">token</span><span class="p">:</span> <span class="s1">'tokenAsdf'</span><span class="p">,</span>
+      <span class="na">from_date</span><span class="p">:</span> <span class="s1">'2015-09-01'</span><span class="p">,</span>
+      <span class="na">to_date</span><span class="p">:</span> <span class="s1">'2015-09-15'</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+
+<blockquote>
+<p>Successful response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"organization_leads"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"leads"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"age"</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"candidate@email.com"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"expected_earnings"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3-5000"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">123456</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"interest_date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-10-02"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"To earn extra. Get more time with family."</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Candi Date"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"order"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"origin"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arbejd.dk"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"12345678"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"zipcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9235"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="err">...</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<aside class="warning">
+  <strong>Not implemented</strong>
+</aside>
+
+<p>Get all organizational leads (for recruitment) the seller has acquired for specified period.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET https://providi.eu/API/organization_leads.php</code></p>
+
+<h3 id="request-parameters">Request Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Required?</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>token</td>
+<td>Required</td>
+<td>The authentication token for the current user. Obtained from calling <a href="#authentication"><code class="prettyprint">authenticate</code></a>.</td>
+</tr>
+<tr>
+<td>userId</td>
+<td>Required</td>
+<td>The id of the current user. Must be paired with <code class="prettyprint">token</code>.</td>
+</tr>
+<tr>
+<td>from_date</td>
+<td>Optional</td>
+<td>Date for earliest lead signup.</td>
+</tr>
+<tr>
+<td>to_date</td>
+<td>Optional</td>
+<td>Date for latest lead signup.</td>
+</tr>
+</tbody></table>
+
+<p>If either <code class="prettyprint">from_date</code> or <code class="prettyprint">to_date</code> is not supplied the response will be for the past 7 days.</p>
+
+<h3 id="response-fields">Response fields</h3>
+
+<p>The following information is included in the response:</p>
+
+<table><thead>
+<tr>
+<th>Information</th>
+<th>Key in JSON response</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Array of leads</td>
+<td><code class="prettyprint">leads</code></td>
+</tr>
+</tbody></table>
+
+<table><thead>
+<tr>
+<th>Lead Information</th>
+<th>Key in JSON response</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Age</td>
+<td><code class="prettyprint">age</code></td>
+</tr>
+<tr>
+<td>Email</td>
+<td><code class="prettyprint">email</code></td>
+</tr>
+<tr>
+<td>Expected earnings</td>
+<td><code class="prettyprint">expected_earnings</code></td>
+</tr>
+<tr>
+<td>ID</td>
+<td><code class="prettyprint">id</code></td>
+</tr>
+<tr>
+<td>Lead sign up date</td>
+<td><code class="prettyprint">interest_date</code></td>
+</tr>
+<tr>
+<td>Message from lead</td>
+<td><code class="prettyprint">message</code></td>
+</tr>
+<tr>
+<td>Name</td>
+<td><code class="prettyprint">name</code></td>
+</tr>
+<tr>
+<td>Origin of lead</td>
+<td><code class="prettyprint">orgin</code></td>
+</tr>
+<tr>
+<td>Phone</td>
+<td><code class="prettyprint">phone</code></td>
+</tr>
+<tr>
+<td>Sort order</td>
+<td><code class="prettyprint">order</code></td>
+</tr>
+<tr>
+<td>Zipcode</td>
+<td><code class="prettyprint">zipcode</code></td>
+</tr>
+</tbody></table>
+
+<h2 id="meeting-attendees">Meeting attendees</h2>
+<pre class="highlight javascript"><code><span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+  <span class="na">url</span><span class="p">:</span> <span class="s2">"https://providi.eu/API/meeting_attendees.php"</span><span class="p">,</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+      <span class="na">userId</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+      <span class="na">token</span><span class="p">:</span> <span class="s1">'tokenAsdf'</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+
+<blockquote>
+<p>Successful response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"meeting_attendees"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"meetings"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"city"</span><span class="p">:</span><span class="w"> </span><span class="s2">"København"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-10-20"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"attendees"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Attendee Numberone"</span><span class="w"> </span><span class="p">},</span><span class="w">
+            </span><span class="p">{</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Attendee Numbertwo"</span><span class="w"> </span><span class="p">}</span><span class="w">
+          </span><span class="p">]</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"city"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Odense"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-11-04"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"attendees"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+            </span><span class="p">{</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Attendee Numberthree"</span><span class="w"> </span><span class="p">},</span><span class="w">
+            </span><span class="p">{</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Attendee Numberfour"</span><span class="w"> </span><span class="p">}</span><span class="w">
+          </span><span class="p">]</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="err">...</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<aside class="warning">
+  <strong>Not implemented</strong>
+</aside>
+
+<p>Get all organizational members that are attending upcoming meetings.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET https://providi.eu/API/meeting_attendees.php</code></p>
+
+<h3 id="request-parameters">Request Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Required?</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>token</td>
+<td>Required</td>
+<td>The authentication token for the current user. Obtained from calling <a href="#authentication"><code class="prettyprint">authenticate</code></a>.</td>
+</tr>
+<tr>
+<td>userId</td>
+<td>Required</td>
+<td>The id of the current user. Must be paired with <code class="prettyprint">token</code>.</td>
+</tr>
+</tbody></table>
+
+<h3 id="response-fields">Response fields</h3>
+
+<p>The following information is included in the response:</p>
+
+<table><thead>
+<tr>
+<th>Information</th>
+<th>Key in JSON response</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Array of meetings</td>
+<td><code class="prettyprint">meetings</code></td>
+</tr>
+</tbody></table>
+
+<table><thead>
+<tr>
+<th>Meeting Information</th>
+<th>Key in JSON response</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>City for meeting</td>
+<td><code class="prettyprint">city</code></td>
+</tr>
+<tr>
+<td>Date for meeting</td>
+<td><code class="prettyprint">date</code></td>
+</tr>
+<tr>
+<td>Array of attendee names</td>
+<td><code class="prettyprint">attendees</code></td>
+</tr>
+</tbody></table>
+
+          <h1 id="leaderboard">Leaderboard</h1>
+<pre class="highlight javascript"><code><span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+  <span class="na">url</span><span class="p">:</span> <span class="s2">"https://providi.eu/API/leaderboard.php"</span><span class="p">,</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">period</span><span class="p">:</span> <span class="p">[</span><span class="s1">'this-week'</span><span class="p">,</span> <span class="s1">'previous-week'</span><span class="p">,</span> <span class="s1">'last-30-days'</span><span class="p">],</span>
+    <span class="na">country</span><span class="p">:</span> <span class="s1">'dk'</span><span class="p">,</span>
+    <span class="na">userId</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="na">token</span><span class="p">:</span> <span class="s1">'tokenAsdf'</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+
+<blockquote>
+<p>Successful response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"leaderboards"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"thisWeek"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"period"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-09-07"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"until"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-09-13"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nt">"positions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tw Gabriel Muresan 2 222"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tw Gabriel Muresan 1"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tw Gabriel Muresan 3"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tw Gabriel Muresan 5"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tw Gabriel Muresan 6"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tw Gabriel Muresan 7"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tw Gabriel Muresan 8"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tw Gabriel Muresan 9"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tw Gabriel Muresan 10"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="nt">"previousWeek"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"period"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"until"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nt">"positions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pw Gabriel Muresan 1"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pw Gabriel Muresan 2"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pw Gabriel Muresan 3"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pw Gabriel Muresan 4"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pw Gabriel Muresan 5"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pw Gabriel Muresan 6"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pw Gabriel Muresan 7"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pw Gabriel Muresan 8"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pw Gabriel Muresan 9"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pw Gabriel Muresan 10"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+      </span><span class="p">},</span><span class="w">
+      </span><span class="nt">"last30Days"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"period"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"from"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"until"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="nt">"positions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"l3d Gabriel Muresan 1"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"l3d Gabriel Muresan 3"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"l3d Gabriel Muresan 4"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"l3d Gabriel Muresan 5"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"l3d Gabriel Muresan 6"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"l3d Gabriel Muresan 7"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"l3d Gabriel Muresan 8"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"l3d Gabriel Muresan 9"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">},</span><span class="w">
+          </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"l3d Gabriel Muresan 10"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">]</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<aside class="warning">
+  Implemented September 23 2015.
+  <br>
+  <strong>Changes on September 28 2015</strong>
+  <ul>
+    <li>&lsquo;country&rsquo; added as request parameter</li>
+    <li>Format of 'from&rsquo; and 'to&rsquo; dates in response changed to ISO 8601</li>
+  </ul>
+</aside>
+
+<p>Get the top ten sellers in Providi for specified periods.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET https://providi.eu/API/leaderboard.php</code></p>
+
+<h3 id="request-parameters">Request Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Required?</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>country</td>
+<td>Required</td>
+<td>ISO 3166-1 alpha-2 country code for the country the leaderboard is requested for.</td>
+</tr>
+<tr>
+<td>period</td>
+<td>Required</td>
+<td>Array of requested lists. Valid values are <code class="prettyprint">this-week</code>, <code class="prettyprint">previous-week</code>, <code class="prettyprint">last-30-days</code>.</td>
+</tr>
+<tr>
+<td>token</td>
+<td>Required</td>
+<td>The authentication token for the current user. Obtained from calling <a href="#authentication"><code class="prettyprint">authenticate</code></a>.</td>
+</tr>
+<tr>
+<td>userId</td>
+<td>Required</td>
+<td>The id of the current user. Must be paired with <code class="prettyprint">token</code>.</td>
+</tr>
+</tbody></table>
+
+          <h1 id="promotions">Promotions</h1>
+
+<h2 id="active-promotions">Active Promotions</h2>
+<pre class="highlight javascript"><code><span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+  <span class="na">url</span><span class="p">:</span> <span class="s2">"https://providi.eu/API/promotions.php"</span><span class="p">,</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">country</span><span class="p">:</span> <span class="s1">'dk'</span><span class="p">,</span>
+    <span class="na">userId</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="na">token</span><span class="p">:</span> <span class="s1">'tokenAsdf'</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+
+<blockquote>
+<p>Successful response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"promotion"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Cruise fra New York 2016"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">},</span><span class="w">
+  </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"promotion"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Rejse til Thailand 2016"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<aside class="warning">
+  <strong>Not implemented.</strong>
+</aside>
+
+<p>Get the active Providi promotions.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET https://providi.eu/API/promotions.php</code></p>
+
+<h3 id="request-parameters">Request Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Required?</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>country</td>
+<td>Required</td>
+<td>ISO 3166-1 alpha-2 country code for the country the leaderboard is requested for.</td>
+</tr>
+<tr>
+<td>token</td>
+<td>Required</td>
+<td>The authentication token for the current user. Obtained from calling <a href="#authentication"><code class="prettyprint">authenticate</code></a>.</td>
+</tr>
+<tr>
+<td>userId</td>
+<td>Required</td>
+<td>The id of the current user. Must be paired with <code class="prettyprint">token</code>.</td>
+</tr>
+</tbody></table>
+
+<h2 id="promotion-scores">Promotion Scores</h2>
+<pre class="highlight javascript"><code><span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
+  <span class="na">url</span><span class="p">:</span> <span class="s2">"https://providi.eu/API/promotion_score.php"</span><span class="p">,</span>
+  <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
+    <span class="na">promotion_id</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="na">country</span><span class="p">:</span> <span class="s1">'dk'</span><span class="p">,</span>
+    <span class="na">userId</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="na">token</span><span class="p">:</span> <span class="s1">'tokenAsdf'</span>
+  <span class="p">}</span>
+<span class="p">});</span>
+</code></pre>
+
+<blockquote>
+<p>Successful response</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"promotion_score"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"promotion_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"positions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seller"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seller 1"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seller 3"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seller 5"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seller 6"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seller 7"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seller 8"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seller 9"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+        </span><span class="p">},</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seller 10"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<aside class="warning">
+  <strong>Not implemented.</strong>
+</aside>
+
+<p>Get the top ten places in the specified Providi promotion.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">GET https://providi.eu/API/promotion_score.php</code></p>
+
+<h3 id="request-parameters">Request Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Required?</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>country</td>
+<td>Required</td>
+<td>ISO 3166-1 alpha-2 country code for the country the leaderboard is requested for.</td>
+</tr>
+<tr>
+<td>promotion</td>
+<td>Required</td>
+<td>Id of requested promotion names. Valid ids are obtained from calling <a href="#active-promotions"><code class="prettyprint">promotions</code></a>.</td>
+</tr>
+<tr>
+<td>token</td>
+<td>Required</td>
+<td>The authentication token for the current user. Obtained from calling <a href="#authentication"><code class="prettyprint">authenticate</code></a>.</td>
+</tr>
+<tr>
+<td>userId</td>
+<td>Required</td>
+<td>The id of the current user. Must be paired with <code class="prettyprint">token</code>.</td>
+</tr>
+</tbody></table>
+
+          <h1 id="errors">Errors</h1>
+
+<blockquote>
+<p>Response data for failed request</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"errors"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w">
+    </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"401 Unauthorized"</span><span class="w">
+  </span><span class="p">}]</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>The Providi API uses the following error codes:</p>
+
+<table><thead>
+<tr>
+<th>Error Code</th>
+<th>Meaning</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>400</td>
+<td>Bad Request &ndash; Your request sucks</td>
+</tr>
+<tr>
+<td>401</td>
+<td>Unauthorized &ndash; Your API key is wrong</td>
+</tr>
+<tr>
+<td>403</td>
+<td>Forbidden &ndash; The information requested is for administrators only</td>
+</tr>
+<tr>
+<td>404</td>
+<td>Not Found &ndash; The specified information could not be found</td>
+</tr>
+<tr>
+<td>405</td>
+<td>Method Not Allowed &ndash; You tried to access information with an invalid method</td>
+</tr>
+<tr>
+<td>406</td>
+<td>Not Acceptable &ndash; You requested a format that isn&rsquo;t json</td>
+</tr>
+<tr>
+<td>410</td>
+<td>Gone &ndash; The information requested has been removed from our servers</td>
+</tr>
+<tr>
+<td>429</td>
+<td>Too Many Requests &ndash; You&rsquo;re requesting too many requests! Slow down!</td>
+</tr>
+<tr>
+<td>500</td>
+<td>Internal Server Error &ndash; We had a problem with our server. Try again later.</td>
+</tr>
+<tr>
+<td>503</td>
+<td>Service Unavailable &ndash; We&rsquo;re temporarially offline for maintenance. Please try again later.</td>
+</tr>
+</tbody></table>
+
+          <h1 id="changelog">Changelog</h1>
+
+<h2 id="2015-10-07">2015-10-07</h2>
+
+<p>First version of API documentation.</p>
+
+      </div>
+      <div class="dark-box">
+          <div class="lang-selector">
+                <a href="#" data-language-name="php">PHP</a>
+                <a href="#" data-language-name="javascript">Javascript</a>
+          </div>
+      </div>
+    </div>
+  </body>
+</html>
