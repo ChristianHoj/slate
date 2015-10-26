@@ -26,7 +26,7 @@ Some requests will need to specify which country the request is concerning using
 
 Responses that include dates and/or times will always use the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format. Times will be shown with indication of offset from UTC.
 
-| Type | Example |
+| Type | Example |
 | ---- | ------- |
 | Date (September 28 2015) | 2015-09-28 |
 | Time in CEST time zone (UTC + 2 hours) | 13:49:16+02:00 |

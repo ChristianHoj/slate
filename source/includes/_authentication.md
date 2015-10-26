@@ -53,14 +53,14 @@ The `country` parameter is not required for this endpoint since users have globa
 Parameter | Required? | Description
 --------- | --------- | -----------
 user | Required | The username to be authenticated
-pass | Required | The password to use for authentication
+pass | Required | The password to use for authentication
 
 ### Response fields
 The following information is included in the response:
 
 | Information           | Key in JSON response |
 | --------------------- | -------------------- |
-| Authentication token  | `auth_token`         |
+| Authentication token  | `auth_token`         |
 | Email                 | `email`              |
 | First name            | `first_name`         |
 | Last name             | `last_name`          |
