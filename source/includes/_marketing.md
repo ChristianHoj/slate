@@ -19,37 +19,23 @@ jQuery.ajax({
 {
   "data": {
     "type": "leads",
-    "id": 1,
+    "id": "1",
     "attributes": {
       "leads": [
         {
           "email": "candidate@email.com",
-          "id": 123456,
+          "id": "123456",
+          "lead_assigned_date": "2015-10-27T14:25:16+01:00",
           "lead_type": "own",
           "message": "Some explanation of why weight loss is desired.",
           "name": "Candi Date",
-          "order": 1,
           "origin": "idealvaegt.dk",
           "phone": "12345678",
           "serious": "yes",
           "status": "signed_up",
-          "weight_loss": "10-15",
           "zipcode": "9235"
         },
-        {
-          "email": "candidate2@email.com",
-          "id": 7654432,
-          "lead_type": "bonus",
-          "message": "Text from questionnaire",
-          "name": "Will Buyer",
-          "order": 2,
-          "origin": "idealvaegt.dk",
-          "phone": "87654321",
-          "serious": "maybe",
-          "status": "",
-          "weight_loss": "2-5",
-          "zipcode": "54329"
-        }
+        ...
       ]
     }
   }
@@ -57,7 +43,7 @@ jQuery.ajax({
 ```
 
 <aside class="warning">
-  <strong>Not implemented</strong>
+  <strong>Implemented. Test not passing.</strong>
 </aside>
 
 Get all leads the seller has acquired both by own marketing efforts and as bonus for specified period.
@@ -86,13 +72,12 @@ The following information is included in the response:
 | Lead Information     | Key in JSON response | Possible values
 | -------------------- | -------------------- | ---------------
 | Email                | `email`              |
-| Expected weight loss | `weight_loss`        |
 | ID                   | `id`                 |
+| Lead assigned date   | `lead_assigned_date` |
 | Lead type            | `lead_type`          | `bonus`, `own`
 | Message from lead    | `message`            |
 | Name                 | `name`               |
 | Phone                | `phone`              |
-| Sort order           | `order`              |
 | Status               | `status`             | "", `signed_up`, `not_available`, `no_show`, `no_money`, `not_interested`, `non_existing`, `never_asked_for_contact`, `no`
 | Weight loss interest | `serious`            | `yes`, `maybe`, `no`
 | Zipcode              | `zipcode`            |
@@ -126,7 +111,7 @@ jQuery.post({
 ```
 
 <aside class="warning">
-  <strong>Not implemented</strong>
+  <strong>Not tested.</strong>
 </aside>
 
 Update status for specific lead.

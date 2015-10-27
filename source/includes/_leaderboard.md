@@ -218,13 +218,7 @@ jQuery.ajax({
 ```
 
 <aside class="warning">
-  Implemented September 23 2015.
-  <br>
-  <strong>Changes on September 28 2015</strong>
-  <ul>
-    <li>'country' added as request parameter</li>
-    <li>Format of 'from' and 'to' dates in response changed to ISO 8601</li>
-  </ul>
+  <strong>Not implemented.</strong>
 </aside>
 
 Get the top ten sellers in Providi for specified periods.

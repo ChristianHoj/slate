@@ -23,8 +23,9 @@ jQuery.ajax({
       "city": "Lovkotsk",
       "company_name": "My Health Company",
       "country": "Slovenia",
+      "first_name": "Gabriel",
       "imageUrl": "http://example.com/default-avatar.jpg",
-      "name": "Gabriel Muresan",
+      "last_name": "Muresan",
       "partner_email": "partner@email.com",
       "partner_name": "Partner Muresan",
       "partner_skype_id": "partner_skype",
@@ -46,7 +47,7 @@ jQuery.ajax({
 ```
 
 <aside class="warning">
-  <strong>Not implemented</strong>
+  <strong>Implemented. Test not passing.</strong>
 </aside>
 
 Manage profile information for a single user.
@@ -88,5 +89,6 @@ The following information is included in the response and can be sent in the POS
 | Shipping cost              | `shipping_cost`        |
 | Skype id                   | `skype_id`             |
 | User id                    | `id`                   |
-| User name                  | `name`                 |
+| User first name            | `first_name`           |
+| User last name             | `last_name`            |
 | Zipcode                    | `zipcode`              |

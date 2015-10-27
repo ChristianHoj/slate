@@ -34,10 +34,6 @@ jQuery.ajax({
 }
 ```
 
-<aside class="warning">
-  <strong>Not implemented.</strong>
-</aside>
-
 Get the active Providi promotions.
 
 ### HTTP Request
@@ -134,10 +130,6 @@ jQuery.ajax({
   }
 }
 ```
-
-<aside class="warning">
-  <strong>Not implemented.</strong>
-</aside>
 
 Get the top ten places in the specified Providi promotion.
 
