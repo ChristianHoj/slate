@@ -14,28 +14,36 @@ jQuery.ajax({
 
 ```json
 {
-  "data": {
-    "type": "vs_members",
-    "id": 1,
-    "attributes": {
-      "members": [
-        {
-          "address": "Main Street 17",
-          "id": 123456,
-          "kalorie_login": "http://www.kalorieregnskab.dk/login.php?customerID=313214470001&vu=1444061739&hash=d966c33806b0f28a7d2bbbe",
-          "name": "Carina Holm",
-          "new_target_link": "http://www.voressundhed.dk/distributor/login.php?reference=31321447&hash=da305792bc0d113bd63e9&redirect=http%3A%2F%2Fwww.voressundhed.dk%2Fpersonificeret%2Fupdate.before_after_ny.php%3FcustRef%3D313214470001",
-          "old_target_link": "http://providi.eu/sc.support_links/editCust.php?id=55229&refer=313214470001",
-          "phone": "12345678",
-          "username": "abcd@email.com",
-          "vs_login_link": "http://www.voressundhed.dk/distributor/customer_login.php?customerID=313212270001&vu=1444051539&hash=d18a31acfb7e2a1c6410d30bd"
-        },
-        {
-          ...
-        }
-      ]
+  "data": [
+    {
+      "type": "vs_members",
+      "id": "123455",
+      "attributes": {
+        "address": "Main Street 17",
+        "kalorie_login": "http://www.kalorieregnskab.dk/login.php?customerID=313214470001&vu=1444061739&hash=d966c33806b0f28a7d2bbbe",
+        "name": "Carina Holm",
+        "new_target_link": "http://www.voressundhed.dk/distributor/login.php?reference=31321447&hash=da305792bc0d113bd63e9&redirect=http%3A%2F%2Fwww.voressundhed.dk%2Fpersonificeret%2Fupdate.before_after_ny.php%3FcustRef%3D313214470001",
+        "old_target_link": "http://providi.eu/sc.support_links/editCust.php?id=55229&refer=313214470001",
+        "phone": "12345678",
+        "username": "abcd@email.com",
+        "vs_login_link": "http://www.voressundhed.dk/distributor/customer_login.php?customerID=313212270001&vu=1444051539&hash=d18a31acfb7e2a1c6410d30bd"
+      }
+    },
+    {
+      "type": "vs_members",
+      "id": "3464564",
+      "attributes": {
+        "address": "Side Avenue 86",
+        "kalorie_login": "http://www.kalorieregnskab.dk/login.php?customerID=313214470001&vu=1444061739&hash=d966c33806b0f28a7d2bbbe",
+        "name": "Bo Bech",
+        "new_target_link": "http://www.voressundhed.dk/distributor/login.php?reference=31321447&hash=da305792bc0d113bd63e9&redirect=http%3A%2F%2Fwww.voressundhed.dk%2Fpersonificeret%2Fupdate.before_after_ny.php%3FcustRef%3D313214470001",
+        "old_target_link": "http://providi.eu/sc.support_links/editCust.php?id=55229&refer=313214470001",
+        "phone": "12345678",
+        "username": "bobech@example.com",
+        "vs_login_link": "http://www.voressundhed.dk/distributor/customer_login.php?customerID=313212270001&vu=1444051539&hash=d18a31acfb7e2a1c6410d30bd"
+      }
     }
-  }
+  ]
 }
 ```
 

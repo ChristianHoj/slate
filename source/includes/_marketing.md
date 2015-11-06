@@ -17,28 +17,28 @@ jQuery.ajax({
 
 ```json
 {
-  "data": {
-    "type": "leads",
-    "id": "1",
-    "attributes": {
-      "leads": [
-        {
-          "email": "candidate@email.com",
-          "id": "123456",
-          "lead_assigned_date": "2015-10-27T14:25:16+01:00",
-          "lead_type": "own",
-          "message": "Some explanation of why weight loss is desired.",
-          "name": "Candi Date",
-          "origin": "idealvaegt.dk",
-          "phone": "12345678",
-          "serious": "yes",
-          "status": "signed_up",
-          "zipcode": "9235"
-        },
-        ...
-      ]
+  "data": [
+    {
+      "type": "leads",
+      "id": "123456",
+      "attributes": {
+        "email": "candidate@email.com",
+        "lead_assigned_date": "2015-10-27T14:25:16+01:00",
+        "lead_type": "own",
+        "message": "Some explanation of why weight loss is desired.",
+        "name": "Candi Date",
+        "origin": "idealvaegt.dk",
+        "phone": "12345678",
+        "serious": "yes",
+        "status": "signed_up",
+        "weight_loss": "10-15",
+        "zipcode": "9235"
+      }
+    },
+    {
+      ...
     }
-  }
+  ]
 }
 ```
 
@@ -72,6 +72,7 @@ The following information is included in the response:
 | Lead Information     | Key in JSON response | Possible values
 | -------------------- | -------------------- | ---------------
 | Email                | `email`              |
+| Expected weight loss | `weight_loss`        |
 | ID                   | `id`                 |
 | Lead assigned date   | `lead_assigned_date` |
 | Lead type            | `lead_type`          | `bonus`, `own`
@@ -102,7 +103,7 @@ jQuery.post({
 {
   "data": {
     "type": "update_lead",
-    "id": 123456,
+    "id": "123456",
     "attributes": {
       "status": "ok"
     }

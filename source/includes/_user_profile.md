@@ -18,7 +18,7 @@ jQuery.ajax({
     "type": "user",
     "id": "SC000XXXXXXX",
     "attributes": {
-      "accountType": 0,
+      "accountType": "0",
       "address": "Main Street 14",
       "city": "Lovkotsk",
       "company_name": "My Health Company",
@@ -32,15 +32,15 @@ jQuery.ajax({
       "paypal_email": "mypaypal@email.com",
       "phone": "98765432",
       "quickpay_api_key": "klusfiuysbf74oha4bfauua42",
-      "quickpay_merchant_id": 765234776,
+      "quickpay_merchant_id": "765234776",
       "recruit_firstname": "Recruiter",
       "recruit_lastname": "Muresan",
-      "reference_code": 765384,
-      "shipping_cost": 80,
+      "reference_code": "765384",
+      "shipping_cost": "80",
       "skype_id": "seller_skype",
       "vs_link": "http://www.voressundhed.dk/?customerID=12345678",
       "vs_name": "My Vores Sundhed Name",
-      "zipcode": 9230
+      "zipcode": "9230"
     }
   }
 }
@@ -70,6 +70,7 @@ The following information is included in the response and can be sent in the POS
 
 | Information                | Key in JSON response   |
 | -------------------------- | ---------------------- |
+| Account type               | `accountType`          |
 | Address                    | `address`              |
 | City                       | `city`                 |
 | Company Name               | `company_name`         |
@@ -81,6 +82,7 @@ The following information is included in the response and can be sent in the POS
 | Partner email              | `partner_email`        |
 | Partner name               | `partner_name`         |
 | Partner Skype id           | `partner_skype_id`     |
+| Phone                      | `phone`                |
 | Paypal email               | `paypal_email`         |
 | Profile image URL          | `imageUrl`             |
 | Quickpay API key           | `quickpay_api_key`     |

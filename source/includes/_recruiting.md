@@ -17,29 +17,41 @@ jQuery.ajax({
 
 ```json
 {
-  "data": {
-    "type": "organization_leads",
-    "id": "1",
-    "attributes": {
-      "leads": [
-        {
-          "age": "24",
-          "email": "candidate@email.com",
-          "expected_earnings": "3-5000",
-          "id": "123456",
-          "lead_assigned_date": "2015-10-27T14:25:16+01:00",
-          "message": "To earn extra. Get more time with family.",
-          "name": "Candi Date",
-          "origin": "arbejd.dk",
-          "phone": "12345678",
-          "zipcode": "9235"
-        },
-        {
-          ...
-        }
-      ]
-    }
-  }
+  "data": [
+    {
+      "type": "organization_leads",
+      "id": "1",
+      "attributes": {
+        "age": "24",
+        "email": "candidate@email.com",
+        "expected_earnings": "3-5000",
+        "id": "123456",
+        "lead_assigned_date": "2015-10-27T14:25:16+01:00",
+        "message": "To earn extra. Get more time with family.",
+        "name": "Candi Date",
+        "origin": "arbejd.dk",
+        "phone": "12345678",
+        "zipcode": "9235"
+      }
+    },
+    {
+      "type": "organization_leads",
+      "id": "2",
+      "attributes": {
+        "age": "42",
+        "email": "number4@example.com",
+        "expected_earnings": "3-5000",
+        "id": "123456",
+        "lead_assigned_date": "2015-11-27T14:25:16+01:00",
+        "message": "To earn extra. Get more time with family.",
+        "name": "John Candi",
+        "origin": "arbejd.dk",
+        "phone": "12345678",
+        "zipcode": "9235"
+      }
+    },
+    { ... }
+  ]
 }
 ```
 

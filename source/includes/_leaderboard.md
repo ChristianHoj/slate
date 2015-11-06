@@ -17,7 +17,7 @@ jQuery.ajax({
 ```json
 {
   "data": {
-    "id": 0,
+    "id": "0",
     "type": "leaderboards",
     "attributes": {
       "thisWeek": {
@@ -27,57 +27,57 @@ jQuery.ajax({
         },
         "positions": [
           {
-            "position": 2,
+            "position": "2",
             "name": "tw Gabriel Muresan 2 222",
-            "newMembers": 2,
+            "newMembers": "2",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 1,
+            "position": "1",
             "name": "tw Gabriel Muresan 1",
-            "newMembers": 1,
+            "newMembers": "1",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 3,
+            "position": "3",
             "name": "tw Gabriel Muresan 3",
-            "newMembers": 3,
+            "newMembers": "3",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 5,
+            "position": "5",
             "name": "tw Gabriel Muresan 5",
-            "newMembers": 5,
+            "newMembers": "5",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 6,
+            "position": "6",
             "name": "tw Gabriel Muresan 6",
-            "newMembers": 6,
+            "newMembers": "6",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 7,
+            "position": "7",
             "name": "tw Gabriel Muresan 7",
-            "newMembers": 7,
+            "newMembers": "7",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 8,
+            "position": "8",
             "name": "tw Gabriel Muresan 8",
-            "newMembers": 8,
+            "newMembers": "8",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 9,
+            "position": "9",
             "name": "tw Gabriel Muresan 9",
-            "newMembers": 9,
+            "newMembers": "9",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 10,
+            "position": "10",
             "name": "tw Gabriel Muresan 10",
-            "newMembers": 10,
+            "newMembers": "10",
             "image": "http://example.com/default-avatar.jpg"
           }
         ]
@@ -89,63 +89,63 @@ jQuery.ajax({
         },
         "positions": [
           {
-            "position": 1,
+            "position": "1",
             "name": "pw Gabriel Muresan 1",
-            "newMembers": 1,
+            "newMembers": "1",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 2,
+            "position": "2",
             "name": "pw Gabriel Muresan 2",
-            "newMembers": 2,
+            "newMembers": "2",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 3,
+            "position": "3",
             "name": "pw Gabriel Muresan 3",
-            "newMembers": 3,
+            "newMembers": "3",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 4,
+            "position": "4",
             "name": "pw Gabriel Muresan 4",
-            "newMembers": 4,
+            "newMembers": "4",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 5,
+            "position": "5",
             "name": "pw Gabriel Muresan 5",
-            "newMembers": 5,
+            "newMembers": "5",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 6,
+            "position": "6",
             "name": "pw Gabriel Muresan 6",
-            "newMembers": 6,
+            "newMembers": "6",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 7,
+            "position": "7",
             "name": "pw Gabriel Muresan 7",
-            "newMembers": 7,
+            "newMembers": "7",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 8,
+            "position": "8",
             "name": "pw Gabriel Muresan 8",
-            "newMembers": 8,
+            "newMembers": "8",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 9,
+            "position": "9",
             "name": "pw Gabriel Muresan 9",
-            "newMembers": 9,
+            "newMembers": "9",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 10,
+            "position": "10",
             "name": "pw Gabriel Muresan 10",
-            "newMembers": 10,
+            "newMembers": "10",
             "image": "http://example.com/default-avatar.jpg"
           }
         ]
@@ -157,57 +157,57 @@ jQuery.ajax({
         },
         "positions": [
           {
-            "position": 1,
+            "position": "1",
             "name": "l3d Gabriel Muresan 1",
-            "newMembers": 1,
+            "newMembers": "1",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 3,
+            "position": "3",
             "name": "l3d Gabriel Muresan 3",
-            "newMembers": 3,
+            "newMembers": "3",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 4,
+            "position": "4",
             "name": "l3d Gabriel Muresan 4",
-            "newMembers": 4,
+            "newMembers": "4",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 5,
+            "position": "5",
             "name": "l3d Gabriel Muresan 5",
-            "newMembers": 5,
+            "newMembers": "5",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 6,
+            "position": "6",
             "name": "l3d Gabriel Muresan 6",
-            "newMembers": 6,
+            "newMembers": "6",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 7,
+            "position": "7",
             "name": "l3d Gabriel Muresan 7",
-            "newMembers": 7,
+            "newMembers": "7",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 8,
+            "position": "8",
             "name": "l3d Gabriel Muresan 8",
-            "newMembers": 8,
+            "newMembers": "8",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 9,
+            "position": "9",
             "name": "l3d Gabriel Muresan 9",
-            "newMembers": 9,
+            "newMembers": "9",
             "image": "http://example.com/default-avatar.jpg"
           },
           {
-            "position": 10,
+            "position": "10",
             "name": "l3d Gabriel Muresan 10",
-            "newMembers": 10,
+            "newMembers": "10",
             "image": "http://example.com/default-avatar.jpg"
           }
         ]
