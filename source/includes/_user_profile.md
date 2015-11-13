@@ -2,7 +2,7 @@
 
 ```js
 jQuery.ajax({
-  url: "https://providi.eu/API/profile.php",
+  url: "https://providi.eu/API/user_profile.php",
   data: {
       userId: 1,
       token: 'tokenAsdf'
@@ -46,14 +46,10 @@ jQuery.ajax({
 }
 ```
 
-<aside class="warning">
-  <strong>Implemented. Test not passing.</strong>
-</aside>
-
 Manage profile information for a single user.
 
 ### HTTP Request
-`GET https://providi.eu/API/profile.php`
+`GET https://providi.eu/API/user_profile.php`
 
 `POST https://providi.eu/API/create_profile.php`
 

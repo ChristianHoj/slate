@@ -20,12 +20,11 @@ jQuery.ajax({
   "data": [
     {
       "type": "organization_leads",
-      "id": "1",
+      "id": "123456",
       "attributes": {
         "age": "24",
         "email": "candidate@email.com",
         "expected_earnings": "3-5000",
-        "id": "123456",
         "lead_assigned_date": "2015-10-27T14:25:16+01:00",
         "message": "To earn extra. Get more time with family.",
         "name": "Candi Date",
@@ -36,12 +35,11 @@ jQuery.ajax({
     },
     {
       "type": "organization_leads",
-      "id": "2",
+      "id": "25433234",
       "attributes": {
         "age": "42",
         "email": "number4@example.com",
         "expected_earnings": "3-5000",
-        "id": "123456",
         "lead_assigned_date": "2015-11-27T14:25:16+01:00",
         "message": "To earn extra. Get more time with family.",
         "name": "John Candi",
@@ -142,10 +140,6 @@ jQuery.ajax({
   }
 }
 ```
-
-<aside class="warning">
-  <strong>Not implemented</strong>
-</aside>
 
 Get all organizational members that are attending upcoming meetings.
 

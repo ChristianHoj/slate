@@ -15,6 +15,9 @@ includes:
   - promotions
   - errors
   - changelog
+
+toc_footers:
+  - <a href='https://providi-api-test.herokuapp.com'>Run API test</a>
 ---
 
 # Introduction

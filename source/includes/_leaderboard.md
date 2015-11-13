@@ -217,10 +217,6 @@ jQuery.ajax({
 }
 ```
 
-<aside class="warning">
-  <strong>Not implemented.</strong>
-</aside>
-
 Get the top ten sellers in Providi for specified periods.
 
 ### HTTP Request

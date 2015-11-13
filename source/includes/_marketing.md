@@ -36,15 +36,25 @@ jQuery.ajax({
       }
     },
     {
-      ...
+      "type": "leads",
+      "id": "123456",
+      "attributes": {
+        "email": "candidate@email.com",
+        "lead_assigned_date": "2015-10-27T14:25:16+01:00",
+        "lead_type": "own",
+        "message": "Some explanation of why weight loss is desired.",
+        "name": "Candi Date",
+        "origin": "idealvaegt.dk",
+        "phone": "12345678",
+        "serious": "yes",
+        "status": "not_available",
+        "weight_loss": "10-15",
+        "zipcode": "9235"
+      }
     }
   ]
 }
 ```
-
-<aside class="warning">
-  <strong>Implemented. Test not passing.</strong>
-</aside>
 
 Get all leads the seller has acquired both by own marketing efforts and as bonus for specified period.
 
@@ -110,10 +120,6 @@ jQuery.post({
   }
 }
 ```
-
-<aside class="warning">
-  <strong>Not tested.</strong>
-</aside>
 
 Update status for specific lead.
 
