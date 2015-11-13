@@ -61,7 +61,10 @@ if (responseCode.code === 200) {
                 },
                 "status": {
                   "id": "status",
-                  "type": "string"
+                  "type": "string",
+                  "enum": [
+                    null, "", "signed_up", "not_available", "no_show", "no_money", "not_interested", "non_existing", "never_asked_for_contact", "no"
+                  ]
                 },
                 "weight_loss": {
                   "id": "weight_loss",
@@ -98,7 +101,7 @@ if (responseCode.code === 200) {
 
   tests["Valid response format"] = tv4.validate(response, schema);
   if (tv4.error) {
-    var message = tv4.error.message + (tv4.error.params? ". Parameter: " + tv4.error.params.key : "") + ". Path: " + tv4.error.dataPath;
+    var message = tv4.error.message + (tv4.error.params ? ". Parameter: " + tv4.error.params.key : "") + ". Path: " + tv4.error.dataPath;
     tests[message] = false;
   }
 

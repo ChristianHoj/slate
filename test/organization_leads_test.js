@@ -38,10 +38,6 @@ if (responseCode.code === 200) {
                   "id": "expected_earnings",
                   "type": "string"
                 },
-                "id": {
-                  "id": "id",
-                  "type": "string"
-                },
                 "lead_assigned_date": {
                   "id": "lead_assigned_date",
                   "type": "string"

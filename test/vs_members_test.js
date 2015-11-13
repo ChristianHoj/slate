@@ -31,8 +31,20 @@ if (responseCode.code === 200) {
                   "id": "address",
                   "type": "string"
                 },
+                "customerID": {
+                  "id": "customerID",
+                  "type": "string"
+                },
                 "kalorie_login": {
                   "id": "kalorie_login",
+                  "type": "string"
+                },
+                "latest_login": {
+                  "id": "latest_login",
+                  "type": "string"
+                },
+                "meal_price": {
+                  "id": "meal_price",
                   "type": "string"
                 },
                 "name": {
@@ -49,6 +61,18 @@ if (responseCode.code === 200) {
                 },
                 "phone": {
                   "id": "phone",
+                  "type": "string"
+                },
+                "points": {
+                  "id": "points",
+                  "type": "string"
+                },
+                "sign_up_date": {
+                  "id": "sign_up_date",
+                  "type": "string"
+                },
+                "unpaid_months": {
+                  "id": "unpaid_months",
                   "type": "string"
                 },
                 "username": {
@@ -86,7 +110,7 @@ if (responseCode.code === 200) {
 
   tests["Valid response format"] = tv4.validate(response, schema);
   if (tv4.error) {
-    var message = tv4.error.message + (tv4.error.params? ". Parameter: " + tv4.error.params.key : "") + ". Path: " + tv4.error.dataPath;
+    var message = tv4.error.message + (tv4.error.params ? ". Parameter: " + tv4.error.params.key : "") + ". Path: " + tv4.error.dataPath;
     tests[message] = false;
   }
 }
