@@ -120,7 +120,7 @@ $response = json_decode( $response['body'], true );
 }
 ```
 
-This POST request is sent when a person is signed up for a meeting/event. It provides information to link it to a meeting/event created by a previous call to [`create_event`](#create-event).
+This POST request is sent when one or more persons are signed up for a meeting/event. It provides information to link the attendee(s) to a meeting/event created by a previous call to [`create_event`](#create-event).
 
 ### HTTP Request
 `POST http://providi.eu/API/event_attend.php`

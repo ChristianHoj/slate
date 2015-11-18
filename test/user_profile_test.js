@@ -48,6 +48,10 @@ if (responseCode.code === 200) {
                 "id": "first_name",
                 "type": "string"
               },
+              "has_webpackage": {
+                "id": "has_webpackage",
+                "type": "string"
+              },
               "imageUrl": {
                 "id": "imageUrl",
                 "type": "string"
@@ -138,7 +142,7 @@ if (responseCode.code === 200) {
 
   tests["Valid response format"] = tv4.validate(response, schema);
   if (tv4.error) {
-    var message = tv4.error.message + (tv4.error.params? ". Parameter: " + tv4.error.params.key : "") + ". Path: " + tv4.error.dataPath;
+    var message = tv4.error.message + (tv4.error.params ? ". Parameter: " + tv4.error.params.key : "") + ". Path: " + tv4.error.dataPath;
     tests[message] = false;
   }
 }
