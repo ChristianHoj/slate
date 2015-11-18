@@ -3,7 +3,7 @@
 ## View Leads
 ```js
 jQuery.ajax({
-  url: "https://providi.eu/API/leads.php",
+  url: "http://providi.eu/API/leads.php",
   data: {
       userId: 1,
       token: 'tokenAsdf',
@@ -59,7 +59,7 @@ jQuery.ajax({
 Get all leads the seller has acquired both by own marketing efforts and as bonus for specified period.
 
 ### HTTP Request
-`GET https://providi.eu/API/leads.php`
+`GET http://providi.eu/API/leads.php`
 
 ### Request Parameters
 Parameter | Required? | Description
@@ -89,7 +89,7 @@ The following information is included in the response:
 | Message from lead    | `message`            |
 | Name                 | `name`               |
 | Phone                | `phone`              |
-| Status               | `status`             | "", `signed_up`, `not_available`, `no_show`, `no_money`, `not_interested`, `non_existing`, `never_asked_for_contact`, `no`
+| Status               | `status`             | `not_contacted`, `signed_up`, `not_available`, `no_show`, `no_money`, `not_interested`, `non_existing`, `never_asked_for_contact`, `no`
 | Weight loss interest | `serious`            | `yes`, `maybe`, `no`
 | Zipcode              | `zipcode`            |
 
@@ -97,7 +97,7 @@ The following information is included in the response:
 ## Update Lead
 ```js
 jQuery.post({
-  url: "https://providi.eu/API/update_lead.php",
+  url: "http://providi.eu/API/update_lead.php",
   data: {
       userId: 1,
       token: 'tokenAsdf',
@@ -124,7 +124,7 @@ jQuery.post({
 Update status for specific lead.
 
 ### HTTP Request
-`POST https://providi.eu/API/update_lead.php`
+`POST http://providi.eu/API/update_lead.php`
 
 ### Request Parameters
 Parameter | Required? | Description
@@ -132,4 +132,4 @@ Parameter | Required? | Description
 token     | Required  | The authentication token for the current user. Obtained from calling [`authenticate`](#authentication).
 userId    | Required  | The id of the current user. Must be paired with `token`.
 leadId    | Required  | The id of the lead to update.
-status    | Required  | Possible values: "", `signed_up`, `not_available`, `no_show`, `no_money`, `not_interested`, `non_existing`, `never_asked_for_contact`, `no`
+status    | Required  | Possible values: `not_contacted`, `signed_up`, `not_available`, `no_show`, `no_money`, `not_interested`, `non_existing`, `never_asked_for_contact`, `no`

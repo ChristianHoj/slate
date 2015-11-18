@@ -63,7 +63,7 @@ if (responseCode.code === 200) {
                   "id": "status",
                   "type": "string",
                   "enum": [
-                    null, "", "signed_up", "not_available", "no_show", "no_money", "not_interested", "non_existing", "never_asked_for_contact", "no"
+                    null, "not_contacted", "signed_up", "not_available", "no_show", "no_money", "not_interested", "non_existing", "never_asked_for_contact", "no"
                   ]
                 },
                 "weight_loss": {

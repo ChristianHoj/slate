@@ -4,7 +4,7 @@
 
 ```js
 jQuery.ajax({
-  url: "https://providi.eu/API/promotions.php",
+  url: "http://providi.eu/API/promotions.php",
   data: {
     country: 'dk',
     userId: 1,
@@ -39,7 +39,7 @@ jQuery.ajax({
 Get the active Providi promotions.
 
 ### HTTP Request
-`GET https://providi.eu/API/promotions.php`
+`GET http://providi.eu/API/promotions.php`
 
 ### Request Parameters
 Parameter | Required? | Description
@@ -61,7 +61,7 @@ The following information is included in the response and can be sent in the POS
 
 ```js
 jQuery.ajax({
-  url: "https://providi.eu/API/promotion_score.php",
+  url: "http://providi.eu/API/promotion_score.php",
   data: {
     promotion_id: 1,
     country: 'dk',
@@ -143,7 +143,7 @@ jQuery.ajax({
 Get the top ten places in the specified Providi promotion.
 
 ### HTTP Request
-`GET https://providi.eu/API/promotion_score.php`
+`GET http://providi.eu/API/promotion_score.php`
 
 ### Request Parameters
 Parameter | Required? | Description

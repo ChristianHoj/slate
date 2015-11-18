@@ -2,7 +2,7 @@
 ## Members
 ```js
 jQuery.ajax({
-  url: "https://providi.eu/API/vs_members.php",
+  url: "http://providi.eu/API/vs_members.php",
   data: {
       userId: 1,
       token: 'tokenAsdf'
@@ -62,7 +62,7 @@ jQuery.ajax({
 Get all members of Vores Sundhed that the seller has signed up.
 
 ### HTTP Request
-`GET https://providi.eu/API/vs_members.php`
+`GET http://providi.eu/API/vs_members.php`
 
 ### Request Parameters
 Parameter | Required? | Description

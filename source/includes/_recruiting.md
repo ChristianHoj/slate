@@ -3,7 +3,7 @@
 ## View Leads
 ```js
 jQuery.ajax({
-  url: "https://providi.eu/API/organization_leads.php",
+  url: "http://providi.eu/API/organization_leads.php",
   data: {
       userId: 1,
       token: 'tokenAsdf',
@@ -56,7 +56,7 @@ jQuery.ajax({
 Get all organizational leads (for recruitment) the seller has acquired for specified period.
 
 ### HTTP Request
-`GET https://providi.eu/API/organization_leads.php`
+`GET http://providi.eu/API/organization_leads.php`
 
 ### Request Parameters
 Parameter | Required? | Description
@@ -93,7 +93,7 @@ The following information is included in the response:
 ## Meeting attendees
 ```js
 jQuery.ajax({
-  url: "https://providi.eu/API/meeting_attendees.php",
+  url: "http://providi.eu/API/meeting_attendees.php",
   data: {
       userId: 1,
       token: 'tokenAsdf',
@@ -144,7 +144,7 @@ jQuery.ajax({
 Get all organizational members that are attending upcoming meetings.
 
 ### HTTP Request
-`GET https://providi.eu/API/meeting_attendees.php`
+`GET http://providi.eu/API/meeting_attendees.php`
 
 ### Request Parameters
 Parameter    | Required? | Description

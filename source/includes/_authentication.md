@@ -43,7 +43,7 @@ Authenticate a user against the Providi database. Upon successful authentication
 The `country` parameter is not required for this endpoint since users have globally unique ids.
 
 ### HTTP Request
-`POST https://providi.eu/API/authenticate.php`
+`POST http://providi.eu/API/authenticate.php`
 
 ### Request Parameters
 Parameter | Required? | Description

@@ -1,5 +1,14 @@
 # Changelog
 
+## 2015-11-18
+__Changed__
+
+- `leads`: Add `not_contacted` as possible status
+- `update_lead`: Add `not_contacted` as possible status
+- `user_profile`: Add property `has_webpackage` to response
+- Add `create_event` and `event_attend` to API
+
+
 ## 2015-11-13
 __Changed__
 
@@ -12,7 +21,7 @@ __Changed__
 __Changed__
 
 - `leads`: Change response data structure to proper {json:api}
-- `leads`: Reintroduce `weight_loss` properties to response
+- `leads`: Reintroduce `weight_loss` property to response
 - `organization_leads`: Change response data structure to proper {json:api}
 - `promotion_score`: Clarify how to use id property
 - `promotions`: Change response data structure to proper {json:api}

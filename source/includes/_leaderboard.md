@@ -2,7 +2,7 @@
 
 ```js
 jQuery.ajax({
-  url: "https://providi.eu/API/leaderboard.php",
+  url: "http://providi.eu/API/leaderboard.php",
   data: {
     period: ['this-week', 'previous-week', 'last-30-days'],
     country: 'dk',
@@ -220,7 +220,7 @@ jQuery.ajax({
 Get the top ten sellers in Providi for specified periods.
 
 ### HTTP Request
-`GET https://providi.eu/API/leaderboard.php`
+`GET http://providi.eu/API/leaderboard.php`
 
 ### Request Parameters
 Parameter | Required? | Description
