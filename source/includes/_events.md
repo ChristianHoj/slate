@@ -93,19 +93,22 @@ $response = wp_safe_remote_post( "providi.eu/API/create_event.php?token=" . $tok
 $response = json_decode( $response['body'], true );
 ```
 
-> Data sent in POST body of request for attending event
+> Data that can be sent in POST body of request for attending event
 
 ```json
 {
   "data": {
     "type": "event_attendee",
-    "id": "34",
     "attributes": {
+      "event_id": "34",
       "providi_event_id": "876234",
       "attendees": [
         {
           "type": "guest",
           "attributes": {
+            "address": "Svenstrup Skolevej 24",
+            "city": "Svenstrup",
+            "zipcode": "9320",
             "email": "oluf@sand.dk",
             "guest_contact_via": "marketing",
             "host": "Egon Olsen",
@@ -120,7 +123,26 @@ $response = json_decode( $response['body'], true );
 }
 ```
 
+> Response at successful addition of attendee(s) to an event
+
+```json
+{
+  "data": {
+    "type": "event_attend",
+    "id": "34",
+    "attributes": {
+      "providi_event_id": "876234",
+      "status": "ok"
+    }
+  }
+}
+```
+
 This POST request is sent when one or more persons are signed up for a meeting/event. It provides information to link the attendee(s) to a meeting/event created by a previous call to [`create_event`](#create-event).
+
+Attendee information is always passed in the `attendees` array even if only one attendee is to be added.
+
+The response for this POST request is simply a confirmation that the attendees were successfully added.
 
 ### HTTP Request
 `POST http://providi.eu/API/event_attend.php`
@@ -133,16 +155,20 @@ token     | Required  | The authentication token for the current user. Obtained 
 userId    | Required  | The id of the current user. Must be paired with `token`.
 
 ### POST Body
-The following information is sent in the POST body when creating an event:
+The following information can be included in the POST body when signing up users for an event:
 
 | Information              | Key in JSON request | Required? | Possible values
 | ------------------------ | ------------------- | --------- | ---------------
+| Attendee array           | `attendees[]`       | required  |
+| Attendee address         | `address`           | Optional  |
+| Attendee city            | `city`              | Optional  |
 | Attendee email           | `email`             | Required  |
 | Attendee invited by      | `invited_by`        | Optional  |
 | Attendee name            | `name`              | Required  |
 | Attendee phone           | `phone`             | Optional  |
 | Attendee type            | `type`              | Optional  | `guest`, `partner`, `executive`, `professional`
+| Attendee zipcode         | `zipcode`           | Optional  |
+| Event ID in "old" system | `event_id`          | Required  |
 | Event ID in new system   | `providi_event_id`  | Required  |
-| Event ID in "old" system | `id`                | Required  |
 | Guest greeted by         | `host`              | Optional  |
 | Guest known via          | `guest_contact_via` | Optional  | `marketing`, `acquaintance`

@@ -1,5 +1,10 @@
 # Changelog
 
+## 2015-12-04
+__Changed__
+
+- `update_user_profile`: Add example response and expand documentation
+
 ## 2015-11-18
 __Changed__
 
