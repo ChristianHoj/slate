@@ -14,6 +14,7 @@ includes:
   - recruiting
   - leaderboard
   - promotions
+  - orders
   - errors
   - changelog
 
@@ -35,3 +36,11 @@ Responses that include dates and/or times will always use the [ISO 8601](https:/
 | Date (September 28 2015) | 2015-09-28 |
 | Time in CEST time zone (UTC + 2 hours) | 13:49:16+02:00 |
 | Combined date and time | 2015-09-28T13:49:16+02:00 |
+
+## Currency
+Some requests will need to specify the currency of a specific sold or bought product or list of products and this will be using the [ISO 4217](https://en.wikipedia.org/wiki/ISO_4217) which is a combination of [ISO 3166-1 alpha-2](https://www.iso.org/obp/ui/#search) country code and the first letter of the currency itself.
+
+| Type | Example |
+| ---- | ------- |
+| Danish krone | DKK |
+| Japanese yen | JPY |
