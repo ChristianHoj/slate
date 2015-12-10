@@ -1,5 +1,11 @@
 # Changelog
 
+## 2015-12-10 (unreleased)
+__Changed__
+
+- `order_list`: Added documentation and example successful responses for `order_list` endpoint.
+- `order`: Added documentation and example successful responses for `order` endpoint.
+
 ## 2015-12-04
 __Changed__
 
