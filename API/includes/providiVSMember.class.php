@@ -19,7 +19,8 @@ class providiVSMember extends providiObject {
 		return md5( sprintf('%s%s', $sHash , $this->_distributor_hash));
 	}
 	function getKRMemberChecksum($sCustomerID , $sVU=null) {
-		return md5('kalorieregnskab' . $aGET['vu'] . $aGET['customerID'] . '.dk' )	;
+		//return md5('kalorieregnskab' . $aGET['vu'] . $aGET['customerID'] . '.dk' )	;
+		return md5('kalorieregnskab' . $sVU . $sCustomerID . '.dk' )	;
 	}
 
 
@@ -72,7 +73,8 @@ class providiVSMember extends providiObject {
 		if(stristr($this->customer_privilege , 'K') === false) {
 			return '';
 		}
-		$sAuthorizeURL = 'http://www.kalorieregnskab.dk/login.php';
+		//$sAuthorizeURL = 'http://www.kalorieregnskab.dk/login.php';
+		$sAuthorizeURL = 'http://regnskab.voressundhed.dk/login.php';
 		if(empty($sVU)) {
 			$sVU = time() + providiVSMember::_getDefaultTimeout();
 		}

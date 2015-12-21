@@ -42,6 +42,14 @@ try {
 
 	$bNeedSave = false;
 	if(isset($aGET['status'])) {
+		if($aGET['status'] == '""') {
+			$aGET['status'] = '';
+		}
+
+		if($aGET['status'] == '') {
+			$aGET['status'] = 'not_contacted';
+		}
+
 		$oLead->lead_evaluation = $aGET['status'];
 		$bNeedSave = true;
 	}
@@ -67,7 +75,9 @@ try {
 //	providiGetDistributorInfo
 	$oData = new stdClass();
 	$oData->type = 'update_lead';
-	$oData->id = $oAuth->providiID;
+// 2015-11-09
+//	$oData->id = $oAuth->providiID;
+	$oData->id = $oLead->id;
 
 	$oAtt = new stdClass();
 	$oAtt->status = 'ok';

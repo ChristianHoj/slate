@@ -41,8 +41,9 @@ try {
 	$oAtt->username  = $oAuthToken->username;
 	$sName = str_replace('  ', ' ', $oAuthToken->fullName);
 	$aNames = explode(' ', $sName);
-	
-	$oAtt->fist_name  = $aNames[0];
+	//
+	// // [=>CBH] fixed fis_name -> first_name on 2015-10-28
+	$oAtt->first_name  = $aNames[0];
 	$oAtt->last_name  = $aNames[ count($aNames) - 1];
 	$oAtt->email = $oAuthToken->email;
 	$oAtt->auth_token = $oAuthToken->authToken;

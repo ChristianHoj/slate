@@ -35,19 +35,34 @@ try {
 	$oRecruitLeadList = new providiRecruitLeadList();
 
 
-	$oAtt = new stdClass;
-	$oAtt->leads = $oRecruitLeadList->getList($aGET['userId'] , @$aGET['from_date'] , @$aGET['to_date'] , @$aGET['mode']);
+		
+	$aLeads = $oRecruitLeadList->getList($aGET['userId'] , @$aGET['from_date'] , @$aGET['to_date'] , @$aGET['mode']);
+
+	$aData = array();
+	for($i=0;$i<count($aLeads);$i++) {
+		$oLead = $aLeads[$i];
 
 
+		$oTemp = new stdClass();
+		$oTemp->type = 'organization_leads';
+		$oTemp->id = $oLead->id;
+		$oAtt = new stdClass();
+        $oAtt->age = $oLead->age;
+		$oAtt->email = $oLead->email;
+		$oAtt->expected_earnings = $oLead->expected_earnings;
+		$oAtt->lead_assigned_date = $oLead->lead_assigned_date;
+		$oAtt->message = $oLead->message;
+		$oAtt->name = $oLead->name;
+		$oAtt->origin = ''; // force blank
+		$oAtt->phone = $oLead->phone;
+		$oAtt->zipcode = $oLead->zipcode;
+		$oTemp->attributes = $oAtt;
+		
+		$aData[] = $oTemp;
+	}
 
-//	providiGetDistributorInfo
 
-	$oData = new stdClass();
-	$oData->type = 'organization_leads';
-	$oData->id = $oAuth->providiID;
-	$oData->attributes = $oAtt;
-	
-	$oResponse->data = $oData;
+	$oResponse->data = $aData;
 
 
 } catch (Exception $e) {

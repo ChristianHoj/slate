@@ -19,8 +19,9 @@ try {
 	}
 
 	if(empty($aGET['from_date']) && empty($aGET['to_date'])) {
-		$aGET['from_date'] = date('Y-m-d' , strtotime(' -7 DAY '));
-		$aGET['to_date'] = date('Y-m-d');
+		// [=>CBH]  changed default dates to full date formats
+		$aGET['from_date'] = date('Y-m-d 00:00:00' , strtotime(' -7 DAY '));
+		$aGET['to_date'] = date('Y-m-d 23:59:59');
 	} else {
 		if(!empty($aGET['from_date'])) {
 			$aGET['from_date'] = providiDateTime($aGET['from_date'] , 'SQL');
@@ -38,19 +39,48 @@ try {
 	$oLeadList = new providiLeadList($oDB);
 
 
-	$oAtt = new stdClass;
-	$oAtt->leads = $oLeadList->getList($aGET['userId'] , @$aGET['from_date'] , @$aGET['to_date'] , @$aGET['mode']);
+	$aData = array();
+	$aTemp = $oLeadList->getList($aGET['userId'] , @$aGET['from_date'] , @$aGET['to_date'] , @$aGET['mode']);
 
+	
+	for($i=0;$i<count($aTemp);$i++) {
+
+		$oL = $aTemp[$i];
+
+		$oTheLead = new stdClass();
+		$oTheLead->type = 'leads';
+		$oTheLead->id = $oL->id;
+
+		$oAtt = new stdClass();
+		$oAtt->email = $oL->email;
+		$oAtt->lead_assigned_date = $oL->lead_assigned_date;
+		$oAtt->lead_type = $oL->lead_type;
+		$oAtt->message = $oL->message;
+		$oAtt->name = $oL->name;
+		$oAtt->origin = '';
+		$oAtt->phone = $oL->phone;
+		$oAtt->serious = $oL->serious;
+		$oAtt->status = $oL->status;		
+
+		if($oAtt->status == '') {
+			$oAtt->status = 'not_contacted';
+		}
+
+		$oAtt->weight_loss = $oL->weight_loss;
+		$oAtt->zipcode = $oL->zipcode;
+		$oTheLead->attributes = $oAtt;
+
+		$aData[] = $oTheLead;
+	}
 
 
 //	providiGetDistributorInfo
 
-	$oData = new stdClass();
-	$oData->type = 'leads';
+/*	$oData->type = 'leads';
 	$oData->id = $oAuth->providiID;
 	$oData->attributes = $oAtt;
-	
-	$oResponse->data = $oData;
+*/	
+	$oResponse->data = $aData;
 
 
 } catch (Exception $e) {
@@ -64,6 +94,32 @@ if(isset($_GET['debug'])) {
 
 providiJSONResponse($oResponse);
 /*
+{
+  "data": [
+    {
+      "type": "leads",
+      "id": "123456",
+      "attributes": {
+        "email": "candidate@email.com",
+        "lead_assigned_date": "2015-10-27T14:25:16+01:00",
+        "lead_type": "own",
+        "message": "Some explanation of why weight loss is desired.",
+        "name": "Candi Date",
+        "origin": "idealvaegt.dk",
+        "phone": "12345678",
+        "serious": "yes",
+        "status": "signed_up",
+        "weight_loss": "10-15",
+        "zipcode": "9235"
+      }
+    },
+    {
+      ...
+    }
+  ]
+}
+
+
 {
   "data": {
     "type": "leads",

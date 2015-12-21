@@ -52,7 +52,7 @@ function providiDateTime($sDateText,$sMode='text' , $sTZ=null) {
 	// convert to Denmark TZ +1.0
 
 	if(is_null($sTZ)) {
-		$sTZ = 'Europe/Copenhagen';		 	
+		$sTZ = 'Europe/Copenhagen';
 	}
 	$oTZ = new DateTimeZone($sTZ);
 	$oDate->setTimeZone($oTZ);
@@ -77,7 +77,7 @@ function providiGetCurretUserrTimezone() {
 	if(!empty($oAuth)) {
 		$sTZ = $oAuth->regionTimezoneCode;
 	}
-	
+
 	if(empty($sTZ)) {
 		$sTZ = 'Europe/Copenhagen';
 	}
@@ -92,7 +92,7 @@ function providiMail($sTo, $sSubject , $sContent , $sHeader=null) {
 		$sFileName = sprintf('%s_%s.html' , date('YmdHis') , $sRand);
 		file_put_contents("c:\\_email\\" . $sFileName , $sTo . '<br /><br />' . $sSubject . '<br /><br />'  . $sContent . '<br /><br />' . $sHeader);
 		return true;
-	} 
+	}
 	if(is_null($sHeader)) {
 		$sHaeder = 'MIME-Version: 1.0' . "\n";
 		$sHaeder .= 'Content-type: text/html; charset=UTF-8' . "\n";
@@ -121,7 +121,7 @@ function providiNotifyDie( $sMessage , $sSubject  , $sFile ,$eException=null) {
 	} else {
 		$sSubject = sprintf('[notify] %s on %s ' , $sSubject , date('Y-m-d H:i:s'));
 	}
-	
+
 	ob_start();
 	print '<PRE>';
 	echo $sMessage . '<br /><br />';
@@ -134,7 +134,7 @@ function providiNotifyDie( $sMessage , $sSubject  , $sFile ,$eException=null) {
 	if(!empty($sException)) {
 		$sDisplayText  = sprintf('Fatal Error [%s] : %s ', $eException->getCode()  , $eException->getMessage());
 	}
-	
+
 	providiDie($sDisplayText);
 }
 
@@ -148,7 +148,7 @@ function providiJSONErrorHandler(&$oResponse , $e)  {
 	if(isset($_REQUEST['debug'])) {
 		print '<PRE>';
 		var_dump($oResponse);
-		var_dump($e);	
+		var_dump($e);
 	}
 	if(is_a($e,'providiUnauthorizeException')){
 		$oException->status = sprintf('401 Unauthorized');
@@ -157,14 +157,15 @@ function providiJSONErrorHandler(&$oResponse , $e)  {
 		$oException->status = sprintf('400 Bad Request');
 	}
 
-	
-	$oResponse->errors = array($oException);	
+
+	$oResponse->errors = array($oException);
 	return $oResponse;
 
 }
 function providiJSONResponse($oResponse) {
 	header("Content-Type: Application/JSON;charset=utf-8");
-	die(json_encode(js_utf8_encode($oResponse)));
+	header("Access-Control-Allow-Origin: *");
+	echo json_encode(js_utf8_encode($oResponse));
 }
 function providiGetDistributorImageURL($sText) {
 		global $aProvidiConfigs;
@@ -197,11 +198,11 @@ function providiToDanishDate($sTheDate,$sSepBy=null,$bTrimLeadingZero=false) {
 	$sTheDate = str_replace( array(' ' , '-' , '/', ':') , array('','','','') , $sTheDate);
 	$sMonth = substr($sTheDate, 4 , 2);
 	if(substr($sMonth, 0,1) == '0' && $bTrimLeadingZero) {
-		$sMonth = substr($sMonth , 1 , 1); 
+		$sMonth = substr($sMonth , 1 , 1);
 	}
 	$sDay = substr($sTheDate, 6 , 2);
 	if(substr($sDay, 0,1) == '0' && $bTrimLeadingZero) {
-		$sDay = substr($sDay , 1 , 1); 
+		$sDay = substr($sDay , 1 , 1);
 	}
 
 	return sprintf('%s%s%s%s%s' , $sDay , $sSepBy, $sMonth , $sSepBy, substr($sTheDate, 0 , 4));
@@ -214,11 +215,11 @@ function providiToSystemDate($sTheDate,$sSepBy=null,$bTrimLeadingZero=false) {
 	$sTheDate = str_replace( array(' ' , '-' , '/', ':') , array('','','','') , $sTheDate);
 	$sMonth = substr($sTheDate, 2 , 2);
 	if(substr($sMonth, 0,1) == '0' && $bTrimLeadingZero) {
-		$sMonth = substr($sMonth , 1 , 1); 
+		$sMonth = substr($sMonth , 1 , 1);
 	}
 	$sDay = substr($sTheDate, 0 , 2);
 	if(substr($sDay, 0,1) == '0' && $bTrimLeadingZero) {
-		$sDay = substr($sDay , 1 , 1); 
+		$sDay = substr($sDay , 1 , 1);
 	}
 
 	return sprintf('%s%s%s%s%s' , substr($sTheDate, 4 , 4) , $sSepBy, $sMonth  , $sSepBy , $sDay );
@@ -226,7 +227,7 @@ function providiToSystemDate($sTheDate,$sSepBy=null,$bTrimLeadingZero=false) {
 
 function getProvidiAuthorizeHash($sMedlid , $nVU=null){
 	if(empty($nVU)) {
-		$nVU = time() + (60 * 60 * 3); 
+		$nVU = time() + (60 * 60 * 3);
 	}
 	return md5(sprintf('%s Avengers @ssemble! %s 2015' ,  $sMedlid , $sVU));
 }

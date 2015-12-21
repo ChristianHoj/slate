@@ -33,6 +33,9 @@
         </div>
       <div id="toc">
       </div>
+        <ul class="toc-footer">
+            <li><a href='https://providi-api-test.herokuapp.com'>Run API test</a></li>
+        </ul>
     </div>
     <div class="page-wrapper">
       <div class="dark-box"></div>
@@ -49,7 +52,7 @@
 
 <table><thead>
 <tr>
-<th> Type</th>
+<th>Type</th>
 <th>Example</th>
 </tr>
 </thead><tbody>
@@ -66,17 +69,6 @@
 <td>2015-09-28T13:49:16+02:00</td>
 </tr>
 </tbody></table>
-
-<h2 id="questions">Questions</h2>
-
-<p>To make the transition gradual we would like to know how to access the following links since they rely on a user being logged in.</p>
-
-<ul>
-<li>Mail center (http://www.sc-support.dk/sc.support_mailcenter/distributor_mailcenter/index.php)</li>
-<li>Orders (http://www.sc-support.dk/sc.support_ny_ordrer/order.list.php)</li>
-<li>New targets (http://www.voressundhed.dk/personificeret/update.before_after_ny.php)</li>
-<li>Old targets  (http://providi.eu/sc.support_links/editCust.php)</li>
-</ul>
 
           <h1 id="authentication">Authentication</h1>
 <pre class="highlight php"><code>// Example of usage in WordPress
@@ -116,17 +108,13 @@
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<aside class="">
-  <strong>Implemented September 23 2015</strong>
-</aside>
-
 <p>Authenticate a user against the Providi database. Upon successful authentication the response includes a <code class="prettyprint">auth_token</code> that must be used in all subsequent calls to the API.</p>
 
 <p>The <code class="prettyprint">country</code> parameter is not required for this endpoint since users have globally unique ids.</p>
 
 <h3 id="http-request">HTTP Request</h3>
 
-<p><code class="prettyprint">POST https://providi.eu/API/authenticate.php</code></p>
+<p><code class="prettyprint">POST http://providi.eu/API/authenticate.php</code></p>
 
 <h3 id="request-parameters">Request Parameters</h3>
 
@@ -145,7 +133,7 @@
 <tr>
 <td>pass</td>
 <td>Required</td>
-<td> The password to use for authentication</td>
+<td>The password to use for authentication</td>
 </tr>
 </tbody></table>
 
@@ -160,7 +148,7 @@
 </tr>
 </thead><tbody>
 <tr>
-<td> Authentication token</td>
+<td>Authentication token</td>
 <td><code class="prettyprint">auth_token</code></td>
 </tr>
 <tr>
@@ -187,7 +175,7 @@
 
           <h1 id="user-profile">User Profile</h1>
 <pre class="highlight javascript"><code><span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
-  <span class="na">url</span><span class="p">:</span> <span class="s2">"https://providi.eu/API/profile.php"</span><span class="p">,</span>
+  <span class="na">url</span><span class="p">:</span> <span class="s2">"http://providi.eu/API/user_profile.php"</span><span class="p">,</span>
   <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
       <span class="na">userId</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
       <span class="na">token</span><span class="p">:</span> <span class="s1">'tokenAsdf'</span>
@@ -203,46 +191,44 @@
     </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"user"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"SC000XXXXXXX"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"accountType"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"accountType"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Main Street 14"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"city"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Lovkotsk"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"company_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My Health Company"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"country"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Slovenia"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"first_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Gabriel"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"has_webpackage"</span><span class="p">:</span><span class="w"> </span><span class="s2">"true"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"imageUrl"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Gabriel Muresan"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"last_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Muresan"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"partner_email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"partner@email.com"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"partner_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Partner Muresan"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"partner_skype_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"partner_skype"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"paypal_email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"mypaypal@email.com"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"98765432"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"quickpay_api_key"</span><span class="p">:</span><span class="w"> </span><span class="s2">"klusfiuysbf74oha4bfauua42"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"quickpay_merchant_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">765234776</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"quickpay_merchant_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"765234776"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"recruit_firstname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Recruiter"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"recruit_lastname"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Muresan"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"reference_code"</span><span class="p">:</span><span class="w"> </span><span class="mi">765384</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"shipping_cost"</span><span class="p">:</span><span class="w"> </span><span class="mi">80</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"reference_code"</span><span class="p">:</span><span class="w"> </span><span class="s2">"765384"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"shipping_cost"</span><span class="p">:</span><span class="w"> </span><span class="s2">"80"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"skype_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"seller_skype"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"vs_link"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://www.voressundhed.dk/?customerID=12345678"</span><span class="p">,</span><span class="w">
       </span><span class="nt">"vs_name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"My Vores Sundhed Name"</span><span class="p">,</span><span class="w">
-      </span><span class="nt">"zipcode"</span><span class="p">:</span><span class="w"> </span><span class="mi">9230</span><span class="w">
+      </span><span class="nt">"zipcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9230"</span><span class="w">
     </span><span class="p">}</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<aside class="warning">
-  <strong>Not implemented</strong>
-</aside>
-
 <p>Manage profile information for a single user.</p>
 
 <h3 id="http-request">HTTP Request</h3>
 
-<p><code class="prettyprint">GET https://providi.eu/API/profile.php</code></p>
+<p><code class="prettyprint">GET http://providi.eu/API/user_profile.php</code></p>
 
-<p><code class="prettyprint">POST https://providi.eu/API/create_profile.php</code></p>
+<p><code class="prettyprint">POST http://providi.eu/API/create_user_profile.php</code></p>
 
-<p><code class="prettyprint">POST https://providi.eu/API/update_profile.php</code></p>
+<p><code class="prettyprint">POST http://providi.eu/API/update_user_profile.php</code></p>
 
 <h3 id="request-parameters">Request Parameters</h3>
 
@@ -267,14 +253,18 @@
 
 <h3 id="response-fields-and-post-body">Response fields and POST Body</h3>
 
-<p>The following information is included in the response and can be sent in the POST body when creating or updating a user:</p>
+<p>The following information is included in the response and can be sent in the POST body when creating or updating a user. Any field under <code class="prettyprint">attributes</code> is optional for <code class="prettyprint">update_user_profile</code> and <code class="prettyprint">create_user_profile</code> allowing for partial information updates.</p>
 
 <table><thead>
 <tr>
 <th>Information</th>
-<th>Key in JSON response</th>
+<th>Key in JSON request or response</th>
 </tr>
 </thead><tbody>
+<tr>
+<td>Account type</td>
+<td><code class="prettyprint">accountType</code></td>
+</tr>
 <tr>
 <td>Address</td>
 <td><code class="prettyprint">address</code></td>
@@ -294,6 +284,10 @@
 <tr>
 <td>First name for recruitment</td>
 <td><code class="prettyprint">recruit_firstname</code></td>
+</tr>
+<tr>
+<td>Has bought web package</td>
+<td><code class="prettyprint">has_webpackage</code></td>
 </tr>
 <tr>
 <td>Last name for recruitment</td>
@@ -324,6 +318,10 @@
 <td><code class="prettyprint">paypal_email</code></td>
 </tr>
 <tr>
+<td>Phone</td>
+<td><code class="prettyprint">phone</code></td>
+</tr>
+<tr>
 <td>Profile image URL</td>
 <td><code class="prettyprint">imageUrl</code></td>
 </tr>
@@ -348,12 +346,16 @@
 <td><code class="prettyprint">skype_id</code></td>
 </tr>
 <tr>
+<td>User first name</td>
+<td><code class="prettyprint">first_name</code></td>
+</tr>
+<tr>
 <td>User id</td>
 <td><code class="prettyprint">id</code></td>
 </tr>
 <tr>
-<td>User name</td>
-<td><code class="prettyprint">name</code></td>
+<td>User last name</td>
+<td><code class="prettyprint">last_name</code></td>
 </tr>
 <tr>
 <td>Zipcode</td>
@@ -361,11 +363,309 @@
 </tr>
 </tbody></table>
 
+          <h1 id="events">Events</h1>
+
+<h2 id="create-event">Create Event</h2>
+<pre class="highlight php"><code>// Example of usage in WordPress
+<span class="cp">&lt;?php</span>
+<span class="nv">$userId</span> <span class="o">=</span> <span class="mi">1234656</span><span class="p">;</span>
+<span class="nv">$token</span> <span class="o">=</span> <span class="s2">"19c50e5260b97952970956"</span><span class="p">;</span>
+<span class="nv">$body_json</span> <span class="o">=</span> <span class="s1">'
+  "data": {
+    "type": "event",
+    "attributes": {
+      "city": "København",
+      "date": "2015-10-27T14:25:16+01:00",
+      "providi_event_id": "876234"
+    }
+  }
+}'</span><span class="p">;</span>
+<span class="nv">$response</span> <span class="o">=</span> <span class="nx">wp_safe_remote_post</span><span class="p">(</span> <span class="s2">"providi.eu/API/create_event.php?token="</span> <span class="o">.</span> <span class="nv">$token</span> <span class="o">.</span> <span class="s2">"&amp;userId="</span> <span class="o">.</span> <span class="nv">$userId</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span> <span class="s1">'body'</span> <span class="o">=&gt;</span> <span class="nx">body_json</span> <span class="p">)</span> <span class="p">);</span>
+<span class="nv">$response</span> <span class="o">=</span> <span class="nb">json_decode</span><span class="p">(</span> <span class="nv">$response</span><span class="p">[</span><span class="s1">'body'</span><span class="p">],</span> <span class="kc">true</span> <span class="p">);</span>
+</code></pre>
+
+<blockquote>
+<p>Data sent in POST body of request for event creation</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"event"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"city"</span><span class="p">:</span><span class="w"> </span><span class="s2">"København"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-10-27T14:25:16+01:00"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"providi_event_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"876234"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"event_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"startup"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Response at successful creation of event</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"event"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"34"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"providi_event_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"876234"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>This POST request is sent when a new meeting/event is created in the Wordpress based system. It shall be used to establish a link between the meetings in Wordpress and the attendee list in the backend database.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">POST http://providi.eu/API/create_event.php</code></p>
+
+<h3 id="request-parameters">Request Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Required?</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>token</td>
+<td>Required</td>
+<td>The authentication token for the current user. Obtained from calling <a href="#authentication"><code class="prettyprint">authenticate</code></a>.</td>
+</tr>
+<tr>
+<td>userId</td>
+<td>Required</td>
+<td>The id of the current user. Must be paired with <code class="prettyprint">token</code>.</td>
+</tr>
+</tbody></table>
+
+<h3 id="post-body">POST Body</h3>
+
+<p>The following information is sent in the POST body when creating an event:</p>
+
+<table><thead>
+<tr>
+<th>Information</th>
+<th>Key in JSON request</th>
+<th>Possible values</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>City for event</td>
+<td><code class="prettyprint">city</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Event date</td>
+<td><code class="prettyprint">date</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Event ID in new system</td>
+<td><code class="prettyprint">providi_event_id</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Event type</td>
+<td><code class="prettyprint">event_type</code></td>
+<td><code class="prettyprint">intro</code>, <code class="prettyprint">startup</code>, <code class="prettyprint">sales_training</code>, <code class="prettyprint">seminar</code>, <code class="prettyprint">vs_club_evening</code></td>
+</tr>
+</tbody></table>
+
+<h2 id="add-user-to-event">Add User To Event</h2>
+<pre class="highlight php"><code>// Example of usage in WordPress
+<span class="cp">&lt;?php</span>
+<span class="nv">$userId</span> <span class="o">=</span> <span class="mi">1234656</span><span class="p">;</span>
+<span class="nv">$token</span> <span class="o">=</span> <span class="s2">"19c50e5260b97952970956"</span><span class="p">;</span>
+<span class="nv">$body_json</span> <span class="o">=</span> <span class="s1">'
+  "data": {
+    "type": "event",
+    "attributes": {
+      "city": "København",
+      "date": "2015-10-27T14:25:16+01:00",
+      "providi_event_id": "876234"
+    }
+  }
+}'</span><span class="p">;</span>
+<span class="nv">$response</span> <span class="o">=</span> <span class="nx">wp_safe_remote_post</span><span class="p">(</span> <span class="s2">"providi.eu/API/create_event.php?token="</span> <span class="o">.</span> <span class="nv">$token</span> <span class="o">.</span> <span class="s2">"&amp;userId="</span> <span class="o">.</span> <span class="nv">$userId</span><span class="p">,</span> <span class="k">array</span><span class="p">(</span> <span class="s1">'body'</span> <span class="o">=&gt;</span> <span class="nx">body_json</span> <span class="p">)</span> <span class="p">);</span>
+<span class="nv">$response</span> <span class="o">=</span> <span class="nb">json_decode</span><span class="p">(</span> <span class="nv">$response</span><span class="p">[</span><span class="s1">'body'</span><span class="p">],</span> <span class="kc">true</span> <span class="p">);</span>
+</code></pre>
+
+<blockquote>
+<p>Data that can be sent in POST body of request for attending event</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"event_attendee"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"event_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"34"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"providi_event_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"876234"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"attendees"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+        </span><span class="p">{</span><span class="w">
+          </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"guest"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+            </span><span class="nt">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Svenstrup Skolevej 24"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"city"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Svenstrup"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"zipcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9320"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"oluf@sand.dk"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"guest_contact_via"</span><span class="p">:</span><span class="w"> </span><span class="s2">"marketing"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"host"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Egon Olsen"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"invited_by"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Christian Høj"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Oluf Sand"</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"12345678"</span><span class="w">
+          </span><span class="p">}</span><span class="w">
+        </span><span class="p">}</span><span class="w">
+      </span><span class="p">]</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<blockquote>
+<p>Response at successful addition of attendee(s) to an event</p>
+</blockquote>
+<pre class="highlight json"><code><span class="p">{</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"event_attend"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"34"</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"providi_event_id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"876234"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="w">
+    </span><span class="p">}</span><span class="w">
+  </span><span class="p">}</span><span class="w">
+</span><span class="p">}</span><span class="w">
+</span></code></pre>
+
+<p>This POST request is sent when one or more persons are signed up for a meeting/event. It provides information to link the attendee(s) to a meeting/event created by a previous call to <a href="#create-event"><code class="prettyprint">create_event</code></a>.</p>
+
+<p>Attendee information is always passed in the <code class="prettyprint">attendees</code> array even if only one attendee is to be added.</p>
+
+<p>The response for this POST request is simply a confirmation that the attendees were successfully added.</p>
+
+<h3 id="http-request">HTTP Request</h3>
+
+<p><code class="prettyprint">POST http://providi.eu/API/event_attend.php</code></p>
+
+<h3 id="request-parameters">Request Parameters</h3>
+
+<table><thead>
+<tr>
+<th>Parameter</th>
+<th>Required?</th>
+<th>Description</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>token</td>
+<td>Required</td>
+<td>The authentication token for the current user. Obtained from calling <a href="#authentication"><code class="prettyprint">authenticate</code></a>.</td>
+</tr>
+<tr>
+<td>userId</td>
+<td>Required</td>
+<td>The id of the current user. Must be paired with <code class="prettyprint">token</code>.</td>
+</tr>
+</tbody></table>
+
+<h3 id="post-body">POST Body</h3>
+
+<p>The following information can be included in the POST body when signing up users for an event:</p>
+
+<table><thead>
+<tr>
+<th>Information</th>
+<th>Key in JSON request</th>
+<th>Required?</th>
+<th>Possible values</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Attendee array</td>
+<td><code class="prettyprint">attendees[]</code></td>
+<td>required</td>
+<td></td>
+</tr>
+<tr>
+<td>Attendee address</td>
+<td><code class="prettyprint">address</code></td>
+<td>Optional</td>
+<td></td>
+</tr>
+<tr>
+<td>Attendee city</td>
+<td><code class="prettyprint">city</code></td>
+<td>Optional</td>
+<td></td>
+</tr>
+<tr>
+<td>Attendee email</td>
+<td><code class="prettyprint">email</code></td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td>Attendee invited by</td>
+<td><code class="prettyprint">invited_by</code></td>
+<td>Optional</td>
+<td></td>
+</tr>
+<tr>
+<td>Attendee name</td>
+<td><code class="prettyprint">name</code></td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td>Attendee phone</td>
+<td><code class="prettyprint">phone</code></td>
+<td>Optional</td>
+<td></td>
+</tr>
+<tr>
+<td>Attendee type</td>
+<td><code class="prettyprint">type</code></td>
+<td>Optional</td>
+<td><code class="prettyprint">guest</code>, <code class="prettyprint">partner</code>, <code class="prettyprint">executive</code>, <code class="prettyprint">professional</code></td>
+</tr>
+<tr>
+<td>Attendee zipcode</td>
+<td><code class="prettyprint">zipcode</code></td>
+<td>Optional</td>
+<td></td>
+</tr>
+<tr>
+<td>Event ID in &ldquo;old&rdquo; system</td>
+<td><code class="prettyprint">event_id</code></td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td>Event ID in new system</td>
+<td><code class="prettyprint">providi_event_id</code></td>
+<td>Required</td>
+<td></td>
+</tr>
+<tr>
+<td>Guest greeted by</td>
+<td><code class="prettyprint">host</code></td>
+<td>Optional</td>
+<td></td>
+</tr>
+<tr>
+<td>Guest known via</td>
+<td><code class="prettyprint">guest_contact_via</code></td>
+<td>Optional</td>
+<td><code class="prettyprint">marketing</code>, <code class="prettyprint">acquaintance</code></td>
+</tr>
+</tbody></table>
+
           <h1 id="marketing">Marketing</h1>
 
 <h2 id="view-leads">View Leads</h2>
 <pre class="highlight javascript"><code><span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
-  <span class="na">url</span><span class="p">:</span> <span class="s2">"https://providi.eu/API/leads.php"</span><span class="p">,</span>
+  <span class="na">url</span><span class="p">:</span> <span class="s2">"http://providi.eu/API/leads.php"</span><span class="p">,</span>
   <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
       <span class="na">userId</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
       <span class="na">token</span><span class="p">:</span> <span class="s1">'tokenAsdf'</span><span class="p">,</span>
@@ -379,54 +679,50 @@
 <p>Successful response</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"leads"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"leads"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-        </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"candidate@email.com"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">123456</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lead_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"own"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Some explanation of why weight loss is desired."</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Candi Date"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"order"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"origin"</span><span class="p">:</span><span class="w"> </span><span class="s2">"idealvaegt.dk"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"12345678"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"serious"</span><span class="p">:</span><span class="w"> </span><span class="s2">"yes"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"signed_up"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"weight_loss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10-15"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"zipcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9235"</span><span class="w">
-        </span><span class="p">},</span><span class="w">
-        </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"candidate2@email.com"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">7654432</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"lead_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bonus"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Text from questionnaire"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Will Buyer"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"order"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"origin"</span><span class="p">:</span><span class="w"> </span><span class="s2">"idealvaegt.dk"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"87654321"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"serious"</span><span class="p">:</span><span class="w"> </span><span class="s2">"maybe"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">""</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"weight_loss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2-5"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"zipcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"54329"</span><span class="w">
-        </span><span class="p">}</span><span class="w">
-      </span><span class="p">]</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"leads"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123456"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"candidate@email.com"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"lead_assigned_date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-10-27T14:25:16+01:00"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"lead_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"own"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Some explanation of why weight loss is desired."</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Candi Date"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"origin"</span><span class="p">:</span><span class="w"> </span><span class="s2">"idealvaegt.dk"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"12345678"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"serious"</span><span class="p">:</span><span class="w"> </span><span class="s2">"yes"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"signed_up"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"weight_loss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10-15"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"zipcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9235"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"leads"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123456"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"candidate@email.com"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"lead_assigned_date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-10-27T14:25:16+01:00"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"lead_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"own"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Some explanation of why weight loss is desired."</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Candi Date"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"origin"</span><span class="p">:</span><span class="w"> </span><span class="s2">"idealvaegt.dk"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"12345678"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"serious"</span><span class="p">:</span><span class="w"> </span><span class="s2">"yes"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"not_available"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"weight_loss"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10-15"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"zipcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9235"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
     </span><span class="p">}</span><span class="w">
-  </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
-
-<aside class="warning">
-  <strong>Not implemented</strong>
-</aside>
 
 <p>Get all leads the seller has acquired both by own marketing efforts and as bonus for specified period.</p>
 
 <h3 id="http-request">HTTP Request</h3>
 
-<p><code class="prettyprint">GET https://providi.eu/API/leads.php</code></p>
+<p><code class="prettyprint">GET http://providi.eu/API/leads.php</code></p>
 
 <h3 id="request-parameters">Request Parameters</h3>
 
@@ -500,6 +796,11 @@
 <td></td>
 </tr>
 <tr>
+<td>Lead assigned date</td>
+<td><code class="prettyprint">lead_assigned_date</code></td>
+<td></td>
+</tr>
+<tr>
 <td>Lead type</td>
 <td><code class="prettyprint">lead_type</code></td>
 <td><code class="prettyprint">bonus</code>, <code class="prettyprint">own</code></td>
@@ -520,14 +821,9 @@
 <td></td>
 </tr>
 <tr>
-<td>Sort order</td>
-<td><code class="prettyprint">order</code></td>
-<td></td>
-</tr>
-<tr>
 <td>Status</td>
 <td><code class="prettyprint">status</code></td>
-<td>&ldquo;&rdquo;, <code class="prettyprint">signed_up</code>, <code class="prettyprint">not_available</code>, <code class="prettyprint">no_show</code>, <code class="prettyprint">no_money</code>, <code class="prettyprint">not_interested</code>, <code class="prettyprint">non_existing</code>, <code class="prettyprint">never_asked_for_contact</code>, <code class="prettyprint">no</code></td>
+<td><code class="prettyprint">not_contacted</code>, <code class="prettyprint">signed_up</code>, <code class="prettyprint">not_available</code>, <code class="prettyprint">no_show</code>, <code class="prettyprint">no_money</code>, <code class="prettyprint">not_interested</code>, <code class="prettyprint">non_existing</code>, <code class="prettyprint">never_asked_for_contact</code>, <code class="prettyprint">no</code></td>
 </tr>
 <tr>
 <td>Weight loss interest</td>
@@ -543,7 +839,7 @@
 
 <h2 id="update-lead">Update Lead</h2>
 <pre class="highlight javascript"><code><span class="nx">jQuery</span><span class="p">.</span><span class="nx">post</span><span class="p">({</span>
-  <span class="na">url</span><span class="p">:</span> <span class="s2">"https://providi.eu/API/update_lead.php"</span><span class="p">,</span>
+  <span class="na">url</span><span class="p">:</span> <span class="s2">"http://providi.eu/API/update_lead.php"</span><span class="p">,</span>
   <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
       <span class="na">userId</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
       <span class="na">token</span><span class="p">:</span> <span class="s1">'tokenAsdf'</span><span class="p">,</span>
@@ -559,7 +855,7 @@
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
     </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"update_lead"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">123456</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123456"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
       </span><span class="nt">"status"</span><span class="p">:</span><span class="w"> </span><span class="s2">"ok"</span><span class="w">
     </span><span class="p">}</span><span class="w">
@@ -567,15 +863,11 @@
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<aside class="warning">
-  <strong>Not implemented</strong>
-</aside>
-
 <p>Update status for specific lead.</p>
 
 <h3 id="http-request">HTTP Request</h3>
 
-<p><code class="prettyprint">POST https://providi.eu/API/update_lead.php</code></p>
+<p><code class="prettyprint">POST http://providi.eu/API/update_lead.php</code></p>
 
 <h3 id="request-parameters">Request Parameters</h3>
 
@@ -604,7 +896,7 @@
 <tr>
 <td>status</td>
 <td>Required</td>
-<td>Possible values: &ldquo;&rdquo;, <code class="prettyprint">signed_up</code>, <code class="prettyprint">not_available</code>, <code class="prettyprint">no_show</code>, <code class="prettyprint">no_money</code>, <code class="prettyprint">not_interested</code>, <code class="prettyprint">non_existing</code>, <code class="prettyprint">never_asked_for_contact</code>, <code class="prettyprint">no</code></td>
+<td>Possible values: <code class="prettyprint">not_contacted</code>, <code class="prettyprint">signed_up</code>, <code class="prettyprint">not_available</code>, <code class="prettyprint">no_show</code>, <code class="prettyprint">no_money</code>, <code class="prettyprint">not_interested</code>, <code class="prettyprint">non_existing</code>, <code class="prettyprint">never_asked_for_contact</code>, <code class="prettyprint">no</code></td>
 </tr>
 </tbody></table>
 
@@ -612,7 +904,7 @@
 
 <h2 id="members">Members</h2>
 <pre class="highlight javascript"><code><span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
-  <span class="na">url</span><span class="p">:</span> <span class="s2">"https://providi.eu/API/vs_members.php"</span><span class="p">,</span>
+  <span class="na">url</span><span class="p">:</span> <span class="s2">"http://providi.eu/API/vs_members.php"</span><span class="p">,</span>
   <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
       <span class="na">userId</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
       <span class="na">token</span><span class="p">:</span> <span class="s1">'tokenAsdf'</span>
@@ -624,40 +916,56 @@
 <p>Successful response</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vs_members"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"members"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-        </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Main Street 17"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">123456</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"kalorie_login"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://www.kalorieregnskab.dk/login.php?customerID=313214470001&amp;vu=1444061739&amp;hash=d966c33806b0f28a7d2bbbe"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Carina Holm"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"new_target_link"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://www.voressundhed.dk/distributor/login.php?reference=31321447&amp;hash=da305792bc0d113bd63e9&amp;redirect=http%3A%2F%2Fwww.voressundhed.dk%2Fpersonificeret%2Fupdate.before_after_ny.php%3FcustRef%3D313214470001"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"old_target_link"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://providi.eu/sc.support_links/editCust.php?id=55229&amp;refer=313214470001"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"12345678"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"abcd@email.com"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"vs_login_link"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://www.voressundhed.dk/distributor/customer_login.php?customerID=313212270001&amp;vu=1444051539&amp;hash=d18a31acfb7e2a1c6410d30bd"</span><span class="w">
-        </span><span class="p">},</span><span class="w">
-        </span><span class="p">{</span><span class="w">
-          </span><span class="err">...</span><span class="w">
-        </span><span class="p">}</span><span class="w">
-      </span><span class="p">]</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vs_members"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123455"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Main Street 17"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"customerID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"221211240006"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"kalorie_login"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://www.kalorieregnskab.dk/login.php?customerID=313214470001&amp;vu=1444061739&amp;hash=d966c33806b0f28a7d2bbbe"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"latest_login"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-11-07"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"meal_price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"40 kroner/5 kroner"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Carina Holm"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"new_target_link"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://www.voressundhed.dk/distributor/login.php?reference=31321447&amp;hash=da305792bc0d113bd63e9&amp;redirect=http%3A%2F%2Fwww.voressundhed.dk%2Fpersonificeret%2Fupdate.before_after_ny.php%3FcustRef%3D313214470001"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"old_target_link"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://providi.eu/sc.support_links/editCust.php?id=55229&amp;refer=313214470001"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"12345678"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="s2">"69"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"sign_up_date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-09-10"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"unpaid_months"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"abcd@email.com"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"vs_login_link"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://www.voressundhed.dk/distributor/customer_login.php?customerID=313212270001&amp;vu=1444051539&amp;hash=d18a31acfb7e2a1c6410d30bd"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"vs_members"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3464564"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"address"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Side Avenue 86"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"customerID"</span><span class="p">:</span><span class="w"> </span><span class="s2">"221288760006"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"kalorie_login"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://www.kalorieregnskab.dk/login.php?customerID=313214470001&amp;vu=1444061739&amp;hash=d966c33806b0f28a7d2bbbe"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"latest_login"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-11-07"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"meal_price"</span><span class="p">:</span><span class="w"> </span><span class="s2">"40 kroner/5 kroner"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Bo Bech"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"new_target_link"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://www.voressundhed.dk/distributor/login.php?reference=31321447&amp;hash=da305792bc0d113bd63e9&amp;redirect=http%3A%2F%2Fwww.voressundhed.dk%2Fpersonificeret%2Fupdate.before_after_ny.php%3FcustRef%3D313214470001"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"old_target_link"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://providi.eu/sc.support_links/editCust.php?id=55229&amp;refer=313214470001"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"12345678"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="s2">"69"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"sign_up_date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-09-10"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"unpaid_months"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"username"</span><span class="p">:</span><span class="w"> </span><span class="s2">"bobech@example.com"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"vs_login_link"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://www.voressundhed.dk/distributor/customer_login.php?customerID=313212270001&amp;vu=1444051539&amp;hash=d18a31acfb7e2a1c6410d30bd"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
     </span><span class="p">}</span><span class="w">
-  </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
-
-<aside class="warning">
-  <strong>Not implemented</strong>
-</aside>
 
 <p>Get all members of Vores Sundhed that the seller has signed up.</p>
 
 <h3 id="http-request">HTTP Request</h3>
 
-<p><code class="prettyprint">GET https://providi.eu/API/vs_members.php</code></p>
+<p><code class="prettyprint">GET http://providi.eu/API/vs_members.php</code></p>
 
 <h3 id="request-parameters">Request Parameters</h3>
 
@@ -707,6 +1015,18 @@
 <td><code class="prettyprint">address</code></td>
 </tr>
 <tr>
+<td>Customer ID</td>
+<td><code class="prettyprint">customerID</code></td>
+</tr>
+<tr>
+<td>Debt period</td>
+<td><code class="prettyprint">unpaid_months</code></td>
+</tr>
+<tr>
+<td>Latest login date</td>
+<td><code class="prettyprint">latest_login</code></td>
+</tr>
+<tr>
 <td>Link to Kalorieregnskab</td>
 <td><code class="prettyprint">kalorie_login</code></td>
 </tr>
@@ -723,20 +1043,36 @@
 <td><code class="prettyprint">vs_login_link</code></td>
 </tr>
 <tr>
-<td>Member ID</td>
-<td><code class="prettyprint">id</code></td>
-</tr>
-<tr>
-<td>Member user name</td>
-<td><code class="prettyprint">username</code></td>
-</tr>
-<tr>
 <td>Name</td>
 <td><code class="prettyprint">name</code></td>
 </tr>
 <tr>
+<td>Name of original distributor</td>
+<td><code class="prettyprint">original_distributor</code></td>
+</tr>
+<tr>
 <td>Phone</td>
 <td><code class="prettyprint">phone</code></td>
+</tr>
+<tr>
+<td>Price per meal</td>
+<td><code class="prettyprint">meal_price</code></td>
+</tr>
+<tr>
+<td>Questionnaire points</td>
+<td><code class="prettyprint">points</code></td>
+</tr>
+<tr>
+<td>Sign up date</td>
+<td><code class="prettyprint">sign_up_date</code></td>
+</tr>
+<tr>
+<td>VS Member ID</td>
+<td><code class="prettyprint">id</code></td>
+</tr>
+<tr>
+<td>VS Member user name</td>
+<td><code class="prettyprint">username</code></td>
 </tr>
 </tbody></table>
 
@@ -744,7 +1080,7 @@
 
 <h2 id="view-leads">View Leads</h2>
 <pre class="highlight javascript"><code><span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
-  <span class="na">url</span><span class="p">:</span> <span class="s2">"https://providi.eu/API/organization_leads.php"</span><span class="p">,</span>
+  <span class="na">url</span><span class="p">:</span> <span class="s2">"http://providi.eu/API/organization_leads.php"</span><span class="p">,</span>
   <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
       <span class="na">userId</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
       <span class="na">token</span><span class="p">:</span> <span class="s1">'tokenAsdf'</span><span class="p">,</span>
@@ -758,42 +1094,47 @@
 <p>Successful response</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"organization_leads"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"leads"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-        </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"age"</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"candidate@email.com"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"expected_earnings"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3-5000"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">123456</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"interest_date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-10-02"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"To earn extra. Get more time with family."</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Candi Date"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"order"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"origin"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arbejd.dk"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"12345678"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"zipcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9235"</span><span class="w">
-        </span><span class="p">},</span><span class="w">
-        </span><span class="p">{</span><span class="w">
-          </span><span class="err">...</span><span class="w">
-        </span><span class="p">}</span><span class="w">
-      </span><span class="p">]</span><span class="w">
-    </span><span class="p">}</span><span class="w">
-  </span><span class="p">}</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"organization_leads"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"123456"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"age"</span><span class="p">:</span><span class="w"> </span><span class="s2">"24"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"candidate@email.com"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"expected_earnings"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3-5000"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"lead_assigned_date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-10-27T14:25:16+01:00"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"To earn extra. Get more time with family."</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Candi Date"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"origin"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arbejd.dk"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"12345678"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"zipcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9235"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"organization_leads"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"25433234"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"age"</span><span class="p">:</span><span class="w"> </span><span class="s2">"42"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"email"</span><span class="p">:</span><span class="w"> </span><span class="s2">"number4@example.com"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"expected_earnings"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3-5000"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"lead_assigned_date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-11-27T14:25:16+01:00"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"To earn extra. Get more time with family."</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"John Candi"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"origin"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arbejd.dk"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"phone"</span><span class="p">:</span><span class="w"> </span><span class="s2">"12345678"</span><span class="p">,</span><span class="w">
+        </span><span class="nt">"zipcode"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9235"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w"> </span><span class="err">...</span><span class="w"> </span><span class="p">}</span><span class="w">
+  </span><span class="p">]</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
-
-<aside class="warning">
-  <strong>Not implemented</strong>
-</aside>
 
 <p>Get all organizational leads (for recruitment) the seller has acquired for specified period.</p>
 
 <h3 id="http-request">HTTP Request</h3>
 
-<p><code class="prettyprint">GET https://providi.eu/API/organization_leads.php</code></p>
+<p><code class="prettyprint">GET http://providi.eu/API/organization_leads.php</code></p>
 
 <h3 id="request-parameters">Request Parameters</h3>
 
@@ -867,8 +1208,8 @@
 <td><code class="prettyprint">id</code></td>
 </tr>
 <tr>
-<td>Lead sign up date</td>
-<td><code class="prettyprint">interest_date</code></td>
+<td>Lead assigned date</td>
+<td><code class="prettyprint">lead_assigned_date</code></td>
 </tr>
 <tr>
 <td>Message from lead</td>
@@ -880,15 +1221,11 @@
 </tr>
 <tr>
 <td>Origin of lead</td>
-<td><code class="prettyprint">orgin</code></td>
+<td><code class="prettyprint">origin</code></td>
 </tr>
 <tr>
 <td>Phone</td>
 <td><code class="prettyprint">phone</code></td>
-</tr>
-<tr>
-<td>Sort order</td>
-<td><code class="prettyprint">order</code></td>
 </tr>
 <tr>
 <td>Zipcode</td>
@@ -898,10 +1235,14 @@
 
 <h2 id="meeting-attendees">Meeting attendees</h2>
 <pre class="highlight javascript"><code><span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
-  <span class="na">url</span><span class="p">:</span> <span class="s2">"https://providi.eu/API/meeting_attendees.php"</span><span class="p">,</span>
+  <span class="na">url</span><span class="p">:</span> <span class="s2">"http://providi.eu/API/meeting_attendees.php"</span><span class="p">,</span>
   <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
       <span class="na">userId</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-      <span class="na">token</span><span class="p">:</span> <span class="s1">'tokenAsdf'</span>
+      <span class="na">token</span><span class="p">:</span> <span class="s1">'tokenAsdf'</span><span class="p">,</span>
+      <span class="na">country</span><span class="p">:</span> <span class="s1">'dk'</span><span class="p">,</span>
+      <span class="na">meeting_type</span><span class="p">:</span> <span class="s1">'intro'</span><span class="p">,</span>
+      <span class="na">from_date</span><span class="p">:</span> <span class="s1">'2015-09-01'</span><span class="p">,</span>
+      <span class="na">to_date</span><span class="p">:</span> <span class="s1">'2015-09-15'</span>
   <span class="p">}</span>
 <span class="p">});</span>
 </code></pre>
@@ -912,12 +1253,14 @@
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
     </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"meeting_attendees"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
       </span><span class="nt">"meetings"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
         </span><span class="p">{</span><span class="w">
           </span><span class="nt">"city"</span><span class="p">:</span><span class="w"> </span><span class="s2">"København"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"country"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DK"</span><span class="p">,</span><span class="w">
           </span><span class="nt">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-10-20"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"meeting_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"intro"</span><span class="p">,</span><span class="w">
           </span><span class="nt">"attendees"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
             </span><span class="p">{</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Attendee Numberone"</span><span class="w"> </span><span class="p">},</span><span class="w">
             </span><span class="p">{</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Attendee Numbertwo"</span><span class="w"> </span><span class="p">}</span><span class="w">
@@ -925,7 +1268,9 @@
         </span><span class="p">},</span><span class="w">
         </span><span class="p">{</span><span class="w">
           </span><span class="nt">"city"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Odense"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"country"</span><span class="p">:</span><span class="w"> </span><span class="s2">"DK"</span><span class="p">,</span><span class="w">
           </span><span class="nt">"date"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2015-11-04"</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"meeting_type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"startup"</span><span class="p">,</span><span class="w">
           </span><span class="nt">"attendees"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
             </span><span class="p">{</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Attendee Numberthree"</span><span class="w"> </span><span class="p">},</span><span class="w">
             </span><span class="p">{</span><span class="w"> </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Attendee Numberfour"</span><span class="w"> </span><span class="p">}</span><span class="w">
@@ -938,15 +1283,11 @@
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<aside class="warning">
-  <strong>Not implemented</strong>
-</aside>
-
 <p>Get all organizational members that are attending upcoming meetings.</p>
 
 <h3 id="http-request">HTTP Request</h3>
 
-<p><code class="prettyprint">GET https://providi.eu/API/meeting_attendees.php</code></p>
+<p><code class="prettyprint">GET http://providi.eu/API/meeting_attendees.php</code></p>
 
 <h3 id="request-parameters">Request Parameters</h3>
 
@@ -966,6 +1307,26 @@
 <td>userId</td>
 <td>Required</td>
 <td>The id of the current user. Must be paired with <code class="prettyprint">token</code>.</td>
+</tr>
+<tr>
+<td>country</td>
+<td>Optional</td>
+<td>List attendees of meetings in this country.</td>
+</tr>
+<tr>
+<td>from_date</td>
+<td>Optional</td>
+<td>Date for earliest meeting.</td>
+</tr>
+<tr>
+<td>to_date</td>
+<td>Optional</td>
+<td>Date for latest meeting.</td>
+</tr>
+<tr>
+<td>meeting_type</td>
+<td>Optional</td>
+<td>List meetings of this type. Possible values: &ldquo;intro&rdquo;, &ldquo;startup&rdquo;, &ldquo;seminar&rdquo;.</td>
 </tr>
 </tbody></table>
 
@@ -996,8 +1357,16 @@
 <td><code class="prettyprint">city</code></td>
 </tr>
 <tr>
+<td>Country for meeting</td>
+<td><code class="prettyprint">country</code></td>
+</tr>
+<tr>
 <td>Date for meeting</td>
 <td><code class="prettyprint">date</code></td>
+</tr>
+<tr>
+<td>Type of meeting</td>
+<td><code class="prettyprint">meeting_type</code></td>
 </tr>
 <tr>
 <td>Array of attendee names</td>
@@ -1007,7 +1376,7 @@
 
           <h1 id="leaderboard">Leaderboard</h1>
 <pre class="highlight javascript"><code><span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
-  <span class="na">url</span><span class="p">:</span> <span class="s2">"https://providi.eu/API/leaderboard.php"</span><span class="p">,</span>
+  <span class="na">url</span><span class="p">:</span> <span class="s2">"http://providi.eu/API/leaderboard.php"</span><span class="p">,</span>
   <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
     <span class="na">period</span><span class="p">:</span> <span class="p">[</span><span class="s1">'this-week'</span><span class="p">,</span> <span class="s1">'previous-week'</span><span class="p">,</span> <span class="s1">'last-30-days'</span><span class="p">],</span>
     <span class="na">country</span><span class="p">:</span> <span class="s1">'dk'</span><span class="p">,</span>
@@ -1022,7 +1391,7 @@
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"leaderboards"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
       </span><span class="nt">"thisWeek"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
@@ -1032,57 +1401,57 @@
         </span><span class="p">},</span><span class="w">
         </span><span class="nt">"positions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tw Gabriel Muresan 2 222"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tw Gabriel Muresan 1"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tw Gabriel Muresan 3"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tw Gabriel Muresan 5"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tw Gabriel Muresan 6"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tw Gabriel Muresan 7"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"8"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tw Gabriel Muresan 8"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"8"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tw Gabriel Muresan 9"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"tw Gabriel Muresan 10"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">}</span><span class="w">
         </span><span class="p">]</span><span class="w">
@@ -1094,63 +1463,63 @@
         </span><span class="p">},</span><span class="w">
         </span><span class="nt">"positions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pw Gabriel Muresan 1"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pw Gabriel Muresan 2"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pw Gabriel Muresan 3"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pw Gabriel Muresan 4"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pw Gabriel Muresan 5"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pw Gabriel Muresan 6"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pw Gabriel Muresan 7"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"8"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pw Gabriel Muresan 8"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"8"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pw Gabriel Muresan 9"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"pw Gabriel Muresan 10"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">}</span><span class="w">
         </span><span class="p">]</span><span class="w">
@@ -1162,57 +1531,57 @@
         </span><span class="p">},</span><span class="w">
         </span><span class="nt">"positions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"l3d Gabriel Muresan 1"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"l3d Gabriel Muresan 3"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"l3d Gabriel Muresan 4"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"4"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"l3d Gabriel Muresan 5"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"l3d Gabriel Muresan 6"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"l3d Gabriel Muresan 7"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"8"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"l3d Gabriel Muresan 8"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"8"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"l3d Gabriel Muresan 9"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">},</span><span class="w">
           </span><span class="p">{</span><span class="w">
-            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"l3d Gabriel Muresan 10"</span><span class="p">,</span><span class="w">
-            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+            </span><span class="nt">"newMembers"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10"</span><span class="p">,</span><span class="w">
             </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
           </span><span class="p">}</span><span class="w">
         </span><span class="p">]</span><span class="w">
@@ -1222,21 +1591,11 @@
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<aside class="warning">
-  Implemented September 23 2015.
-  <br>
-  <strong>Changes on September 28 2015</strong>
-  <ul>
-    <li>&lsquo;country&rsquo; added as request parameter</li>
-    <li>Format of 'from&rsquo; and 'to&rsquo; dates in response changed to ISO 8601</li>
-  </ul>
-</aside>
-
 <p>Get the top ten sellers in Providi for specified periods.</p>
 
 <h3 id="http-request">HTTP Request</h3>
 
-<p><code class="prettyprint">GET https://providi.eu/API/leaderboard.php</code></p>
+<p><code class="prettyprint">GET http://providi.eu/API/leaderboard.php</code></p>
 
 <h3 id="request-parameters">Request Parameters</h3>
 
@@ -1273,7 +1632,7 @@
 
 <h2 id="active-promotions">Active Promotions</h2>
 <pre class="highlight javascript"><code><span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
-  <span class="na">url</span><span class="p">:</span> <span class="s2">"https://providi.eu/API/promotions.php"</span><span class="p">,</span>
+  <span class="na">url</span><span class="p">:</span> <span class="s2">"http://providi.eu/API/promotions.php"</span><span class="p">,</span>
   <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
     <span class="na">country</span><span class="p">:</span> <span class="s1">'dk'</span><span class="p">,</span>
     <span class="na">userId</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
@@ -1286,32 +1645,30 @@
 <p>Successful response</p>
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
-  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w">
-    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"promotion"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Cruise fra New York 2016"</span><span class="w">
+  </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"0"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"promotion"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Cruise fra New York 2016"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
+    </span><span class="p">},</span><span class="w">
+    </span><span class="p">{</span><span class="w">
+      </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"promotion"</span><span class="p">,</span><span class="w">
+      </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
+        </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Rejse til Thailand 2016"</span><span class="w">
+      </span><span class="p">}</span><span class="w">
     </span><span class="p">}</span><span class="w">
-  </span><span class="p">},</span><span class="w">
-  </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"promotion"</span><span class="p">,</span><span class="w">
-    </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"title"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Rejse til Thailand 2016"</span><span class="w">
-    </span><span class="p">}</span><span class="w">
-  </span><span class="p">}]</span><span class="w">
+  </span><span class="p">]</span><span class="w">
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
-
-<aside class="warning">
-  <strong>Not implemented.</strong>
-</aside>
 
 <p>Get the active Providi promotions.</p>
 
 <h3 id="http-request">HTTP Request</h3>
 
-<p><code class="prettyprint">GET https://providi.eu/API/promotions.php</code></p>
+<p><code class="prettyprint">GET http://providi.eu/API/promotions.php</code></p>
 
 <h3 id="request-parameters">Request Parameters</h3>
 
@@ -1339,9 +1696,29 @@
 </tr>
 </tbody></table>
 
+<h3 id="response-fields-and-post-body">Response fields and POST Body</h3>
+
+<p>The following information is included in the response and can be sent in the POST body when creating or updating a user:</p>
+
+<table><thead>
+<tr>
+<th>Information</th>
+<th>Key in JSON response</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Promotion id</td>
+<td><code class="prettyprint">id</code></td>
+</tr>
+<tr>
+<td>Promotion name</td>
+<td><code class="prettyprint">title</code></td>
+</tr>
+</tbody></table>
+
 <h2 id="promotion-scores">Promotion Scores</h2>
 <pre class="highlight javascript"><code><span class="nx">jQuery</span><span class="p">.</span><span class="nx">ajax</span><span class="p">({</span>
-  <span class="na">url</span><span class="p">:</span> <span class="s2">"https://providi.eu/API/promotion_score.php"</span><span class="p">,</span>
+  <span class="na">url</span><span class="p">:</span> <span class="s2">"http://providi.eu/API/promotion_score.php"</span><span class="p">,</span>
   <span class="na">data</span><span class="p">:</span> <span class="p">{</span>
     <span class="na">promotion_id</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
     <span class="na">country</span><span class="p">:</span> <span class="s1">'dk'</span><span class="p">,</span>
@@ -1356,63 +1733,62 @@
 </blockquote>
 <pre class="highlight json"><code><span class="p">{</span><span class="w">
   </span><span class="nt">"data"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w">
+    </span><span class="nt">"id"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"promotion_score"</span><span class="p">,</span><span class="w">
     </span><span class="nt">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-      </span><span class="nt">"promotion_id"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
       </span><span class="nt">"positions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
         </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
           </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seller"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
           </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1"</span><span class="p">,</span><span class="w">
           </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seller 1"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
           </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3"</span><span class="p">,</span><span class="w">
           </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seller 3"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
           </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"5"</span><span class="p">,</span><span class="w">
           </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seller 5"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
           </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">6</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"6"</span><span class="p">,</span><span class="w">
           </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seller 6"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
           </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">7</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"7"</span><span class="p">,</span><span class="w">
           </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seller 7"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
           </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"8"</span><span class="p">,</span><span class="w">
           </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seller 8"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
           </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">9</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"9"</span><span class="p">,</span><span class="w">
           </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seller 9"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
           </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
         </span><span class="p">},</span><span class="w">
         </span><span class="p">{</span><span class="w">
-          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"position"</span><span class="p">:</span><span class="w"> </span><span class="s2">"10"</span><span class="p">,</span><span class="w">
           </span><span class="nt">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Seller 10"</span><span class="p">,</span><span class="w">
-          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span><span class="w">
+          </span><span class="nt">"points"</span><span class="p">:</span><span class="w"> </span><span class="s2">"2"</span><span class="p">,</span><span class="w">
           </span><span class="nt">"image"</span><span class="p">:</span><span class="w"> </span><span class="s2">"http://example.com/default-avatar.jpg"</span><span class="w">
         </span><span class="p">}</span><span class="w">
       </span><span class="p">]</span><span class="w">
@@ -1421,15 +1797,11 @@
 </span><span class="p">}</span><span class="w">
 </span></code></pre>
 
-<aside class="warning">
-  <strong>Not implemented.</strong>
-</aside>
-
 <p>Get the top ten places in the specified Providi promotion.</p>
 
 <h3 id="http-request">HTTP Request</h3>
 
-<p><code class="prettyprint">GET https://providi.eu/API/promotion_score.php</code></p>
+<p><code class="prettyprint">GET http://providi.eu/API/promotion_score.php</code></p>
 
 <h3 id="request-parameters">Request Parameters</h3>
 
@@ -1459,6 +1831,42 @@
 <td>userId</td>
 <td>Required</td>
 <td>The id of the current user. Must be paired with <code class="prettyprint">token</code>.</td>
+</tr>
+</tbody></table>
+
+<h3 id="response-fields-and-post-body">Response fields and POST Body</h3>
+
+<p>The following information is included in the response and can be sent in the POST body when creating or updating a user:</p>
+
+<table><thead>
+<tr>
+<th>Information</th>
+<th>Key in JSON response</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Array of scores</td>
+<td><code class="prettyprint">positions[]</code></td>
+</tr>
+<tr>
+<td>Points</td>
+<td><code class="prettyprint">points</code></td>
+</tr>
+<tr>
+<td>Position</td>
+<td><code class="prettyprint">position</code></td>
+</tr>
+<tr>
+<td>Promotion id</td>
+<td><code class="prettyprint">id</code></td>
+</tr>
+<tr>
+<td>Seller image</td>
+<td><code class="prettyprint">image</code></td>
+</tr>
+<tr>
+<td>Seller name</td>
+<td><code class="prettyprint">name</code></td>
 </tr>
 </tbody></table>
 
@@ -1526,9 +1934,58 @@
 
           <h1 id="changelog">Changelog</h1>
 
+<h2 id="2015-11-18">2015-11-18</h2>
+
+<p><strong>Changed</strong></p>
+
+<ul>
+<li><code class="prettyprint">leads</code>: Add <code class="prettyprint">not_contacted</code> as possible status</li>
+<li><code class="prettyprint">update_lead</code>: Add <code class="prettyprint">not_contacted</code> as possible status</li>
+<li><code class="prettyprint">user_profile</code>: Add property <code class="prettyprint">has_webpackage</code> to response</li>
+<li>Add <code class="prettyprint">create_event</code> and <code class="prettyprint">event_attend</code> to API</li>
+</ul>
+
+<h2 id="2015-11-13">2015-11-13</h2>
+
+<p><strong>Changed</strong></p>
+
+<ul>
+<li>Add link to API test runner in API documentation</li>
+<li><code class="prettyprint">organization_leads</code>: Remove <code class="prettyprint">data.attributes.id</code> property</li>
+<li><code class="prettyprint">vs_members</code>: Add <code class="prettyprint">customerID</code>, <code class="prettyprint">latest_login</code>, <code class="prettyprint">meal_price</code>, <code class="prettyprint">original_distributor</code>, <code class="prettyprint">points</code>, <code class="prettyprint">sign_up_date</code>, <code class="prettyprint">unpaid_months</code> properties to response</li>
+</ul>
+
+<h2 id="2015-11-06">2015-11-06</h2>
+
+<p><strong>Changed</strong></p>
+
+<ul>
+<li><code class="prettyprint">leads</code>: Change response data structure to proper {json:api}</li>
+<li><code class="prettyprint">leads</code>: Reintroduce <code class="prettyprint">weight_loss</code> property to response</li>
+<li><code class="prettyprint">organization_leads</code>: Change response data structure to proper {json:api}</li>
+<li><code class="prettyprint">promotion_score</code>: Clarify how to use id property</li>
+<li><code class="prettyprint">promotions</code>: Change response data structure to proper {json:api}</li>
+<li><code class="prettyprint">user_profile</code>: Add properties <code class="prettyprint">accountType</code> and <code class="prettyprint">phone</code> to response documentation</li>
+<li><code class="prettyprint">vs_members</code>: Change response data structure to proper {json:api}</li>
+</ul>
+
+<h2 id="2015-10-27">2015-10-27</h2>
+
+<p><strong>Changed</strong></p>
+
+<ul>
+<li><code class="prettyprint">leads</code>: Add <code class="prettyprint">lead_assigned_date</code> property to response</li>
+<li><code class="prettyprint">leads</code>: Remove <code class="prettyprint">order</code> and <code class="prettyprint">weight_loss</code> properties from response</li>
+<li><code class="prettyprint">organization_leads</code>: Add <code class="prettyprint">lead_assigned_date</code> property to response</li>
+<li><code class="prettyprint">organization_leads</code>: Remove <code class="prettyprint">order</code> property from response</li>
+<li><code class="prettyprint">meeting_attendees</code>: Add <code class="prettyprint">country</code>, <code class="prettyprint">from_date</code>, <code class="prettyprint">to_date</code>, <code class="prettyprint">meeting_type</code> parameters to request</li>
+<li><code class="prettyprint">meeting_attendees</code>: Add <code class="prettyprint">country</code> and <code class="prettyprint">meeting_type</code> properties to response</li>
+<li><code class="prettyprint">profile</code>: Replace <code class="prettyprint">name</code> property with <code class="prettyprint">first_name</code>and <code class="prettyprint">last_name</code> in response</li>
+</ul>
+
 <h2 id="2015-10-07">2015-10-07</h2>
 
-<p>First version of API documentation.</p>
+<p>First version of API documentation</p>
 
       </div>
       <div class="dark-box">

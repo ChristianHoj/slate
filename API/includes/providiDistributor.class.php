@@ -11,7 +11,9 @@ class providiDistributor extends providiObject {
 		$sQuery = sprintf(' SELECT * FROM da_reference WHERE Reference = "%s" ' , $oDB->esc($sProvidiID));
 		$oDis = $oDB->getObject($sQuery);
 		if(empty($oDis)) {
-			throw new providiMethodNotAllowedException('Cannot find user with providiID - ' . $sProvidiID , 5010);
+			//throw new providiMethodNotAllowedException('Cannot find user with providiID - ' . $sProvidiID , 5010);
+			throw new providiBadRequestException('Cannot find user with providiID - ' . $sProvidiID , 5010);
+			
 		}
 		$this->merge($oDis);
 		return $this;
@@ -90,6 +92,13 @@ class providiDistributor extends providiObject {
 		}
 		return @$this->_aRef['Reference'];
 	}
+	function setReferenceCode($sNewValue) {
+		if(empty($this->_aRef)) {
+			$this->_loadFromReference();
+		}
+		return @$this->_aRef['Reference'] = $sNewValue;
+	}
+
 	function getCustomShippingCost() {
 		if(empty($this->_aRef)) {
 			$this->_loadFromReference();
@@ -184,19 +193,19 @@ class providiDistributor extends providiObject {
 	}
 
 	function getPaypalEmail() {
-		if(empty($this->aRefPaypal)) {
+		if(empty($this->_aRefPaypal)) {
 			$this->_loadFromRefkundePaypal();
 		}
 		return @$this->_aRefPaypal['paypal_email'];
 	}
 	function getQuickpayAPIKey() {
-		if(empty($this->aRefPBS)) {
+		if(empty($this->_aRefPBS)) {
 			$this->_loadFromRefkundePBS();
 		}
 		return @$this->_aRefPBS['pbs_md5secret'];
 	}
 	function getQuickpayMerchantID() {
-		if(empty($this->aRefPBS)) {
+		if(empty($this->_aRefPBS)) {
 			$this->_loadFromRefkundePBS();
 		}
 		return @$this->_aRefPBS['pbs_merchantid'];
@@ -244,6 +253,185 @@ class providiDistributor extends providiObject {
 
 
 
+	// 2015-11-18
+	function setAccountType($sType) {
+		return $this->accountType = $sType;
+	}
+	function setCompanyName($sCompanyName) {
+		return $this->firma = $sCompanyName;
+	}
+	function setPostNr($sNewValue) {
+		return $this->postnr = $sNewValue;
+	}
+	function setPartnerName($sNewValue) {
+		return $this->partner_navn = $sNewValue;
+	}
+	function setPartnerEmail($sNewValue) {
+		return $this->partners_email = $sNewValue;
+	}
+	function setPartnerSkypeID($sNewValue) {
+		return $this->partner_skypenavn = $sNewValue;
+	}
+	function setSkypeID($sNewValue) {
+		return $this->skypenavn = $sNewValue;
+	}
+	function setTelephone($sNewValue) {
+		return $this->Telefon = $sNewValue;
+	}
+	function setSponsor($sNewValue) {
+		return $this->sponsor = $sNewValue;
+	}
+	function setSelfCustomerAccountName($sNewValue) {
+		if(empty($this->_aSelfAccount)) {
+			$this->_loadFromSelfCustomerAccount();
+		}
+		if(empty($this->_aSelfAccount)) {
+			throw new providiBadRequestException('Cannot locate VS member info for the distributor' , 705);
+		}
+		return @$this->_aSelfAccount['name'] = $sNewValue;
+	}
+	function setPaypalEmail($sNewValue) {
+		if(empty($this->_aRefPaypal)) {
+			$this->_loadFromRefkundePaypal();
+		}
+		if(empty($this->_aRefPaypal)) {
+			throw new providiBadRequestException('Cannot locate Paypal info for the distributor' , 703);
+		}
+		return @$this->_aRefPaypal['paypal_email'] = $sNewValue;
+	}
+	function setCustomShippingCost($sNewValue) {
+		if(empty($this->_aRef)) {
+			$this->_loadFromReference();
+		}
+		return $this->_aRef['custom_shipping_cost'] = $sNewValue;
+	}
+
+	function setQuickpayAPIKey($sNewValue) {
+		if(empty($this->_aRefPBS)) {
+			$this->_loadFromRefkundePBS();
+		}
+		if(empty($this->_aRefPBS)) {
+			throw new providiBadRequestException('Cannot locate PBS info for the distributor' , 701);
+		}
+		$this->_aRefPBS['pbs_md5secret'] = $sNewValue;		
+		return @$this->_aRefPBS['pbs_md5secret'];
+	}
+
+	function setQuickpayMerchantID($sNewValue) {
+		if(empty($this->_aRefPBS)) {
+			$this->_loadFromRefkundePBS();
+		}
+		if(empty($this->_aRefPBS)) {
+			throw new providiBadRequestException('Cannot locate PBS info for the distributor' , 702);
+		}
+		return $this->_aRefPBS['pbs_merchantid'] = $sNewValue;
+	}
+
+
+	function save() {
+		
+		$this->_saveDaReference();
+		$this->_saveRefkunde();
+		$this->_saveRefPBS();
+		$this->_saveRefPaypal();
+		
+	}
+
+	function _saveRefkunde() {
+		if(empty($this->_aRef)) {
+			return false;
+		}
+		$aUpdates = array();
+		reset($this->_aRef);
+		while(list($sKey,$sValue) = each($this->_aRef)) {
+			if($sKey == 'hbl_id') {
+				continue;
+			}
+			$sValue = providiCheckEmptyString($sValue);
+			$aUpdates[ $sKey ] = sprintf(' `%s` = "%s" ' , $sKey , $this->_oDB->esc($sValue));
+		}
+		if(count($aUpdates) > 0) {
+			$sQuery = sprintf(' UPDATE `refkunde` SET %s WHERE `hbl_id` = "%s" LIMIT 1' , implode(', ', $aUpdates) , $this->_oDB->esc($this->Reference));
+			$this->_oDB->query($sQuery);
+			return $this->_oDB->affectedRows() > 0 ;
+		}
+		return false;
+	
+	}
+
+	function _saveRefPBS() {
+		// not set, nothing to do
+		if(empty($this->_aRefPBS)) {
+			return false;
+		}
+		$aUpdates = array();
+		reset($this->_aRefPBS);
+		while(list($sKey,$sValue) = each($this->_aRefPBS)) {
+			if($sKey == 'hbl_id') {
+				continue;
+			}
+			$sValue = providiCheckEmptyString($sValue);
+			$aUpdates[ $sKey ] = sprintf(' `%s` = "%s" ' , $sKey , $this->_oDB->esc($sValue));
+		}
+		
+		if(count($aUpdates) > 0) {
+			$aUpdates['updated_on'] = sprintf(' `updated_on` = NOW() ');
+			$sQuery = sprintf(' UPDATE `refkunde_pbs` SET %s WHERE `hbl_id` = "%s" LIMIT 1' , implode(', ', $aUpdates) , $this->_oDB->esc($this->Reference));
+			$this->_oDB->query($sQuery);
+			return $this->_oDB->affectedRows() > 0 ;
+		}
+		return false;	
+	}
+	function _saveRefPaypal() {
+		// not set, nothing to do
+		if(empty($this->_aRefPaypal)) {
+			return false;
+		}
+		$aUpdates = array();
+		reset($this->_aRefPaypal);
+		while(list($sKey,$sValue) = each($this->_aRefPaypal)) {
+			if($sKey == 'hbl_id') {
+				continue;
+			}
+			$sValue = providiCheckEmptyString($sValue);
+			$aUpdates[ $sKey ] = sprintf(' `%s` = "%s" ' , $sKey , $this->_oDB->esc($sValue));
+		}
+		
+		if(count($aUpdates) > 0) {
+			$aUpdates['updated_on'] = sprintf(' `updated_on` = NOW() ');
+			$sQuery = sprintf(' UPDATE `refkunde_paypal` SET %s WHERE `hbl_id` = "%s" LIMIT 1' , implode(', ', $aUpdates) , $this->_oDB->esc($this->Reference));
+			$this->_oDB->query($sQuery);
+			return $this->_oDB->affectedRows() > 0 ;
+		}
+		return false;	
+	}
+
+	function _saveDaReference() {
+		if(empty($this->Reference)) {
+			throw new providiBadRequestException('Cannot save empty reference ' , 710);
+		}
+		$aUpdates = array();
+		while(list($sKey,$sValue) = each($this)) {
+			if($sKey == 'Reference') {
+				continue;
+			}
+			if(in_array($sKey, $this->_aValidFields)) {
+				$sValue = providiCheckEmptyString($sValue);
+				$aUpdates[ $sKey ]  = sprintf(' `%s` = "%s" ' , $sKey , $this->_oDB->esc( $sValue ));
+			}		
+		}
+		if(count($aUpdates) > 0 ) {
+			$sQuery = sprintf(' UPDATE da_reference SET %s WHERE Reference = "%s" LIMIT 1 ', implode(', ', $aUpdates)  , $this->_oDB->esc($this->Reference));
+			$this->_oDB->query($sQuery);
+
+			return $this->_oDB->affectedRows() > 0;		
+		}
+		return false;	
+	}
+
+	function hasWebPackage() {
+		return !empty($this->image);
+	}
 
 
 }

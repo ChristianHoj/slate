@@ -17,11 +17,11 @@ class ProvidiDB {
 			$oMysql = @mysqli_connect($aProvidiConfigs['DB_host'] , $aProvidiConfigs['DB_username'], $aProvidiConfigs['DB_password'] ,  $aProvidiConfigs['DB_dbname']);
 			if(!is_a($oMysql , 'mysqli')) {
 				throw new Exception('Cannot connect to database'   , 1);
-			}					
+			}
 			$this->oMysql = $oMysql;
 		} catch(Exception $e) {
-			providiNotifyDie( 'Cannot connect to database' , 'Error initializing database connection in ' . __FILE__  , __FILE__ , $e );			
-		}	
+			providiNotifyDie( 'Cannot connect to database' , 'Error initializing database connection in ' . __FILE__  , __FILE__ , $e );
+		}
 	}
 
 
@@ -39,7 +39,7 @@ class ProvidiDB {
 		}
 		$this->oRS = $oRS;
 		return $oRS;
-	
+
 	}
 	function numRows() {
 		return mysqli_num_rows($this->oRS);
@@ -61,12 +61,12 @@ class ProvidiDB {
 			while($oNode = @mysqli_fetch_array($oRS)) {
 				$aReturn[] = $oNode;
 			}
-		
+
 		} else {
 			while($oNode = @mysqli_fetch_object($oRS, $sClassName)) {
 				$aReturn[] = $oNode;
 			}
-		
+
 		}
 		return $aReturn;
 	}
@@ -76,7 +76,7 @@ class ProvidiDB {
 		while($aNode = mysqli_fetch_array($oRS)) {
 			$aReturn[ $aNode[0] ] = $aNode[1];
 		}
-		return $aReturn;	
+		return $aReturn;
 	}
 	function getColumn($sQuery) {
 		$oRS = $this->_execute($sQuery);
@@ -84,7 +84,7 @@ class ProvidiDB {
 		while($aNode = mysqli_fetch_array($oRS)) {
 			$aReturn[] = $aNode[0];
 		}
-		return $aReturn;	
+		return $aReturn;
 	}
 	function getRow($sQuery) {
 		$oRS = $this->_execute($sQuery);

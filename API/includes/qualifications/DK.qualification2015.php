@@ -117,8 +117,10 @@ $s2015WebpakkeCto = '2016-12-31';
 if($_SERVER['HTTP_HOST']=='127.0.0.1') {
 
 }
+global $s2015TempTableName , $s2015TempDetailTableName ,$s2015UseTemporary ;
 $s2015TempTableName = '_tmp2015_qualifications';
 $s2015TempDetailTableName = '_tmp2015_qualifications_detail';
+global $aLogs , $aQ2015Con;
 $aLogs = array();
 
 $a2015QRules = array(
@@ -131,7 +133,11 @@ $a2015QRules = array(
 	, 'sponsor_webpakke' => ' SUM(IFNULL(webpakker_points,0))'
 	, 'professional_rank' => ' SUM(IFNULL(professional_rank,0)) ' 
 	, 'new_dis_webpakke' => ' SUM(IFNULL(new_dis_webpakke,0)) '	// NEW distributor who sign up for webpakken BEFORE $sAugustNewRuleFrom
+
+	, 'leadership_points' => ' SUM(IFNULL(leadership_points,0)) '
 );
+
+
 
 
 /*require_once '../../gslib.php';
@@ -169,7 +175,7 @@ $aWhere = array(
 	, 'meeting_session' => sprintf( 'DATE(meeting_session) BETWEEN "%s" AND "%s" ' , $s2015OrgMeetingFrom , $s2015OrgMeetingTo)
 
 	, 'fremmoedt' => ' fremmoedt = "Ja" '
-	, 'purchase_within_3_days' => ' DATE(createdOn) <= former_meeting_session + INTERVAL 3 DAY' 
+//	, 'purchase_within_3_days' => ' DATE(createdOn) <= former_meeting_session + INTERVAL 3 DAY' 
 );
 $aTheCons['org'] = $aWhere;
 
@@ -202,9 +208,6 @@ $aWhere = array(
 );
 
 $aTheCons['professional_rank'] = $aWhere;
-
-
-
 $aWhere = array(
 	'medlid' => sprintf(' medlid IN ("%s") ' , implode('", "', $aNewProvidiDis))
 	, 'fakturanr' => ' fakturanr > 10 '
@@ -247,6 +250,7 @@ if(!$bDoCreateDetailTable) {
 	$oRS = mysql_query($sQuery) or die(mysql_error());
 	$nOK = mysql_num_rows($oRS) > 0;
 	*/
+
 }
 
 if(!$nOK || $bDoCreateDetailTable || isset($_GET['force_create']) || isset($_GET['force_reload'])) {
@@ -322,7 +326,7 @@ if($bDoCreateTable)  {
 	// 2015-09-04 add more fields :(
 	// $sQuery .= sprintf(' SELECT "new_customer_made" code , originalDistributor medlid , RPAD(MAX(originalDistributorName),50," ")   name , COUNT(*) count_customer , SUM(IF( signupDate BETWEEN "2013-09-07 09:00:00" AND "2013-10-05 04:00:00" , 2 , 1)) customers , 0 meetings , 0 meeting_points , 0 vp , 0000.0 vp_points ,  0 sponsor_point , MAX(signupDate) last_cus , 0 last_meet_id , DATE("0000-00-00") last_vp_date ,  0 newsup_point , "0000-00-00" newsup_session , 0 direct_sponsor , "0000-00-00" last_direct_sponsor  , 0 webpakker , 0 webpakker_points , "0000-00-00" last_webpakkers '); 
 	$sQuery .= sprintf(' SELECT "new_customer_made" code , originalDistributor medlid , RPAD(MAX(originalDistributorName),50," ")   name , COUNT(*) count_customer , SUM(IF( signupDate BETWEEN "2013-09-07 09:00:00" AND "2013-10-05 04:00:00" , 2 , 1)) customers , 0 meetings , 0 meeting_points , 0 vp , 0000.0 vp_points ,  0 sponsor_point , MAX(signupDate) last_cus , 0 last_meet_id , DATE("0000-00-00") last_vp_date ,  0 newsup_point , "0000-00-00" newsup_session , 0 raw_direct_sponsor , 0 direct_sponsor , "0000-00-00" last_direct_sponsor  , 0 webpakker , 0 webpakker_points , "0000-00-00" last_webpakkers '); 
-	$sQuery .= ' , 0 professional_rank , 0 new_dis_webpakke ';
+	$sQuery .= ' , 0 professional_rank , 0 new_dis_webpakke , 0 leadership_points ';
 	$sQuery .= sprintf(' FROM customer_info WHERE %s GROUP BY  originalDistributor ' , implode(' AND ', $aWhere));
 
 	$aLogs[] = $sQuery;
@@ -340,7 +344,7 @@ if($bDoCreateTable)  {
 		// 2013-09-09 , extra 1 point for customer who signed up within period
 		// original line $sSubQuery .= sprintf(' SELECT originalDistributor medlid , LAST_DAY(signupDate) session , RPAD("",50,"z") sorting  , 0 raw_vp ,  0 raw_sponsor , RPAD(MAX(originalDistributorName),50," ")   name , COUNT(*) customers , 0 meetings , 0 meeting_points , 0 vp , 0000.0 vp_points , 000 raw_sponsor_point , 000 deducted_point , 000 sponsor_point , MAX(signupDate) last_cus , 0 last_meet_id , DATE("0000-00-00") last_vp_date '); 
 		$sSubQuery .= sprintf(' SELECT "new_customer_made" code , originalDistributor medlid , LAST_DAY(signupDate) session , RPAD("",50,"z") sorting  , 0 raw_vp ,  0 raw_sponsor , RPAD(MAX(originalDistributorName),50," ")   name , COUNT(*) count_customer , SUM(IF( signupDate BETWEEN "2013-09-07 09:00:00" AND "2013-10-05 04:00:00" , 2 , 1)) customers , 0 meetings , 0 meeting_points , 0 vp , 0000.0 vp_points , 000 raw_sponsor_point , 000 deducted_point , 000 sponsor_point , MAX(signupDate) last_cus , 0 last_meet_id , DATE("0000-00-00") last_vp_date , 0 raw_direct_sponsor ,  0 direct_sponsor , "0000-00-00" last_direct_sponsor , 0 webpakker , 0 webpakker_points , "0000-00-00" last_webpakkers '); 
-		$sSubQuery .= ' , 0 professional_rank , 0 new_dis_webpakke ';
+		$sSubQuery .= ' , 0 professional_rank , 0 new_dis_webpakke , 0 leadership_points';
 		
 		$sSubQuery .= ' , DATE("0000-00-00") newsup_session , 0 newsup_point ';
 		$sSubQuery .= sprintf(' FROM customer_info WHERE %s GROUP BY  originalDistributor , LAST_DAY(signupDate) ' , implode(' AND ', $aWhere));
@@ -376,7 +380,8 @@ if($bDoCreateTable)  {
 //	$sExtraOrgRule = ' CASE  WHEN COUNT(DISTINCT meeting_session) <= 3 THEN COUNT(DISTINCT meeting_session) * 2  WHEN COUNT(DISTINCT meeting_session) <= 6 THEN (3 * (COUNT(DISTINCT meeting_session) - 3)) + 6 WHEN COUNT(DISTINCT meeting_session) <= 9 THEN (4 * (COUNT(DISTINCT meeting_session) - 6)) + 15 WHEN COUNT(DISTINCT meeting_session) <= 12 THEN (5 * (COUNT(DISTINCT meeting_session) - 9)) + 27  END '  ;
 
 	
-	$sExtraOrgRule = ' CASE  COUNT(DISTINCT meeting_session) WHEN  1 THEN 1   WHEN 2 THEN 3  WHEN 3 THEN 6 WHEN 4 THEN 10 WHEN 5 THEN 15 WHEN 6 THEN 21 ELSE 0 END '  ;
+	//	$sExtraOrgRule = ' CASE  COUNT(DISTINCT meeting_session) WHEN  1 THEN 1   WHEN 2 THEN 3  WHEN 3 THEN 6 WHEN 4 THEN 10 WHEN 5 THEN 15 WHEN 6 THEN 21 ELSE 0 END '  ;
+	$sExtraOrgRule = ' CASE  COUNT(DISTINCT meeting_session) WHEN  1 THEN 1   WHEN 2 THEN 3  WHEN 3 THEN 6 WHEN 4 THEN 10 WHEN 5 THEN 15 WHEN 6 THEN 21 WHEN 7 THEN 28 WHEN 8 THEN 35 ELSE 0 END '  ;
 	$sQuery = sprintf(' INSERT INTO %s(code , medlid , meetings  ,meeting_points , name , last_meet_id , last_cus , last_vp_date) ' , $s2015TempTableName);
 	$sQuery .= sprintf(' SELECT "org" , medlid , COUNT(DISTINCT meeting_session) meeting_joins , %s sc_org_points , MAX(navn) name , id , DATE("0000-00-00") , DATE("0000-00-00")  FROM org2 WHERE  %s  GROUP BY medlid ' , $sExtraOrgRule , implode(' AND ' ,$aWhere)) ;
 	$aLogs[] = $sQuery;
@@ -413,14 +418,16 @@ if($bDoCreateTable)  {
 			if($nTheMedlid != $oRow->medlid) {
 				$oRow->meeting_points = $nTheOrgPoints = 1;
 				$nTheMedlid = $oRow->medlid;
-			} else {
+			} else {/*
 				switch($nTheOrgPoints + 1) {
 					case 2 :		$oRow->meeting_points = $nTheOrgPoints = 2; break;
 					case 3 :		$oRow->meeting_points = $nTheOrgPoints = 3; break;
 					case 4 :		$oRow->meeting_points = $nTheOrgPoints = 4; break;
 					case 5 :		$oRow->meeting_points = $nTheOrgPoints = 5; break;
 					case 6 :		$oRow->meeting_points = $nTheOrgPoints = 6; break;				
-				}
+				}*/
+
+				$oRow->meeting_points = $nTheOrgPoints = q2015_getOrgPoints($nTheOrgPoints + 1 , 'cumulative');
 				reset($oRow);
 			}
 
@@ -888,6 +895,18 @@ if(!empty($a2015QRules['professional_rank'])) {
 }
 ### H. Professional Rank #######
 
+### H2. leadership rank #################################################################
+if(!empty($a2015QRules['leadership_points'])) {
+
+
+
+	__leadershipRank_points();
+}
+###  H2. leadership rank  #################################################################
+
+
+
+
 // 2015-09-04
 ### I. New Distribuor Webpakker #######
 if(!empty($a2015QRules['new_dis_webpakke'])) {
@@ -978,7 +997,11 @@ if($b2015UseNiceName) {
 
 function q2015_getOrgPoints($nTimes ,$sMode='cumulative') {
 
-	if($nTimes >= 6) {
+	if($nTimes > 7) {
+		return $sMode=='cumulative' ? 38  : 8;
+	} else if($nTimes == 7) {
+		return $sMode=='cumulative' ? 28  : 7;
+	} else if($nTimes == 6) {
 		return $sMode=='cumulative' ? 21  : 6;
 	} else if($nTimes == 5) {
 		return $sMode=='cumulative' ? 15  : 5;
@@ -1019,5 +1042,64 @@ function _getNewProvidiDistributor2015() {
 }
 
 
+
+
+
+
+function __leadershipRank_points() {
+	global $oDB;
+	global $aLogs , $aQ2015Con;
+	global $bDoCreateDetailTable , $bDoCreateTable;
+	global $s2015TempTableName , $s2015TempDetailTableName ,$s2015UseTemporary;
+	global $a2015QRules;
+	$aLogs[] = '<strong>H2. ===============================================</strong>';
+	$aLogs[] = '<strong style="color:red;">Leadership Rank</strong>';
+	$aQ2015Con['leadership_points'] = array();
+
+$aLeadershipPoints = array(
+	// OCTOBER
+	array('medlid' => '40103839' , 'name' => 'Stine Schmidt Hoeppner' , 'points' => 20 , 'session' => '2015-10-31')
+	, array('medlid' => '22372664' , 'name' => 'Stine Andersen' , 'points' => 20 , 'session' => '2015-10-31')
+	, array('medlid' => '28499376' , 'name' => 'Dicte Jensen' , 'points' => 20 , 'session' => '2015-10-31')
+	, array('medlid' => '3508450434' , 'name' => 'Natasja Aggergren' , 'points' => 20 , 'session' => '2015-10-31')
+	, array('medlid' => '51521234' , 'name' => 'Boye Skov' , 'points' => 20 , 'session' => '2015-10-31')
+	, array('medlid' => '22715250' , 'name' => 'Bjørn Kristiansen' , 'points' => 20 , 'session' => '2015-10-31')
+	, array('medlid' => '61715118' , 'name' => 'Tanja Kjær Pedersen' , 'points' => 20 , 'session' => '2015-10-31')
+	 
+	, array('medlid' => '35047398' , 'name' => 'Karin Lind Kølbæk' , 'points' => 20 , 'session' => '2015-10-31')
+	, array('medlid' => '61715118' , 'name' => 'Tanja Kjær Pedersen' , 'points' => 20 , 'session' => '2015-10-31')
+
+	, array('medlid' => '350820005A' , 'name' => 'John Le Andersen' , 'points' => 30 , 'session' => '2015-10-31')
+	 
+);
+
+
+	if( $bDoCreateDetailTable ||  $bDoCreateTable) {
+		for($i=0;$i<count($aLeadershipPoints);$i++) {
+			$aP = $aLeadershipPoints[$i];
+			$aInsert = array(
+				'code' => 'leadership_points'
+				, 'medlid' => $aP['medlid']
+				, 'name' => $oDB->esc($aP['name'])
+				, 'leadership_points' => $aP['points']
+			);
+
+			if($bDoCreateTable) {
+				$sQuery = sprintf(' INSERT INTO %s %s (%s) VALUES("%s") ' ,$s2015UseTemporary  , $s2015TempTableName , implode(', ', array_keys($aInsert)) , implode('", "', array_values($aInsert)));
+				$aLogs[] = $sQuery;
+				$oDB->query($sQuery);
+			}
+
+			if($bDoCreateDetailTable) {
+				$aInsert['session'] = $aP['session'];
+				$sQuery = sprintf(' INSERT INTO %s %s (%s) VALUES("%s") ' ,$s2015UseTemporary  , $s2015TempDetailTableName , implode(', ', array_keys($aInsert)) , implode('", "', array_values($aInsert)));
+				$aLogs[] = $sQuery;
+				$oDB->query($sQuery);
+			}
+		}
+	}
+
+
+}
 
 ?>

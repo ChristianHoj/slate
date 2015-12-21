@@ -11,7 +11,7 @@ class providiStatistic extends providiList{
 			$aText[ $i ] = ucwords(strtolower($aText[$i]));
 		}
 		return implode('', $aText);
-	
+
 	}
 	static function getPeriodFromMode($sModeText, $sTheDate=null) {
 
@@ -19,7 +19,7 @@ class providiStatistic extends providiList{
 			$sTheDate = time();
 		} else {
 			// $sTheDate = strtotime($sTheDate);
-			// this providiDateTime() will converted into server time format 
+			// this providiDateTime() will converted into server time format
 			$sTheDate = providiDateTime($sTheDate , 'SQL');
 
 		}
@@ -28,7 +28,7 @@ class providiStatistic extends providiList{
 		}*/
 
 		switch($sModeText)	{
-			case 'this-week'		:	
+			case 'this-week'		:
 											$sFromDate = strtotime('monday this week' , $sTheDate);
 											$sToDate = strtotime('+6 DAY' , $sFromDate);
 											return array('fromDate' => date('Y-m-d', $sFromDate) , 'toDate' => date('Y-m-d',$sToDate) , 'alias' => 'thisWeek');
@@ -39,7 +39,7 @@ class providiStatistic extends providiList{
 			case 'last-30-days'	:	$sToDate = strtotime( date('Y-m-d' , $sTheDate));
 											$sFromDate = strtotime('-30 DAY' , $sToDate);
 											return array('fromDate' => date('Y-m-d', $sFromDate) , 'toDate' => date('Y-m-d',$sToDate) , 'alias' => 'last30Days');
-		}	
+		}
 		return null;
 	}
 
@@ -50,7 +50,7 @@ class providiStatistic extends providiList{
 		if(is_null($aRawMode)) {
 			$aRawMode = array(
 				'this-week' , 'previous-week', 'last-30-days'
-			);		
+			);
 		}
 
 		$aModes = array();
@@ -62,7 +62,7 @@ class providiStatistic extends providiList{
 			, 'onlyVS' => ' originalDistributor NOT LIKE "IV%" AND originalDistributor NOT LIKE "SK%" AND originalDistributor NOT LIKE "SS%" '
 			, 'sameSource' => ' currentDistributor = originalDistributor  '
 		);
-		
+
 
 		// while for each mode
 		while(list($sUnusedKey, $sMode) = each($aRawMode)) {
@@ -79,12 +79,12 @@ class providiStatistic extends providiList{
 
 			$oNode->period = $oPeriod;
 			$oNode->positions = array();
-			
+
 			// only denmark get this rule , the rest return empty list
 			if(strtoupper($sRegionCode) == 'DK') {
 				$aWhere['signupDate'] =  sprintf(' DATE(signupDate) BETWEEN "%s" AND "%s" ' , $oDB->esc($aModeConfig['fromDate']), $oDB->esc($aModeConfig['toDate']));
 				$sQuery = sprintf(' SELECT currentDistributor providiID , COUNT(*) recs FROM customer_info WHERE %s GROUP BY currentDistributor ORDER BY recs DESC , MAX(signupDate) DESC LIMIT %d ' , implode(' AND ',$aWhere), $nLimit);
-				$aList = $oDB->query($sQuery);			
+				$aList = $oDB->query($sQuery);
 			} else {
 				$aList = array();
 			}
@@ -105,9 +105,9 @@ class providiStatistic extends providiList{
 		return $oReturn;
 	}
 /*
-SELECT currentDistributor , COUNT(*) recs FROM customer_info WHERE id >= 28000 AND customerID != "" 
-	AND currentDistributor = originalDistributor 
-	AND DATE(signupDate) BETWEEN "2015-09-21" AND "2015-09-27" AND originalDistributor NOT LIKE "IV%" AND originalDistributor NOT LIKE "SK%" AND originalDistributor NOT LIKE "SS%" AND customerID NOT LIKE "%0000" GROUP BY currentDistributor ORDER BY recs DESC , MAX(signupDate) DESC LIMIT 10 
+SELECT currentDistributor , COUNT(*) recs FROM customer_info WHERE id >= 28000 AND customerID != ""
+	AND currentDistributor = originalDistributor
+	AND DATE(signupDate) BETWEEN "2015-09-21" AND "2015-09-27" AND originalDistributor NOT LIKE "IV%" AND originalDistributor NOT LIKE "SK%" AND originalDistributor NOT LIKE "SS%" AND customerID NOT LIKE "%0000" GROUP BY currentDistributor ORDER BY recs DESC , MAX(signupDate) DESC LIMIT 10
 */
 
 }

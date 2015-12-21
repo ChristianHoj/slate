@@ -18,7 +18,8 @@ class ProvidiLead extends ProvidiObject{
 		}
 		
 		$sText = ProvidiTrimSpaces($sText);
-		$aReturn = array(
+
+		/*  2015-11-13
 			'not_interested' => 'Ikke interesseret'
 			, 'XX_NOT_TAKEN' => 'Ikke truffet'
 			, 'no_money' => 'Ingen penge lige nu'
@@ -26,19 +27,37 @@ class ProvidiLead extends ProvidiObject{
 			, 'XX_DOES_NOT_THAT_HAVE_TURNED' => 'Mener ikke at have henvendt sig'
 			, 'never_asked_for_contact' => 'Svaret nej til at ville kontaktes'
 			, 'non_existing' => 'Tlf. nr. eller person eksisterer ikke'
+		*/
+		$aReturn = array(
+			'not_interested' => 'Ikke interesseret'
+			, 'not_available' => 'Ikke truffet'
+			, 'no_money' => 'Ingen penge lige nu'
+			, 'signed_up' => 'Meldt ind'   // AKA joined????
+			, 'never_asked_for_contact' => 'Mener ikke at have henvendt sig'
+			, 'no' => 'Svaret nej til at ville kontaktes'
+			, 'non_existing' => 'Tlf. nr. eller person eksisterer ikke'
+			, 'no_show' => 'Ikke truffet til den aftalte tid'
+			// added on 2015-11-18
+			, 'not_contacted' => 'not_contacted'
 		);
 		if($sMode == 'raw') {
 			return $aReturn;
 		}
 		if($sMode == 'get_code') {
+			// 2015-11-13 maybe the sText was already in proper format, just return it! 
+			if(isset($aReturn[ $sText ])) {
+				return $sText;
+			}
+
 			$aTemp = array();
 			reset($aReturn);
 			while(list($sKey,$sValue) = each($aReturn)) {
 				if($sText == $sValue) {
 					return $sKey;
 				}
-				$aTemp[  providiTrimSpaces($sValue) ] = $sKey;			
-			}		
+				/// $aTemp[  providiTrimSpaces($sValue) ] = $sKey;			
+			}	
+
 		} else {
 			if(isset($aReturn[ $sText ])) {
 				return $aReturn[ $sText ];
@@ -87,7 +106,10 @@ class ProvidiLead extends ProvidiObject{
 		$sMessage = ProvidiLead::_extractQCodes($oRow->hvorfor , $sWeightLost , $sSerious );
 
 
-		$oReturn->weight_lost  = $sWeightLost;
+		//$oReturn->weight_lost  = $sWeightLost;
+		// [=>CBH] fixed on 2015-10-28 , spelling
+		$oReturn->weight_loss  = $sWeightLost;
+
 		$oReturn->id = $oRow->id;
 		$oReturn->message = $sMessage ;
 
@@ -113,7 +135,8 @@ class ProvidiLead extends ProvidiObject{
 		}
 
 		$oReturn->phone = implode(', ', $aTemp);
-		$oReturn->order = null;
+	//  [=>CBH] , fields no longer needs and removed on 2015-10-28
+	//	$oReturn->order = null;
 		$oReturn->status = ProvidiLead::_getEvaluationCode($oRow->lead_evaluation);
 		$oReturn->serious = $sSerious;
 		$oReturn->zipcode = $oRow->postnr;

@@ -103,7 +103,7 @@ class ProvidiRecruitLead extends ProvidiObject{
 		if(!empty($oRow->telefon)) {
 			$aTemp[] = providiTrimSpaces($oRow->telefon);
 		}
-		if(!empty($oRow->telefon2)) {
+		if(!empty($oRow->telefon2) && $oRow->telefon != $oRow->telefon2 ) {
 			$aTemp[] = providiTrimSpaces($oRow->telefon2);
 		}
 
