@@ -10,7 +10,15 @@ if($_SERVER['HTTP_HOST'] =='127.0.0.1') {
 }
 
 
-$aGET = $_GET;
+// $aGET = $_GET;
+$aGET = providiPostBody();
+if(empty($aGET['token']) && !empty($_GET['token'])) {
+	$aGET['token'] = $_GET['token'];
+}
+if(empty($aGET['userId']) && !empty($_GET['userId'])) {
+	$aGET['userId'] = $_GET['userId'];
+}
+
 
 try {
 
@@ -50,24 +58,30 @@ try {
 			$aGET['status'] = 'not_contacted';
 		}
 
-		$oLead->lead_evaluation = $aGET['status'];
+		$oLead->setLeadEvaluation($aGET['status']);
 		$bNeedSave = true;
 	}
 	if(isset($aGET['lead_name'])) {
-		$oLead->navn = $aGET['lead_name'];	
-		$bNeedSave = true;
-	}
-	if(isset($aGET['lead_phone'])) {
-		$oLead->telefon = $aGET['lead_phone'];	
+		// $oLead->navn = $aGET['lead_name'];	
+		$oLead->setName($aGET['lead_name']);
 		$bNeedSave = true;
 	}
 
+	if(!empty($aGET['lead_telephone']) && empty($aGET['lead_phone'])) {
+		$aGET['lead_phone'] = $aGET['lead_telephone'];
+	}
+	if(isset($aGET['lead_phone'])) {
+		//	$oLead->telefon = $aGET['lead_phone'];
+		$oLead->setTelephone($aGET['lead_phone']);
+
+		$bNeedSave = true;
+	}
 
 	if($bNeedSave) {
 		$oLead->save();
-	} else {
+	} /* else {
 		throw new providiBadRequestException('Invalid request parameter' , 5202);
-	}
+	}*/
 
 
 

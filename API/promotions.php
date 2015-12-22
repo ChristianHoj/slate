@@ -32,7 +32,7 @@ try {
 		$oAtt->data[] =  $oMeeting;			*/
 
 		$oMeeting = new stdClass();
-		$oMeeting->id = 2015;
+		$oMeeting->id = '2015';
 		$oMeeting->type = 'promotion';
 		$oMA = new stdClass();
 		$oMA->title = 'Cruise fra New York 2016';

@@ -75,6 +75,8 @@ class providiStatistic extends providiList{
 			$oPeriod = new stdClass();
 			$oPeriod->from  = providiDateTime($aModeConfig['fromDate']);
 			$oPeriod->until  = providiDateTime($aModeConfig['toDate']);
+
+
 			$sAlias = $aModeConfig['alias'];
 
 			$oNode->period = $oPeriod;
@@ -91,11 +93,15 @@ class providiStatistic extends providiList{
 
 			for($i=0;$i<count($aList);$i++) {
 				$oPos = new stdClass();
-				$oPos->position = $i+1;
+				$oPos->position = sprintf("%d", $i+1);
 				$oPos->newMembers = $aList[$i]->recs;
-				$oDA = providiGetDistributorInfo($aList[$i]->providiID);
-				$oPos->name = $oDA->name;
-				$oPos->image = $oDA->image;
+				$oDA = new providiDistributor($oDB);
+				$oDA->loadFromProvidiID($aList[$i]->providiID);
+				//$oDA = providiGetDistributorInfo($aList[$i]->providiID);
+				//$oPos->name = $oDA->name;
+				//$oPos->image = $oDA->image;
+				$oPos->name = $oDA->getName();
+				$oPos->image = $oDA->getProfileImageURL();
 				$oNode->positions[] = $oPos;
 			}
 

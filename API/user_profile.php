@@ -1,4 +1,5 @@
-<?php
+<?php // æ
+
 
 require_once './includes/initialize.php';
 global $oDB;
@@ -27,7 +28,7 @@ try {
 
 	$oDis = new providiDistributor($oDB);
 	$oDis->loadFromProvidiID($aGET['userId']);
-
+	
 	$sSponsor = $oDis->getSponsor();
 	$aTempSponsor = explode(' ' , providiTrimSpaces($sSponsor));
 
@@ -43,8 +44,7 @@ try {
 	$oAtt->last_name = '';
 	if(count($aNames) > 0) {
 		$oAtt->last_name = $aNames[ count($aNames) - 1 ];
-	}
-	
+	}	
 	// added on 2015-11-24
 	$oAtt->id = $oDis->getProvidiID();
 
@@ -93,14 +93,12 @@ try {
 
 	$oData = new stdClass();
 	$oData->type = 'user';
-	$oData->id = $oAuth->providiID;
+	$oData->id = $oAuth->getProvidiID();
 
 	$oData->attributes = $oAtt;
 	// // [=>CBH] fixed on 2015-10-28 , wrong response format
 	//$oResponse = $oData;
 	$oResponse->data = $oData;
-
-
 
 
 
@@ -114,37 +112,5 @@ if(isset($_GET['debug'])) {
 }
 
 providiJSONResponse($oResponse);
-/*
 
-{
-  "data": {
-    "type": "user",
-    "id": "SC000XXXXXXX",
-    "attributes": {
-      "accountType": 0,
-      "address": "Main Street 14",
-      "city": "Lovkotsk",
-      "company_name": "My Health Company",
-      "country": "Slovenia",
-      "imageUrl": "http://example.com/default-avatar.jpg",
-      "name": "Gabriel Muresan",
-      "partner_email": "partner@email.com",
-      "partner_name": "Partner Muresan",
-      "partner_skype_id": "partner_skype",
-      "paypal_email": "mypaypal@email.com",
-      "phone": "98765432",
-      "quickpay_api_key": "klusfiuysbf74oha4bfauua42",
-      "quickpay_merchant_id": 765234776,
-      "recruit_firstname": "Recruiter",
-      "recruit_lastname": "Muresan",
-      "reference_code": 765384,
-      "shipping_cost": 80,
-      "skype_id": "seller_skype",
-      "vs_link": "http://www.voressundhed.dk/?customerID=12345678",
-      "vs_name": "My Vores Sundhed Name",
-      "zipcode": 9230
-    }
-  }
-}
-*/
 ?>

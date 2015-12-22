@@ -1,21 +1,27 @@
-<?php
+<?php // all the scripts should be saved as UTF8 // æ
 
 
 class providiDistributor extends providiObject {
 	function _setBaseTable() {
 		$this->_sTableName = 'da_reference';
+		$this->_bNeedUTF8Conversion = true;
+		$this->_sTableCharset = 'latin1';
 	}
 
 	function loadFromProvidiID($sProvidiID) {
 		global $oDB;
+		$this->prepareCharset();
 		$sQuery = sprintf(' SELECT * FROM da_reference WHERE Reference = "%s" ' , $oDB->esc($sProvidiID));
 		$oDis = $oDB->getObject($sQuery);
 		if(empty($oDis)) {
 			//throw new providiMethodNotAllowedException('Cannot find user with providiID - ' . $sProvidiID , 5010);
-			throw new providiBadRequestException('Cannot find user with providiID - ' . $sProvidiID , 5010);
-			
+			throw new providiBadRequestException('Cannot find user with providiID - ' . $sProvidiID , 5010);			
 		}
+
 		$this->merge($oDis);
+		if(!empty($this->_bNeedUTF8Conversion)) {
+			$this->toUTF8();		
+		}
 		return $this;
 	}
 	function getName() {
@@ -46,6 +52,31 @@ class providiDistributor extends providiObject {
 		$this->land = $sNewValue;
 		return $this->land;
 	}
+	function getImage() {
+		return  $this->image;
+	}
+	function setImage($sNewValue) {
+		return  $this->image = $sNewValue;
+	}
+	function getUsername() {
+		return $this->username;
+	}
+	function setUsername($sNewValue) {
+		return $this->username = $sNewValue;
+	}
+	function getPassword() {
+		return $this->password;
+	}
+	function setPassword($sNewValue) {
+		return $this->password = $sNewValue;
+	}
+	function getEmail() {
+		return $this->Email;
+	}
+	function setEmail($sNewValue) {
+		return $this->Email = $sNewValue;
+	}
+
 	function getProfileImageURL() {
 		global $aProvidiConfigs;
 		$sTheImage = $this->image;
@@ -54,6 +85,13 @@ class providiDistributor extends providiObject {
 		}
 		$sImageURL = sprintf('%s%s' , $aProvidiConfigs['URL_profile_image_path'] , $sTheImage);
 		return $sImageURL;	
+	}
+
+	function getSponsorID() {
+		return $this->sponsor_id;
+	}
+	function getSponsorName() {
+		return $this->getSponsor();
 	}
 
 	function getSponsor() {
@@ -84,6 +122,20 @@ class providiDistributor extends providiObject {
 	function getTelephone() {
 		return $this->Telefon;
 	}
+	function getLeadershipRank() {
+		return $this->leadershipRank;
+	}
+	function setLeadershipRank($sNewValue) {
+		return $this->leadershipRank = $sNewValue;
+	}
+	function getEarningRank() {
+		return $this->earningRank;
+	}
+	function setEarningRank($sNewValue) {
+		return $this->earningRank = $sNewValue;
+	}
+
+
 
 
 	function getReferenceCode() {
@@ -128,6 +180,7 @@ class providiDistributor extends providiObject {
 
 
 	function _loadFromReference($sProvidiID=null) {
+		$bNeedUTF8Conversion = true;
 		if(empty($sProvidiID)) {
 			$sProvidiID = $this->getProvidiID();
 		}
@@ -140,12 +193,17 @@ class providiDistributor extends providiObject {
 		);
 		$sQuery = sprintf(' SELECT * FROM refkunde WHERE %s  ' , implode(' AND ' ,$aWhere));
 		$aRef = $this->_oDB->getRow($sQuery);
+		
+		if($bNeedUTF8Conversion) {
+			$this->toUTF8($aRef);  
+ 		}
 		$this->_aRef = $aRef;
 		return $aRef;	
 	}
 
 
 	function _loadFromSelfCustomerAccount($sCustomerID = null) {
+		
 		if(empty($sCustomerID)) {
 			$sCustomerID = $this->getProvidiID() . '0000';		
 		}
@@ -155,6 +213,10 @@ class providiDistributor extends providiObject {
 
 		$sQuery = sprintf(' SELECT * FROM customer_info WHERE customerID = "%s" ' , $sCustomerID);
 		$this->_aSelfAccount = $this->_oDB->getRow($sQuery);
+		$bNeedUTF8Conversion = true;
+		if($bNeedUTF8Conversion) {
+			$this->toUTF8($this->_aSelfAccount);  
+ 		}
 		return $this->_aSelfAccount;	
 	}
 
@@ -229,7 +291,13 @@ class providiDistributor extends providiObject {
 		);
 		$sQuery = sprintf(' SELECT * FROM refkunde_paypal WHERE %s  ' , implode(' AND ' ,$aWhere));
 		$aRef = $this->_oDB->getRow($sQuery);
+		$bNeedUTF8Conversion = true;
+		if($bNeedUTF8Conversion) {
+			$this->toUTF8($this->_aRef);  
+ 		}
+		
 		$this->_aRefPaypal = $aRef;
+
 		return $aRef;	
 	}
 	function _loadFromRefkundePBS($sProvidiID=null) {
@@ -246,6 +314,11 @@ class providiDistributor extends providiObject {
 		);
 		$sQuery = sprintf(' SELECT * FROM refkunde_pbs WHERE %s  ' , implode(' AND ' ,$aWhere));
 		$aRef = $this->_oDB->getRow($sQuery);
+		$bNeedUTF8Conversion = true;
+		if($bNeedUTF8Conversion) {
+			$this->toUTF8($this->_aSelfAccount);  
+ 		}
+
 		$this->_aRefPBS = $aRef;
 		return $aRef;	
 	}
@@ -290,39 +363,58 @@ class providiDistributor extends providiObject {
 		}
 		return @$this->_aSelfAccount['name'] = $sNewValue;
 	}
-	function setPaypalEmail($sNewValue) {
+	function setPaypalEmail($sNewValue ,$bNecessary=false) {
 		if(empty($this->_aRefPaypal)) {
 			$this->_loadFromRefkundePaypal();
 		}
 		if(empty($this->_aRefPaypal)) {
-			throw new providiBadRequestException('Cannot locate Paypal info for the distributor' , 703);
+			if($bNecessary) {
+				throw new providiBadRequestException('Cannot locate Paypal info for the distributor' , 703);
+			} else {
+				return false;
+			}
 		}
 		return @$this->_aRefPaypal['paypal_email'] = $sNewValue;
 	}
-	function setCustomShippingCost($sNewValue) {
+	function setCustomShippingCost($sNewValue,$bNecessary=false) {
 		if(empty($this->_aRef)) {
 			$this->_loadFromReference();
+		}
+		if(empty($this->_aRef)) {
+			if($bNecessary) {
+				throw new providiBadRequestException('Cannot locate shop info for the distributor' , 704);
+			} else {
+				return false;
+			}
 		}
 		return $this->_aRef['custom_shipping_cost'] = $sNewValue;
 	}
 
-	function setQuickpayAPIKey($sNewValue) {
+	function setQuickpayAPIKey($sNewValue,$bNecessary=false) {
 		if(empty($this->_aRefPBS)) {
 			$this->_loadFromRefkundePBS();
 		}
 		if(empty($this->_aRefPBS)) {
-			throw new providiBadRequestException('Cannot locate PBS info for the distributor' , 701);
+			if($bNecessary) {
+				throw new providiBadRequestException('Cannot locate PBS info for the distributor' , 701);
+			} else {
+				return false;
+			}
 		}
 		$this->_aRefPBS['pbs_md5secret'] = $sNewValue;		
 		return @$this->_aRefPBS['pbs_md5secret'];
 	}
 
-	function setQuickpayMerchantID($sNewValue) {
+	function setQuickpayMerchantID($sNewValue,$bNecessary=false) {
 		if(empty($this->_aRefPBS)) {
 			$this->_loadFromRefkundePBS();
 		}
 		if(empty($this->_aRefPBS)) {
-			throw new providiBadRequestException('Cannot locate PBS info for the distributor' , 702);
+			if($bNecessary) {
+				throw new providiBadRequestException('Cannot locate PBS info for the distributor' , 702);
+			} else {
+				return false;
+			}
 		}
 		return $this->_aRefPBS['pbs_merchantid'] = $sNewValue;
 	}
@@ -342,6 +434,11 @@ class providiDistributor extends providiObject {
 			return false;
 		}
 		$aUpdates = array();
+		$bNeedISOConversion = true;
+		if($bNeedISOConversion) {
+			$this->toISO($this->_aRef);
+		}
+
 		reset($this->_aRef);
 		while(list($sKey,$sValue) = each($this->_aRef)) {
 			if($sKey == 'hbl_id') {
@@ -365,6 +462,11 @@ class providiDistributor extends providiObject {
 			return false;
 		}
 		$aUpdates = array();
+		$bNeedISOConversion = true;
+		if($bNeedISOConversion) {
+			$this->toISO($this->_aRefPBS);
+		}
+
 		reset($this->_aRefPBS);
 		while(list($sKey,$sValue) = each($this->_aRefPBS)) {
 			if($sKey == 'hbl_id') {
@@ -388,6 +490,11 @@ class providiDistributor extends providiObject {
 			return false;
 		}
 		$aUpdates = array();
+		$bNeedISOConversion = true;
+		if($bNeedISOConversion) {
+			$this->toISO($this->_aRefPaypal);
+		}
+
 		reset($this->_aRefPaypal);
 		while(list($sKey,$sValue) = each($this->_aRefPaypal)) {
 			if($sKey == 'hbl_id') {
@@ -407,10 +514,16 @@ class providiDistributor extends providiObject {
 	}
 
 	function _saveDaReference() {
+
 		if(empty($this->Reference)) {
 			throw new providiBadRequestException('Cannot save empty reference ' , 710);
 		}
 		$aUpdates = array();
+		$bNeedISOConversion = true;
+		if($bNeedISOConversion) {
+			$this->toISO();
+		}
+		reset($this);
 		while(list($sKey,$sValue) = each($this)) {
 			if($sKey == 'Reference') {
 				continue;

@@ -19,58 +19,59 @@ try {
 	}
 
 	if(empty($aGET['from_date']) && empty($aGET['to_date'])) {
-		// [=>CBH]  changed default dates to full date formats
-		$aGET['from_date'] = date('Y-m-d 00:00:00' , strtotime(' -7 DAY '));
-		$aGET['to_date'] = date('Y-m-d 23:59:59');
-	} else {
-		if(!empty($aGET['from_date'])) {
-			$aGET['from_date'] = providiDateTime($aGET['from_date'] , 'SQL');
-		}
-		if(!empty($aGET['to_date'])) {
-			$aGET['to_date'] = providiDateTime($aGET['to_date'] , 'SQL');
-		}
-	
-	
-	}
+		$aGET['from_date'] = date('Y-m-d 00:00:00' , strtotime(' -7 DAY '));		
+	} 
 
 
 	require_once './includes/providiLead.class.php';
 
 	$oLeadList = new providiLeadList($oDB);
+	$aOptions = array();
+	$aAllowFields = array('userId' , 'from_date' , 'to_date' , 'mode' ,'limit', 'offset');
+	reset($aGET);
+	while(list($sKey,$sValue) = each($aGET)) {
+		if(in_array($sKey , $aAllowFields)) {
+			$aOptions[ $sKey ] = $sValue;
+		}
+	}
+
+	if(empty($aOptions['userId'])) {
+		throw new providiBadRequestException('no lead owner specified' , 771);
+	}
 
 
 	$aData = array();
-	$aTemp = $oLeadList->getList($aGET['userId'] , @$aGET['from_date'] , @$aGET['to_date'] , @$aGET['mode']);
+	$aList = $oLeadList->getList($aOptions);
 
 	
-	for($i=0;$i<count($aTemp);$i++) {
-
-		$oL = $aTemp[$i];
-
+	for($i=0;$i<count($aList);$i++) {
+		$oL = $aList[$i];
+		
 		$oTheLead = new stdClass();
+
+		$oTheLead->id = $oL->getID();
 		$oTheLead->type = 'leads';
-		$oTheLead->id = $oL->id;
 
 		$oAtt = new stdClass();
-		$oAtt->email = $oL->email;
-		$oAtt->lead_assigned_date = $oL->lead_assigned_date;
-		$oAtt->lead_type = $oL->lead_type;
-		$oAtt->message = $oL->message;
-		$oAtt->name = $oL->name;
-		$oAtt->origin = '';
-		$oAtt->phone = $oL->phone;
-		$oAtt->serious = $oL->serious;
-		$oAtt->status = $oL->status;		
+		$oAtt->email = $oL->getEmail();
+		$oAtt->lead_assigned_date = providiDateTime($oL->getAssignedDate(), 'text');
+		$oAtt->lead_type = $oL->getLeadType();
 
-		if($oAtt->status == '') {
-			$oAtt->status = 'not_contacted';
+		$oAtt->message = $oL->getMessage();
+        $oAtt->name = $oL->getName();
+		$oAtt->origin = ''; // masked for the distributor, internal used only
+		$oAtt->phone = $oL->getTelephone();
+		$oAtt->serious = '';
+		$oAtt->status = $oL->getLeadEvaluation();
+		if(empty($oAtt->status)) {
+			$oAtt->status = "not_contacted";
 		}
-
-		$oAtt->weight_loss = $oL->weight_loss;
-		$oAtt->zipcode = $oL->zipcode;
+		$oAtt->weight_loss = '';
+		$oL->_extractQCformat(  $oAtt->message, $oAtt->weight_loss , $oAtt->serious);
+		$oAtt->zipcode = $oL->getZipCode();
+		
 		$oTheLead->attributes = $oAtt;
-
-		$aData[] = $oTheLead;
+		$aData[] = $oTheLead ;
 	}
 
 
@@ -81,7 +82,6 @@ try {
 	$oData->attributes = $oAtt;
 */	
 	$oResponse->data = $aData;
-
 
 } catch (Exception $e) {
 	providiJSONErrorHandler($oResponse , $e);

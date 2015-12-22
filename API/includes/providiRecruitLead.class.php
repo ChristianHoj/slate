@@ -4,7 +4,81 @@
 class ProvidiRecruitLead extends ProvidiObject{
 	function _setBaseTable() {
 		$this->_sTableName = 'emner';
+		$this->_sTableCharset = 'latin1';
 	}
+	
+	function getName() {
+		return $this->navn;
+	}
+	function setName($sNewValue) {
+		return $this->navn = $sNewValue;
+	}
+	function getTelephone() {
+		return $this->telefon;
+	}
+	function setTelephone($sNewValue) {
+		return $this->telefon = $sNewValue;
+	}
+	function getOrigin() {
+		return $this->site;
+	}
+	function setOrigin($sNewValue) {
+		return $this->site = $sNewValue;
+	}
+	function getAssignedDate() {
+		return $this->assigned_on;
+	}
+	function setAssignedDate($sNewValue) {
+		return $this->assigned_on = $sNewValue;
+	}
+	function getMessage() {
+		return $this->besked;
+	}
+	function setMessage($sNewValue) {
+		return $this->besked = $sNewValue;
+	}
+	function getOwner() {
+		if(in_array('medlid' , $this->_aValidFields)) {
+			return $this->medlid;
+		}
+		return $this->providiID;		
+	}
+	function setOwner($sNewValue) {
+		if(in_array('medlid' , $this->_aValidFields)) {
+			$this->medlid = $sNewValue;
+			return $this->medlid ;
+		}
+		$this->providiID = $sNewValue;		
+		return $this->providiID;
+	}
+
+
+
+	function getEmail() {
+		return $this->email;
+	}
+	function setEmail($sNewValue) {
+		return $this->email = $sNewValue;
+	}
+	function getAge() {
+		return $this->alder;
+	}
+	function setAge($sNewValue) {
+		return $this->alder = $sNewValue;
+	}
+	function getZipCode() {
+		return $this->postnr;
+	}
+	function setZipCode($sNewValue) {
+		return $this->postnr = $sNewValue;
+	}
+	function getExpectedEarnings() {
+		return $this->expected_income;
+	}
+	function setExpectedEarnings($sNewValue) {
+		return $this->expected_income = $sNewValue;
+	}
+
 
 
 	static function _getEvaluationCode($sText) {
@@ -49,24 +123,7 @@ class ProvidiRecruitLead extends ProvidiObject{
 		return $sReturn;
 	}
 
-	static function NO_extractQCformat($sText , &$expectedLostWeight  , &$sSeriousness ) {
-		$aTexts = explode("\n" , $sText);
-		for($i=0;$i<count($aTexts);$i++) {
-			$sThisLine = $aTexts[$i];
-			if(stristr($sThisLine , '_QC1' ) !== false ) {
 
-				if( stristr($sThisLine , 'ja') !== false) {
-					$sSeriousness = 'yes';
-				}
-				if( stristr($sThisLine , 'nej') !== false) {
-					$sSeriousness = 'no';
-				}			
-			}
-			if(stristr($sThisLine , '_QC2' ) !== false ) {
-				$expectedLostWeight = providiTrimSpaces( str_replace(' _QC2 : ', '', $sThisLine));
-			}		
-		}
-	}
 
 	static function _extractQCodes($sText , &$expectedLostWeight  , &$sSeriousness ) {
 		if(stristr($sText , '_QC1 :')) {
@@ -121,19 +178,7 @@ class ProvidiRecruitLead extends ProvidiObject{
 
 
 
-	function getOwner() {
-		if(in_array('medlid' , $this->_aValidFields)) {
-			return $this->medlid;
-		}
-		return $this->providiID;		
-	}
-	function setOwner($sNewValue) {
-		if(in_array('medlid' , $this->_aValidFields)) {
-			$this->medlid = $sNewValue;
-		}
-		$this->providiID = $sNewValue;		
-		return true;
-	}
+
 
 	function setLeadName($sNewValue) {
 		$sNewValue = ucwords(strtolower(ProvidiTrimSpaces($sNewValue)));
@@ -167,70 +212,57 @@ class ProvidiRecruitLead extends ProvidiObject{
 
 }
 
-class ProvidiRecruitLeadList {
+class ProvidiRecruitLeadList extends ProvidiList{
 
-	function getList($sOwner , $sFromDate=null , $sToDate=null , $aMode=null , $nLimit = 200) {
-		global $oDB;
-		$aWhere = array(
-			'medlid' => sprintf('medlid = "%s" ' , $oDB->esc($sOwner))
-		);
-
-		if(!empty($sFromDate) && !empty($sToDate)) {		
-			/*$sFromDate = providiDateTime($sFromDate , 'SQL');
-			$sToDate = providiDateTime($sToDate , 'SQL');
-			*/
-
-			$aWhere['between_date'] = sprintf(' assigned_on BETWEEN "%s" AND "%s" ',  $oDB->esc($sFromDate),  $oDB->esc($sToDate));
+	//function getList($sOwner , $sFromDate=null , $sToDate=null , $aMode=null , $nLimit = 200) {
+	function getList($aOptions , $aMode=null , $nLimit = 200) {
+		$oDB = $this->_oDB;
+		$aWhere = array();
+		if(isset($aOptions['userId'])) {
+			$aWhere['medlid'] = sprintf('medlid = "%s" ' , $oDB->esc($aOptions['userId']));
+		}
+		if(!empty($aOptions['from_date'])  && !empty($aOptions['to_date'])) {
+			$aOptions['from_date'] = providiDateTime($aOptions['from_date'], 'SQL');
+			$aOptions['to_date'] = providiDateTime($aOptions['to_date'], 'SQL');
+			$aWhere['between_date'] = sprintf(' assigned_on BETWEEN "%s" AND "%s" ',  $oDB->esc($aOptions['from_date']),  $oDB->esc($aOptions['to_date']));
 		} else {
-			if(!empty($sFromDate)) {			
-				$aWhere['from_date'] = sprintf(' assigned_on >= "%s" ' , $oDB->esc($sFromDate));
+			if(!empty($aOptions['from_date'])) {			
+				$aOptions['from_date'] = providiDateTime($aOptions['from_date'], 'SQL');
+				$aWhere['from_date'] = sprintf(' assigned_on >= "%s" ' , $oDB->esc($aOptions['from_date']));
 			}
-			if(!empty($sToDate)) {			
-				$aWhere['to_date'] = sprintf(' assigned_on <= "%s" ' , $oDB->esc($sToDate));
-			}		
+			if(!empty($aOptions['to_date'])) {			
+				$aOptions['to_date'] = providiDateTime($aOptions['to_date'], 'SQL');
+				$aWhere['to_date'] = sprintf(' assigned_on <= "%s" ' , $oDB->esc($aOptions['to_date']));
+			}				
 		}
 
-		/*
-
-		if(!empty($aMode)) {
-			if(!is_array($aMode)) {
-				$aMode = array($aMode);
-			}
-			$aAllowedType = array('bonus' , 'own');
-			$aTemp = array();
-
-			reset($aMode);
-			while(list($sUnusedKey , $sMode) = each($aMode)) {
-				if(in_array($sMode, $aAllowedType)) {				
-					if($sMode == 'bonus') {
-						$aTemp[] = ' wheel = "bonusemne" ' ;
-					}
-					if($sMode == 'own') {
-						$aTemp[] = ' wheel != "bonusemne" ' ;
-					}
+		$aMode = null;
+		if(!empty($aOptions['mode'])) {
+			$aMode = array();
+			if(!is_array($aOptions['mode'])) {
+				$aMode[] = $aOptions['mode'];
+			} else {
+				reset($aOptions['mode']);
+				while(list($sKey, $sValue) = each($aOptions['mode'])) {
+					$aMode[] = $sValue;
 				}
-			}
-
-			if(count($aTemp) > 0) {
-				$aWhere['mode'] = sprintf(' ( %s ) ' , implode(' OR ' , $aTemp));
-			}
-		
+			
+			}			
 		}
-		*/
 
 
-
-		$sQuery = sprintf(' SELECT * FROM emner WHERE %s LIMIT %d'   , implode(' AND ', $aWhere) , $nLimit);
+		$sQuery = sprintf(' SELECT id FROM emner WHERE %s LIMIT %d'   , implode(' AND ', $aWhere) , $nLimit);
 		if(isset($_GET['debug'])) {
 			print $sQuery;
 		}
 		$aList = $oDB->Query($sQuery);
+		$aReturn = array();
 
 		for($i=0;$i<count($aList);$i++) {
-			$aList[$i] = ProvidiRecruitLead::tidyUpEmnerRow($aList[$i]);
-		
+			$oLead = new providiRecruitLead($oDB , $aList[$i]->id);
+			$aReturn[] = $oLead;		
 		}
-		return $aList;	
+		return $aReturn;	
 	}
 
 

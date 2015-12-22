@@ -18,44 +18,55 @@ try {
 		throw new providiUnauthorizeException('Account mismatched - userId' , 5102);
 	}
 
+
+	$aOptions = array();
+	if(empty($aGET['userId'])) {
+		throw new providiBadRequestException('Invalid recruit lead owner', 10410);
+	}
+	$aOptions['userId'] = $aGET['userId'];
+
+
 	if(empty($aGET['from_date']) && empty($aGET['to_date'])) {
-		$aGET['from_date'] = date('Y-m-d' , strtotime(' -7 DAY '));
-		$aGET['to_date'] = date('Y-m-d');
+		$aOptions['from_date'] = $aGET['from_date'] = date('Y-m-d' , strtotime(' -7 DAY '));
+		$aOptions['to_date'] = $aGET['to_date'] = date('Y-m-d');
+
+		
 	} else {	
 		if(!empty($aGET['from_date'])) {
-			$aGET['from_date'] = providiDateTime($aGET['from_date'] , 'SQL');
+			$aOptions['from_date'] = $aGET['from_date'] = providiDateTime($aGET['from_date'] , 'SQL');
 		}
 		if(!empty($aGET['to_date'])) {
-			$aGET['to_date'] = providiDateTime($aGET['to_date'] , 'SQL');
+			$aOptions['to_date'] = $aGET['to_date'] = providiDateTime($aGET['to_date'] , 'SQL');
 		}	
 	}
 
 
 	require_once './includes/providiRecruitLead.class.php';
-	$oRecruitLeadList = new providiRecruitLeadList();
+	$oRecruitLeadList = new providiRecruitLeadList($oDB);
+	
 
-
+	
 		
-	$aLeads = $oRecruitLeadList->getList($aGET['userId'] , @$aGET['from_date'] , @$aGET['to_date'] , @$aGET['mode']);
+	$aLeads = $oRecruitLeadList->getList($aOptions);
 
 	$aData = array();
 	for($i=0;$i<count($aLeads);$i++) {
 		$oLead = $aLeads[$i];
 
-
 		$oTemp = new stdClass();
 		$oTemp->type = 'organization_leads';
-		$oTemp->id = $oLead->id;
+		$oTemp->id = $oLead->getID();
+
 		$oAtt = new stdClass();
-        $oAtt->age = $oLead->age;
-		$oAtt->email = $oLead->email;
-		$oAtt->expected_earnings = $oLead->expected_earnings;
-		$oAtt->lead_assigned_date = $oLead->lead_assigned_date;
-		$oAtt->message = $oLead->message;
-		$oAtt->name = $oLead->name;
+        $oAtt->age = $oLead->getAge();
+		$oAtt->email = $oLead->getEmail();
+		$oAtt->expected_earnings = $oLead->getExpectedEarnings();
+		$oAtt->lead_assigned_date = providiDateTime($oLead->getAssignedDate() ,'text');
+		$oAtt->message = $oLead->getMessage();
+		$oAtt->name = $oLead->getName();
 		$oAtt->origin = ''; // force blank
-		$oAtt->phone = $oLead->phone;
-		$oAtt->zipcode = $oLead->zipcode;
+		$oAtt->phone = $oLead->getTelephone();
+		$oAtt->zipcode = $oLead->getZipCode();
 		$oTemp->attributes = $oAtt;
 		
 		$aData[] = $oTemp;

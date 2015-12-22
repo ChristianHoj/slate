@@ -1,7 +1,9 @@
-<?php
+<?php // // æ
 
 define('PROVIDI_ADMIN_EMAIL' , 'providi.devlog@gmail.com');
 define('PROVIDI_ISO8601_DATETIME_FORMAT', 'Y-m-d\TH:i:sP');
+
+define('PROVIDILIB_USE_ORIGINAL_TIMEZONE' , -1);
 
 class providiUnauthorizeException extends Exception {
 }
@@ -50,12 +52,15 @@ function providiDateTime($sDateText,$sMode='text' , $sTZ=null) {
 	$oDate = new DateTime($sDateText);
 
 	// convert to Denmark TZ +1.0
-
-	if(is_null($sTZ)) {
-		$sTZ = 'Europe/Copenhagen';
+	
+	if($sTZ !== constant('PROVIDILIB_USE_ORIGINAL_TIMEZONE')) {
+		if(is_null($sTZ)) {
+			$sTZ = 'Europe/Copenhagen';
+		}
+		$oTZ = new DateTimeZone($sTZ);
+		$oDate->setTimeZone($oTZ);
 	}
-	$oTZ = new DateTimeZone($sTZ);
-	$oDate->setTimeZone($oTZ);
+
 
 	if($sMode == 'text') {
 		return $oDate->format(constant('PROVIDI_ISO8601_DATETIME_FORMAT'));
@@ -165,7 +170,12 @@ function providiJSONErrorHandler(&$oResponse , $e)  {
 function providiJSONResponse($oResponse) {
 	header("Content-Type: Application/JSON;charset=utf-8");
 	header("Access-Control-Allow-Origin: *");
-	echo json_encode(js_utf8_encode($oResponse));
+	$sResponse = json_encode($oResponse);
+	if($sResponse === false ) {
+		die('500 Internal Server Error');
+	}
+	echo $sResponse;
+	//echo json_encode(js_utf8_encode($oResponse));
 }
 function providiGetDistributorImageURL($sText) {
 		global $aProvidiConfigs;
@@ -230,6 +240,43 @@ function getProvidiAuthorizeHash($sMedlid , $nVU=null){
 		$nVU = time() + (60 * 60 * 3);
 	}
 	return md5(sprintf('%s Avengers @ssemble! %s 2015' ,  $sMedlid , $sVU));
+}
+
+function providiCheckEmptyString($sTheString) {
+	if($sTheString == '""') {
+		return '';
+	}
+	return $sTheString;
+}
+
+function providiPostBody() {
+	$s = @file_get_contents('php://input');
+	$aPOST = array();
+	parse_str($s , $aPOST);
+	return $aPOST;
+}
+
+
+function providiGetCurrentAuthID() {
+	global $oAuth;
+
+	if(isset($oAuth)) {
+		return $oAuth->getProvidiID();
+	}
+	return '-';
+}
+
+function providiISOtoUTF($sTheText) {
+	return providiISO2UTF($sTheText);
+}
+function providiISO2UTF($sTheText) {
+	return utf8_encode($sTheText);
+}
+function providiUTFtoISO($sTheText) {
+	return providiUTF2ISO($sTheText);
+}
+function providiUTF2ISO($sTheText) {
+	return utf8_decode($sTheText);
 }
 
 ?>

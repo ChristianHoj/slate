@@ -1,4 +1,4 @@
-<?php
+<?php // all the scripts should be saved as UTF8 // æ
 
 require_once './includes/initialize.php';
 global $oDB , $oAuth;
@@ -38,19 +38,31 @@ try {
 	$aData = array();
 
 	for($i=0;$i<count($aList);$i++) {
-		$oVS = new providiVSMember($oDB);
-		$oVS->load($aList[$i]->id);
+		$oVS = new providiVSMember($oDB , $aList[$i]->id);
 
 
 		$oTheVS = new stdClass();
 		$oTheVS->type = 'vs_members';
 		$oTheVS->id = $oVS->id;
 
+
 		$oAtt = new stdClass();
-		$oAtt->address =  $oVS->address;
-		$oAtt->name = $oVS->name;
-		$oAtt->phone = $oVS->phone;
-        $oAtt->username = $oVS->username;
+		
+		$oAtt->address =  $oVS->getAddress();
+		$oAtt->name = $oVS->getName();
+		$oAtt->phone = $oVS->getPhone();
+        $oAtt->username = $oVS->getUsername();		
+		$oAtt->latest_login = providiDateTime($oVS->getLastTimeVisited(), 'text');
+		$oAtt->sign_up_date = providiDateTime($oVS->getSignupDate(), 'text');
+		$sMP = $oVS->getMealPrice();
+		if(empty($sMP)) {
+			$sMP = "";
+		}
+		$oAtt->meal_price = $sMP;
+		$oAtt->original_distributor = $oVS->getOriginalDistributorName();
+		$oAtt->points = $oVS->getCostAnalysisScore();
+		$oAtt->unpaid_months = $oVS->getUnpaidMonths();
+
 
 		//  NOT USING, but maybe neccessary later
 		// $aList[$i] ->distributor_authorized_link =  $oVS->getDistributorAuthorizedLink($oVS->currentDistributor);
@@ -80,7 +92,7 @@ try {
 		$oAtt->old_target_link = sprintf('%s?%s' , $sAuthURL , http_build_query($aThisGET));
 		$oAtt ->kalorie_login = $oVS->getVSMemberKRAuthorizedLink($oVS->customerID);
 
-		$oAtt->customerID = $oVS->customerID;
+		$oAtt->customerID = $oVS->getCustomerID();
 		// 2015-11-05
 		$oTheVS->attributes = $oAtt;
 		$aData[] = $oTheVS;

@@ -12,9 +12,12 @@ if($_SERVER['HTTP_HOST'] =='127.0.0.1') {
 //$aGET = $_POST;
 $aGET = providiPostBody();
 
-$aGET['token'] = $_GET['token'];
-$aGET['userId'] = $_GET['userId'];
-
+if(empty($aGET['token']) && !empty($_GET['token'])) {
+	$aGET['token'] = $_GET['token'];
+}
+if(empty($aGET['userId']) && !empty($_GET['userId'])) {
+	$aGET['userId'] = $_GET['userId'];
+}
 
 try {
 
@@ -33,7 +36,6 @@ try {
 
 	$oDis = new providiDistributor($oDB);
 	$oDis->loadFromProvidiID($aGET['userId']);
-
 
 	$bDirty = false;
 
@@ -103,6 +105,13 @@ try {
 		$bDirty = true;
 	}
 
+	// 2015-12-11
+	if(!empty($aGET['country'])) {
+		$oDis->setCountry($aGET['country']);
+		$bDirty = true;
+	}
+
+
 
 	if(!empty($aGET['reference_code'])) {
 		$oDis->setReferenceCode($aGET['reference_code']);
@@ -113,40 +122,31 @@ try {
 		$oDis->setSelfCustomerAccountName($aGET['vs_name']);
 		$bDirty = true;
 	}
-	if(!empty($aGET['paypal_email'])) {
-		$oDis->setPaypalEmail($aGET['paypal_email']);
-		$bDirty = true;
-	}
-	if(!empty($aGET['shipping_cost'])) {
-		$oDis->setCustomShippingCost($aGET['shipping_cost']);
-		$bDirty = true;
-	}
-	if(!empty($aGET['quickpay_api_key'])) {
-		$oDis->setQuickpayAPIKey($aGET['quickpay_api_key']);
-		$bDirty = true;
-	}
-	if(!empty($aGET['quickpay_merchant_id'])) {
-		$oDis->setQuickpayMerchantID($aGET['quickpay_merchant_id']);
-		$bDirty = true;
-	}
 
+	// 2015-12-11 , only update if has the "webpackage"
+	if($oDis->hasWebPackage) {
+		if(!empty($aGET['paypal_email'])) {
+			$oDis->setPaypalEmail($aGET['paypal_email']);
+			$bDirty = true;
+		}
+		if(!empty($aGET['shipping_cost'])) {
+			$oDis->setCustomShippingCost($aGET['shipping_cost']);
+			$bDirty = true;
+		}
+		if(!empty($aGET['quickpay_api_key'])) {
+			$oDis->setQuickpayAPIKey($aGET['quickpay_api_key']);
+			$bDirty = true;
+		}
+		if(!empty($aGET['quickpay_merchant_id'])) {
+			$oDis->setQuickpayMerchantID($aGET['quickpay_merchant_id']);
+			$bDirty = true;
+		}
 
+	}
+		
 	if($bDirty) {
 		$oDis->save();
 	}
-
-	
-
-/*
-
-
-
-
-
-
-
-*/
-
 
 
 	$oData = new stdClass();

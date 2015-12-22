@@ -1,4 +1,4 @@
-<? 
+<?php return;
 
 global $aUTFReplaceItem;
 $aUTFReplaceItem= array(

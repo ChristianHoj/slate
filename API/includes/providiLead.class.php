@@ -4,8 +4,23 @@
 class ProvidiLead extends ProvidiObject{
 	function _setBaseTable() {
 		$this->_sTableName = 'emner_idealvaegt';
+		$this->_bNeedUTF8Conversion = true;
+		$this->_sTableCharset = 'latin1';
+
 	}
 
+	function getMessage() {
+		return $this->hvorfor;
+	}
+	function setMessage($sNewValue) {
+		return $this->hvorfor = $sNewValue;
+	}
+	function getZipCode() {
+		return $this->postnr;
+	}
+	function setZipCode($sNewValue) {
+		return $this->postnr = $sNewValue;
+	}
 
 	static function _getEvaluationCode($sText) {
 		return ProvidiLead::_getEvaluationText($sText , 'get_code');
@@ -14,20 +29,10 @@ class ProvidiLead extends ProvidiObject{
 	static function _getEvaluationText($sText, $sMode='get_text') {
 		$sReturn = '';
 		if(empty($sText)) {
-			return $sReturn;
+			return 'not_contacted';
 		}
 		
 		$sText = ProvidiTrimSpaces($sText);
-
-		/*  2015-11-13
-			'not_interested' => 'Ikke interesseret'
-			, 'XX_NOT_TAKEN' => 'Ikke truffet'
-			, 'no_money' => 'Ingen penge lige nu'
-			, 'XX_JOINED' => 'Meldt ind'   // AKA joined????
-			, 'XX_DOES_NOT_THAT_HAVE_TURNED' => 'Mener ikke at have henvendt sig'
-			, 'never_asked_for_contact' => 'Svaret nej til at ville kontaktes'
-			, 'non_existing' => 'Tlf. nr. eller person eksisterer ikke'
-		*/
 		$aReturn = array(
 			'not_interested' => 'Ikke interesseret'
 			, 'not_available' => 'Ikke truffet'
@@ -95,60 +100,6 @@ class ProvidiLead extends ProvidiObject{
 		}
 		return $sText;
 	}
-	static function tidyUpEmnerIdealvaegtRow($oEmneIdealvaegtRow ,$bConvertTimezone = true) {
-		$oRow = &$oEmneIdealvaegtRow;
-		$oReturn = new stdClass();
-		$oReturn->email = strtolower(providiTrimSpaces( $oRow->email ));
-
-		$sSerious = null;
-		$sWeightLost = null;
-
-		$sMessage = ProvidiLead::_extractQCodes($oRow->hvorfor , $sWeightLost , $sSerious );
-
-
-		//$oReturn->weight_lost  = $sWeightLost;
-		// [=>CBH] fixed on 2015-10-28 , spelling
-		$oReturn->weight_loss  = $sWeightLost;
-
-		$oReturn->id = $oRow->id;
-		$oReturn->message = $sMessage ;
-
-		$oReturn->lead_type = $oRow->wheel == 'bonusemne' ? 'bonus' : 'own';
-
-
-
-		$oReturn->name = $oRow->Navn;
-		if(empty($oReturn->name)) {
-			$oReturn->name = $oRow->fornavn;
-			if(!empty($oRow->efternavn)) {
-				$oReturn->name .= ' ' . $oRow->efternavn;
-			}		
-		}
-		$oReturn->name = ucwords(strtolower(providiTrimSpaces($oReturn->name)));
-
-		$aTemp = array();
-		if(!empty($oRow->telefon)) {
-			$aTemp[] = $oRow->telefon;
-		}
-		if(!empty($oRow->mobil) && $oRow->telefon != $oRow->mobil) {
-			$aTemp[] = $oRow->mobil;
-		}
-
-		$oReturn->phone = implode(', ', $aTemp);
-	//  [=>CBH] , fields no longer needs and removed on 2015-10-28
-	//	$oReturn->order = null;
-		$oReturn->status = ProvidiLead::_getEvaluationCode($oRow->lead_evaluation);
-		$oReturn->serious = $sSerious;
-		$oReturn->zipcode = $oRow->postnr;
-
-		if($bConvertTimezone) {
-			$oReturn->lead_assigned_date = providiResponseDateTime($oRow->assigned_on);
-		} else {
-			$oReturn->lead_assigned_date = $oRow->assigned_on;
-		}
-		
-		return $oReturn;	
-	}
 
 
 
@@ -190,32 +141,124 @@ class ProvidiLead extends ProvidiObject{
 								}
 								break;
 		
-		}
-	
+		}	
 	}
+	function getLeadEvaluation() {		
+		return $this->_getEvaluationCode($this->lead_evaluation);
+	}
+	function setLeadEvaluation($sNewValue) {
+		$sNewValue = $this->_getEvaluationText($sNewValue, 'get_code');
+		return $this->lead_evaluation = $sNewValue;
+	}
+	function getName() {
+		$sName = '';
+		$sName = $this->navn;
+		if(empty($sName)) {
+			$aTemp = array();
 
+			if(!empty($this->fornavn)) {
+				$aTemp[] = $this->fornavn;
+			}
+			if(!empty($this->efternavn)) {
+				$aTemp[] = $this->efternavn;
+			}
 
+			if(count($aTemp) > 0 ) {
+				$sName = implode(' ', $aTemp);
+			}
+
+		}
+		return ucwords(strtolower($sName));
+	}
+	function setName($sNewValue) {
+		$this->navn = $sNewValue;
+		$this->fornavn = '';
+		$this->efternavn = '';
+		return $this->navn;
+	}		
+
+	function getTelephone() {
+		$sPhone = $this->telefon;
+		if(empty($sPhone)) {
+			$sPhone = $this->mobil;
+		}
+		return $sPhone;
+	}
+	function setTelephone($sNewValue) {
+		$this->telefon = $sNewValue;
+		$sMob = $this->mobil;
+		if($sMob == $sNewValue) {
+			$this->mobil = '';
+		}
+		return $this->telefon;
+	}
+	function getEmail() {
+		return $this->email;
+	}
+	function setEmail($sNewValue) {
+		return $this->email = $sNewValue;
+	}
+	function getAssignedDate() {
+		return $this->assigned_on;
+	}
+	function setAssignedDate($sNewValue) {
+		return $this->assigned_on = $sNewValue;
+	}
+	function setLeadType($sNewValue) {
+		if($sNewValue == 'bonusemne') {
+			$sNewValue = 'bonus';
+		}
+		return $this->wheel = $sNewVaue;
+	}
+	function getLeadType() {
+		if($this->wheel == 'bonusemne') {
+			return 'bonus';
+		} 
+		if($this->wheel == '') {
+			return '';
+		} 	
+		return 'own';
+	}
 
 }
 
 class ProvidiLeadList extends ProvidiList{
 
-	function getList($sOwner , $sFromDate=null , $sToDate=null , $aMode=null , $nLimit = 200) {
-		$aWhere = array(
-			'medlid' => sprintf('medlid = "%s" ' , $this->_oDB->esc($sOwner))
-		);
+	function getList($aOptions , $nLimit = 200) {
 
-		if(!empty($sFromDate) && !empty($sToDate)) {		
-			//$aWhere['between_date'] = sprintf(' DATE(assigned_on) BETWEEN "%s" AND "%s" ',  $this->_oDB->esc($sFromDate),  $this->_oDB->esc($sToDate));
-			// to handle different timezones , cannot use date but have to compare with  datetime ( with base time in Denmark )
-			$aWhere['between_date'] = sprintf(' assigned_on BETWEEN "%s" AND "%s" ',  $this->_oDB->esc($sFromDate),  $this->_oDB->esc($sToDate));
+		$oDB = $this->_oDB;
+
+		$aWhere = array();
+		if(isset($aOptions['userId'])) {
+			$aWhere['medlid'] = sprintf('medlid = "%s" ' , $oDB->esc($aOptions['userId']));
+		}
+		if(!empty($aOptions['from_date'])  && !empty($aOptions['to_date'])) {
+			$aOptions['from_date'] = providiDateTime($aOptions['from_date'], 'SQL');
+			$aOptions['to_date'] = providiDateTime($aOptions['to_date'], 'SQL');
+			$aWhere['between_date'] = sprintf(' assigned_on BETWEEN "%s" AND "%s" ',  $oDB->esc($aOptions['from_date']),  $oDB->esc($aOptions['to_date']));
 		} else {
-			if(!empty($sFromDate)) {			
-				$aWhere['from_date'] = sprintf(' assigned_on >= "%s" ' , $this->_oDB->esc($sFromDate));
+			if(!empty($aOptions['from_date'])) {			
+				$aOptions['from_date'] = providiDateTime($aOptions['from_date'], 'SQL');
+				$aWhere['from_date'] = sprintf(' assigned_on >= "%s" ' , $oDB->esc($aOptions['from_date']));
 			}
-			if(!empty($sToDate)) {			
-				$aWhere['to_date'] = sprintf(' assigned_on <= "%s" ' , $this->_oDB->esc($sToDate));
-			}		
+			if(!empty($aOptions['to_date'])) {			
+				$aOptions['to_date'] = providiDateTime($aOptions['to_date'], 'SQL');
+				$aWhere['to_date'] = sprintf(' assigned_on <= "%s" ' , $oDB->esc($aOptions['to_date']));
+			}				
+		}
+
+		$aMode = null;
+		if(!empty($aOptions['mode'])) {
+			$aMode = array();
+			if(!is_array($aOptions['mode'])) {
+				$aMode[] = $aOptions['mode'];
+			} else {
+				reset($aOptions['mode']);
+				while(list($sKey, $sValue) = each($aOptions['mode'])) {
+					$aMode[] = $sValue;
+				}
+			
+			}			
 		}
 
 		if(!empty($aMode)) {
@@ -242,15 +285,25 @@ class ProvidiLeadList extends ProvidiList{
 			}		
 		}
 
-		$sQuery = sprintf(' SELECT * FROM emner_idealvaegt WHERE %s LIMIT %d'   , implode(' AND ', $aWhere) , $nLimit);
+		$sOffset = 0;
+		if(!empty($aOptions['offset'])) {
+			$sOffset = $aOptions['offset'];
+		}
+		if(!empty($aOptions['limit'])) {
+			$nLimit = $aOptions['limit'];
+		}
+
+		$sQuery = sprintf(' SELECT id FROM emner_idealvaegt WHERE %s LIMIT %s , %d'   , implode(' AND ', $aWhere) , $oDB->esc($sOffset) , $oDB->esc($nLimit));
 		if(isset($_GET['debug'])) {
 			print $sQuery;
 		}
-		$aList = $this->_oDB->Query($sQuery);
+		$aTemp = $oDB->Query($sQuery);
+		$aList = array();
 
-		for($i=0;$i<count($aList);$i++) {
-			$aList[$i] = ProvidiLead::tidyUpEmnerIdealvaegtRow($aList[$i]);
-		
+		for($i=0;$i<count($aTemp);$i++) {
+			$oLead = new ProvidiLead($oDB);
+			$oLead->load($aTemp[ $i ]->id);
+			$aList[ $i] = $oLead;
 		}
 		return $aList;	
 	}
