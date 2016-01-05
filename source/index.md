@@ -8,6 +8,7 @@ language_tabs:
 includes:
   - authentication
   - user_profile
+  - sponsors
   - events
   - marketing
   - voressundhed
