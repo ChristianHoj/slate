@@ -20,22 +20,32 @@ jQuery.ajax({
         "extended": true,
         "pagination": {
             "skipped": 0,
-            "taken": 3,
-            "count": 3
+            "count": 3,
+            "total_count": 3
         }
     },
     "data": [{
         "type": "order",
         "id": "54645",
+        "relationships": {
+            "customer": {
+                "data": {
+                    "type": "customer",
+                    "id": 1234567890,
+                    "attributes": {
+                        "first_name": "Gabriel Marcel",
+                        "last_name": "Muresan",
+                        "email": "email@providi.dk",
+                        "phone": "33333333"
+                    }
+                }
+            }
+        },
         "attributes": {
             "order_number": 1,
             "order_date": "2015-09-28T13:49:16+02:00",
             "order_total": 1790,
             "currency": "DKK",
-            "customer_id": 1234567890,
-            "customer_name": "Gabriel Muresan",
-            "customer_email": "email@providi.dk",
-            "customer_phone": "33333333",
             "shipping_address": "In a galaxy far far away",
             "billing_address": "Another galaxy",
             "billing_name": "My billing name",
@@ -50,15 +60,25 @@ jQuery.ajax({
     }, {
         "type": "order",
         "id": "12335",
+        "relationships": {
+            "customer": {
+                "data": {
+                    "type": "customer",
+                    "id": 1234567890,
+                    "attributes": {
+                        "first_name": "Gabriel Marcel",
+                        "last_name": "Muresan",
+                        "email": "email@providi.dk",
+                        "phone": "33333333"
+                    }
+                }
+            }
+        },
         "attributes": {
             "order_number": 2,
             "order_date": "2015-09-29T13:49:16+02:00",
             "order_total": 600,
             "currency": "DKK",
-            "customer_id": 1234567890,
-            "customer_name": "Gabriel Muresan",
-            "customer_email": "email@providi.dk",
-            "customer_phone": "33333333",
             "shipping_address": "In a galaxy far far away",
             "billing_address": "Another galaxy",
             "billing_name": "My billing name",
@@ -73,15 +93,25 @@ jQuery.ajax({
     }, {
         "type": "order",
         "id": "51232",
+        "relationships": {
+            "customer": {
+                "data": {
+                    "type": "customer",
+                    "id": 1234567890,
+                    "attributes": {
+                        "first_name": "Gabriel Marcel",
+                        "last_name": "Muresan",
+                        "email": "email@providi.dk",
+                        "phone": "33333333"
+                    }
+                }
+            }
+        },
         "attributes": {
             "order_number": 3,
             "order_date": "2015-10-29T13:49:16+02:00",
             "order_total": 1000,
             "currency": "DKK",
-            "customer_id": 1234567890,
-            "customer_name": "Gabriel Muresan",
-            "customer_email": "email@providi.dk",
-            "customer_phone": "33333333",
             "shipping_address": "In a galaxy far far away",
             "billing_address": "Another galaxy",
             "billing_name": "My billing name",
@@ -109,22 +139,32 @@ jQuery.ajax({
         "extended": false,
         "pagination": {
             "skipped": 1,
-            "taken": 1,
-            "count": 3
+            "count": 1,
+            "total_count": 3
         }
     },
     "data": [{
         "type": "order",
         "id": "12335",
+        "relationships": {
+            "customer": {
+                "data": {
+                    "type": "customer",
+                    "id": 1234567890,
+                    "attributes": {
+                        "first_name": "Gabriel Marcel",
+                        "last_name": "Muresan",
+                        "email": "email@providi.dk",
+                        "phone": "33333333"
+                    }
+                }
+            }
+        },
         "attributes": {
             "order_number": 2,
             "order_date": "2015-09-29T13:49:16+02:00",
             "order_total": 600,
             "currency": "DKK",
-            "customer_id": 1234567890,
-            "customer_name": "Gabriel Muresan",
-            "customer_email": "email@providi.dk",
-            "customer_phone": "33333333",
             "shipping_address": "In a galaxy far far away",
             "billing_address": "Another galaxy",
             "billing_name": "My billing name",
@@ -145,22 +185,32 @@ jQuery.ajax({
         "extended": true,
         "pagination": {
             "skipped": 0,
-            "taken": 1,
-            "count": 1
+            "count": 1,
+            "total_count": 1
         }
     },
     "data": [{
         "type": "order",
         "id": "12335",
+        "relationships": {
+            "customer": {
+                "data": {
+                    "type": "customer",
+                    "id": 1234567890,
+                    "attributes": {
+                        "first_name": "Gabriel Marcel",
+                        "last_name": "Muresan",
+                        "email": "email@providi.dk",
+                        "phone": "33333333"
+                    }
+                }
+            }
+        },
         "attributes": {
             "order_number": 2,
             "order_date": "2015-09-29T13:49:16+02:00",
             "order_total": 600,
             "currency": "DKK",
-            "customer_id": 1234567890,
-            "customer_name": "Gabriel Muresan",
-            "customer_email": "email@providi.dk",
-            "customer_phone": "33333333",
             "shipping_address": "In a galaxy far far away",
             "billing_address": "Another galaxy",
             "billing_name": "My billing name",
@@ -176,48 +226,79 @@ jQuery.ajax({
 }
 ```
 
-Get all the orders for a specific user
+Get all the orders for a specific user.
 
 ### HTTP Request
 `GET http://providi.eu/API/order_list.php`
 
 ### Request Parameters
 
-Parameter | Required? | Default | Description
---------- | --------- | ------- | ----------------------------------------------------------------------------------------------------------------------------
-token     | Required  |         | The authentication token for the current user. Obtained from calling [`authenticate`](#authentication).
-userId    | Required  |         | The id of the current user. Must be paired with `token`.
-skip      | Optional  | 0       | (For pagination) The number of results to skip from result set.
-take      | Optional  | 0       | (For pagination) The number of results to take in the result set. 0 for all
-status    | Optional  | all     | Filter the results by status (all, canceled, pending, completed)
-extended  | Optional  | false   | If extended is set to be true, the products are included in each order, else the `products` attribute should not be included
+Parameter | Required? | Default   | Description
+--------- | --------- | --------- | ----------------------------------------------------------------------------------------------------------------------------
+token     | Required  |           | The authentication token for the current user. Obtained from calling [`authenticate`](#authentication).
+userId    | Required  |           | The id of the current user. Must be paired with `token`.
+skip      | Optional  | 0         | (For pagination) The number of results to skip from result set.
+take      | Optional  | 0         | (For pagination) The number of results to take in the result set. 0 for all
+status    | Optional  | all       | Filter the results by status (all, canceled, pending, completed)
+extended  | Optional  | `false`   | If extended is set to be `true`, the products are included in each order, else the `products` attribute should not be included
 
 If `skip` and/or `take` are not specified they are considered as 0, meaning do not skip anything and take all.
 
 ### Response fields
 The following information is included in the response:
 
-Information     | Key in JSON response
---------------- | --------------------
-Array of orders | `data`
+Information               | Key in JSON response | Description
+------------------------- | -------------------- | -----------------------------------
+Array of `Orders`         | `data`               | The wanted result, the `Orders`, are all located inside the `data` attribute in an array
+The `Order` relationships | `relationships`      | Each `Order` has a `Customer` relationship associated, the one who created and (possibly) received the order
+The `Meta` information    | `meta`               | Some information about the way the `data` is structured, the `pagination`, the `status` filter and the `extended` option
 
-Order Information    | Key in JSON response
+`Order` Information       | Key in JSON response | Description
+------------------------- | -------------------- | -----------------------------------
+The `Order` `Customer`    | `customer`           | The information about the `Customer` who created the `Order`
+
+`Customer` Information    | Key in JSON response | Description
+------------------------- | -------------------- | -----------------------------------
+Customer ID               | `id`                 |
+Customer first name       | `first_name`         |
+Customer last name        | `last_name`          |
+Customer email            | `email`              |
+Customer phone            | `phone`              |
+
+`Meta` Information        | Key in JSON response | Description
+------------------------- | -------------------- | -----------------------------------
+The status filter         | `status`             | If the request was filtered by status, then this will appear in the response. For example if the `orderes` were filtered by "canceled" that this will be the value of the `status` property.
+The extended option       | `extended`           | The request can be `extended` or not, meaning that if it is then it includes the products for each order as well
+The `Pagination` info.    | `pagination`         | The `pagination` is the attribute describing the values received by order in relation the whole set of data
+
+#### Pagination
+`Pagination` Information  | Key in JSON response | Description
+------------------------- | -------------------- | -----------------------------------
+Skip count                | `skipped`            | The number of records skipped from the current query (skipped AFTER filters)
+Count retrieved           | `count`              | The number of records AFTER filtered and skipped
+Total count               | `total_count`        | The total number of records BEFORE skipping, but AFTER filters
+
+
+`Order` Information  | Key in JSON response
 -------------------- | --------------------
 Order Number         | `order_number`
 Creation Date        | `order_date`
 Total value          | `order_total`
 Total value currency | `currency`
-Customer ID          | `customer_id`
-Customer name        | `customer_name`
-Customer email       | `customer_email`
-Customer phone       | `customer_phone`
 The shipping address | `shipping_address`
 The billing address  | `billing_address`
 The billing name     | `billing_name`
 Method of payment    | `payment_method`
 Status of payment    | `payment_status`
-Number of products   | `product_count`
-Product List         | `products`
+Number of `Products` | `product_count`
+Array of `Products`  | `products`
+
+`Product` Information | Key in JSON response
+--------------------- | --------------------
+Order Number          | `order_number`
+Creation Date         | `order_date`
+Total value           | `order_total`
+Total value currency  | `currency`
 
 ## View Single Order
 
@@ -239,6 +320,20 @@ jQuery.ajax({
     "meta": {
         "extended": true
     },
+    "relationships": {
+        "customer": {
+            "data": {
+                "type": "customer",
+                "id": 1234567890,
+                "attributes": {
+                    "first_name": "Gabriel Marcel",
+                    "last_name": "Muresan",
+                    "email": "email@providi.dk",
+                    "phone": "33333333"
+                }
+            }
+        }
+    },
     "data": {
         "type": "order",
         "id": "12335",
@@ -247,10 +342,6 @@ jQuery.ajax({
             "order_date": "2015-09-29T13:49:16+02:00",
             "order_total": 600,
             "currency": "DKK",
-            "customer_id": 1234567890,
-            "customer_name": "Gabriel Muresan",
-            "customer_email": "email@providi.dk",
-            "customer_phone": "33333333",
             "shipping_address": "In a galaxy far far away",
             "billing_address": "Another galaxy",
             "billing_name": "My billing name",
@@ -273,6 +364,20 @@ jQuery.ajax({
     "meta": {
         "extended": false
     },
+    "relationships": {
+        "customer": {
+            "data": {
+                "type": "customer",
+                "id": 1234567890,
+                "attributes": {
+                    "first_name": "Gabriel Marcel",
+                    "last_name": "Muresan",
+                    "email": "email@providi.dk",
+                    "phone": "33333333"
+                }
+            }
+        }
+    },
     "data": {
         "type": "order",
         "id": "12335",
@@ -281,10 +386,6 @@ jQuery.ajax({
             "order_date": "2015-09-29T13:49:16+02:00",
             "order_total": 600,
             "currency": "DKK",
-            "customer_id": 1234567890,
-            "customer_name": "Gabriel Muresan",
-            "customer_email": "email@providi.dk",
-            "customer_phone": "33333333",
             "shipping_address": "In a galaxy far far away",
             "billing_address": "Another galaxy",
             "billing_name": "My billing name",
