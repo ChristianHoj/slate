@@ -1,4 +1,4 @@
-<?php
+<?php // all the scripts should be saved as UTF8 // æ
 
 require_once './includes/initialize.php';
 global $oDB , $oAuth;
@@ -30,24 +30,47 @@ try {
 
 	$oList = new providiVSMemberList($oDB);
 	$aList = $oList->getList($aOptions);
-	
+
+
 
 	$nVU = mktime() + (60 * 60 * 3);
 
+	$aData = array();
+
 	for($i=0;$i<count($aList);$i++) {
-		$oVS = new providiVSMember($oDB);
-		$oVS->load($aList[$i]->id);
+		$oVS = new providiVSMember($oDB , $aList[$i]->id);
+
+
+		$oTheVS = new stdClass();
+		$oTheVS->type = 'vs_members';
+		$oTheVS->id = $oVS->id;
+
+
+		$oAtt = new stdClass();
+		
+		$oAtt->address =  $oVS->getAddress();
+		$oAtt->name = $oVS->getName();
+		$oAtt->phone = $oVS->getPhone();
+        $oAtt->username = $oVS->getUsername();		
+		$oAtt->latest_login = providiDateTime($oVS->getLastTimeVisited(), 'text');
+		$oAtt->sign_up_date = providiDateTime($oVS->getSignupDate(), 'text');
+		$sMP = $oVS->getMealPrice();
+		if(empty($sMP)) {
+			$sMP = "";
+		}
+		$oAtt->meal_price = $sMP;
+		$oAtt->original_distributor = $oVS->getOriginalDistributorName();
+		$oAtt->points = $oVS->getCostAnalysisScore();
+		$oAtt->unpaid_months = $oVS->getUnpaidMonths();
 
 
 		//  NOT USING, but maybe neccessary later
 		// $aList[$i] ->distributor_authorized_link =  $oVS->getDistributorAuthorizedLink($oVS->currentDistributor);
-
 		// Christian's vs_login_link = member_authorized_link
-		$aList[$i] ->vs_login_link =  $oVS->getVSMemberAuthorizedLink($oVS->customerID);
-
+		$oAtt->vs_login_link =  $oVS->getVSMemberAuthorizedLink($oVS->customerID);
 
 		$sRedirect = 'http://www.voressundhed.dk/personificeret/update.before_after_ny.php?custRef=' . $oVS->customerID;
-		$aList[$i] ->new_target_link =  $oVS->getVSMemberAuthorizedLink($oVS->customerID , null , $sRedirect);		
+		$oAtt->new_target_link =  $oVS->getVSMemberAuthorizedLink($oVS->customerID , null , $sRedirect);		
 
 		$sOldTarget = sprintf('http://providi.eu/sc.support_links/editCust.php?id=%s&refer=%s' , $oVS->id , $oVS->customerID);
 		if($_SERVER['HTTP_HOST'] == '127.0.0.1') {
@@ -66,24 +89,18 @@ try {
 		if($_SERVER['REMOTE_ADDR'] == '127.0.0.1') {
 			$sAuthURL = 'http://127.0.0.1/providi.eu/external/authorize.php';		
 		}
-		$aList[$i] ->old_target = sprintf('%s?%s' , $sAuthURL , http_build_query($aThisGET));
+		$oAtt->old_target_link = sprintf('%s?%s' , $sAuthURL , http_build_query($aThisGET));
+		$oAtt ->kalorie_login = $oVS->getVSMemberKRAuthorizedLink($oVS->customerID);
 
-		$aList[$i] ->kalorie_login = $oVS->getVSMemberKRAuthorizedLink($oVS->customerID);
-
-
+		$oAtt->customerID = $oVS->getCustomerID();
+		// 2015-11-05
+		$oTheVS->attributes = $oAtt;
+		$aData[] = $oTheVS;
 	
 	}
 
-  
-	$oData = new stdClass();
-	$oData->type = 'vs_members';
-	$oData->id = 1;
-
-	$oAtt = new stdClass();
-	$oAtt->members = $aList;
-	$oData->attributes = $oAtt;
 	
-	$oResponse->data = $oData;
+	$oResponse->data = $aData;
 
 
 } catch (Exception $e) {

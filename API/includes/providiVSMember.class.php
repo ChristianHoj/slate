@@ -1,13 +1,108 @@
-<?php
+<?php // all the scripts should be saved as UTF8 // æ
 
 class providiVSMember extends providiObject {
-	private $_distributor_hash = "Put your secret message here, it\'ll be use as hash parameter";
-	function _getDefaultTimeout() {
+	//private $_distributor_hash = "Put your secret message here, it\'ll be use as hash parameter";
+	protected function _getDistributorSecretHash() {
+		return "Put your secret message here, it\'ll be use as hash parameter";
+	}
+	protected function _getDefaultTimeout() {
 		return 10800; // 3 * 60 * 60;
 	}
 	function _setBaseTable() {
 		$this->_sTableName = 'customer_info';
+		$this->_sTableCharset = 'latin1';
 	}
+
+	function getCustomerID() {
+		return $this->customerID;
+	}
+	function getAddress() {
+		return $this->address;
+	}
+	function setAddress($sNewValue) {
+		return $this->address = $sNewValue;
+	}
+	function getName() {
+		return $this->name;
+	}
+	function setName($sNewValue) {
+		return $this->name = $sNewValue;
+	}
+	function getTelephone() {
+		return $this->getPhone();
+	}
+	function setTelephone($sNewValue) {
+		return $this->setPhone($sNewValue);
+	}
+	function getUsername() {
+		return $this->username;
+	}
+	function setUsername($sNewValue) {
+		return $this->username = $sNewValue;
+	}
+	function getLastTimeVisited() {
+		return $this->lastTimeVisited;
+	}
+	function setLastTimeVisited($sNewValue) {
+		return $this->lastTimeVisited = $sNewValue;
+	}
+	function getSignupDate() {
+		return $this->signupDate;
+	}
+	function setSignupDate($sNewValue) {
+		return $this->signupDate = $sNewValue;
+	}
+	function getPhone() {
+		return $this->phone;
+	}
+	function setPhone($sNewValue) {
+		return $this->phone = $sNewValue;
+	}
+	function getOriginalDistributorID() {
+		return $this->originalDistributor;
+	}
+	function setOriginalDistributorID($sNewValue) {
+		return $this->originalDistributor = $sNewValue;
+	}
+	function getOriginalDistributorName() {
+		return $this->originalDistributorName;
+	}
+	function setOriginalDistributorName($sNewValue) {
+		return $this->originalDistributorName = $sNewValue;
+	}
+
+	function getCostAnalysisScore() {
+		return $this->kostanalyse_score;
+	}
+	function setCostAnalysisScore($sNewValue) {
+		return $this->kostanalyse_score = $sNewValue;
+	}
+
+	function getUnpaidMonths() {
+		$oDB = $this->_oDB;
+		$sQuery = sprintf(' SELECT DATE(rdato) last_due , DATE(rdato) + INTERVAL 90 DAY , amount , rstatus , qptransactid ,TIMESTAMPDIFF( MONTH , max(rdato) , NOW()) + 1 month_owed  FROM abonnementer  WHERE medlid = "%s"  AND fakturanr > 0 AND qptransactid > 0  AND rstatus = 0 AND DATE(rdato)  < CURDATE()  GROUP BY medlid LIMIT 1' , $this->getCustomerID() );
+		$oDebtRow = $oDB->getObject($sQuery);
+		if(empty($oDebtRow)) {
+			return 0;
+		}
+		if($oDebtRow->month_owed > 3) {
+			return 3;
+		}
+		return $oDebtRow->month_owed;
+	}
+
+	function getMealPrice() {
+		$oDB = $this->_oDB;
+		$sQuery = sprintf(' SELECT Q12 costAnalyseScore FROM vs_kostanalyse WHERE userID = "%s" ' , $this->getCustomerID() );
+		$oCA = $oDB->getObject($sQuery);
+
+		if(empty($oCA)) {
+			return 0;
+		}
+		return $oCA->costAnalyseScore;
+		
+	}
+	
 
 
 	function getVSMemberchecksum($sCustomerID , $sVU=null) {
@@ -16,10 +111,11 @@ class providiVSMember extends providiObject {
 	function getProvidiDistributorChecksum($sReference) {
 		$sQuery = sprintf(' SELECT concat(Reference,username,password) result FROM da_reference WHERE Reference = "%s" LIMIT 1',$sReference);
 		$sHash = $this->_oDB->getVar($sQuery);
-		return md5( sprintf('%s%s', $sHash , $this->_distributor_hash));
+		return md5( sprintf('%s%s', $sHash , $this->_getDistributorSecretHash() ));
 	}
 	function getKRMemberChecksum($sCustomerID , $sVU=null) {
-		return md5('kalorieregnskab' . $aGET['vu'] . $aGET['customerID'] . '.dk' )	;
+		//return md5('kalorieregnskab' . $aGET['vu'] . $aGET['customerID'] . '.dk' )	;
+		return md5('kalorieregnskab' . $sVU . $sCustomerID . '.dk' )	;
 	}
 
 
@@ -72,7 +168,8 @@ class providiVSMember extends providiObject {
 		if(stristr($this->customer_privilege , 'K') === false) {
 			return '';
 		}
-		$sAuthorizeURL = 'http://www.kalorieregnskab.dk/login.php';
+		//$sAuthorizeURL = 'http://www.kalorieregnskab.dk/login.php';
+		$sAuthorizeURL = 'http://regnskab.voressundhed.dk/login.php';
 		if(empty($sVU)) {
 			$sVU = time() + providiVSMember::_getDefaultTimeout();
 		}
@@ -95,9 +192,7 @@ class providiVSMember extends providiObject {
 }
 
 
-class providiVSMemberList extends providiList {
-
-	
+class providiVSMemberList extends providiList {	
 	function getList($aOptions) {
 		$aWhere = array(
 			'customerID' => ' customerID != "" ' 

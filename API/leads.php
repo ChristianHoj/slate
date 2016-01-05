@@ -19,39 +19,69 @@ try {
 	}
 
 	if(empty($aGET['from_date']) && empty($aGET['to_date'])) {
-		$aGET['from_date'] = date('Y-m-d' , strtotime(' -7 DAY '));
-		$aGET['to_date'] = date('Y-m-d');
-	} else {
-		if(!empty($aGET['from_date'])) {
-			$aGET['from_date'] = providiDateTime($aGET['from_date'] , 'SQL');
-		}
-		if(!empty($aGET['to_date'])) {
-			$aGET['to_date'] = providiDateTime($aGET['to_date'] , 'SQL');
-		}
-	
-	
-	}
+		$aGET['from_date'] = date('Y-m-d 00:00:00' , strtotime(' -7 DAY '));		
+	} 
 
 
 	require_once './includes/providiLead.class.php';
 
 	$oLeadList = new providiLeadList($oDB);
+	$aOptions = array();
+	$aAllowFields = array('userId' , 'from_date' , 'to_date' , 'mode' ,'limit', 'offset');
+	reset($aGET);
+	while(list($sKey,$sValue) = each($aGET)) {
+		if(in_array($sKey , $aAllowFields)) {
+			$aOptions[ $sKey ] = $sValue;
+		}
+	}
+
+	if(empty($aOptions['userId'])) {
+		throw new providiBadRequestException('no lead owner specified' , 771);
+	}
 
 
-	$oAtt = new stdClass;
-	$oAtt->leads = $oLeadList->getList($aGET['userId'] , @$aGET['from_date'] , @$aGET['to_date'] , @$aGET['mode']);
+	$aData = array();
+	$aList = $oLeadList->getList($aOptions);
 
+	
+	for($i=0;$i<count($aList);$i++) {
+		$oL = $aList[$i];
+		
+		$oTheLead = new stdClass();
+
+		$oTheLead->id = $oL->getID();
+		$oTheLead->type = 'leads';
+
+		$oAtt = new stdClass();
+		$oAtt->email = $oL->getEmail();
+		$oAtt->lead_assigned_date = providiDateTime($oL->getAssignedDate(), 'text');
+		$oAtt->lead_type = $oL->getLeadType();
+
+		$oAtt->message = $oL->getMessage();
+        $oAtt->name = $oL->getName();
+		$oAtt->origin = ''; // masked for the distributor, internal used only
+		$oAtt->phone = $oL->getTelephone();
+		$oAtt->serious = '';
+		$oAtt->status = $oL->getLeadEvaluation();
+		if(empty($oAtt->status)) {
+			$oAtt->status = "not_contacted";
+		}
+		$oAtt->weight_loss = '';
+		$oL->_extractQCformat(  $oAtt->message, $oAtt->weight_loss , $oAtt->serious);
+		$oAtt->zipcode = $oL->getZipCode();
+		
+		$oTheLead->attributes = $oAtt;
+		$aData[] = $oTheLead ;
+	}
 
 
 //	providiGetDistributorInfo
 
-	$oData = new stdClass();
-	$oData->type = 'leads';
+/*	$oData->type = 'leads';
 	$oData->id = $oAuth->providiID;
 	$oData->attributes = $oAtt;
-	
-	$oResponse->data = $oData;
-
+*/	
+	$oResponse->data = $aData;
 
 } catch (Exception $e) {
 	providiJSONErrorHandler($oResponse , $e);
@@ -64,6 +94,32 @@ if(isset($_GET['debug'])) {
 
 providiJSONResponse($oResponse);
 /*
+{
+  "data": [
+    {
+      "type": "leads",
+      "id": "123456",
+      "attributes": {
+        "email": "candidate@email.com",
+        "lead_assigned_date": "2015-10-27T14:25:16+01:00",
+        "lead_type": "own",
+        "message": "Some explanation of why weight loss is desired.",
+        "name": "Candi Date",
+        "origin": "idealvaegt.dk",
+        "phone": "12345678",
+        "serious": "yes",
+        "status": "signed_up",
+        "weight_loss": "10-15",
+        "zipcode": "9235"
+      }
+    },
+    {
+      ...
+    }
+  ]
+}
+
+
 {
   "data": {
     "type": "leads",

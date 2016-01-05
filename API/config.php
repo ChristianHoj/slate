@@ -1,4 +1,4 @@
-<?php  // æ
+<?php  // all the scripts should be saved as UTF8 // æ
 
 
 

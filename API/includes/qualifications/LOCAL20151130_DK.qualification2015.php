@@ -380,8 +380,7 @@ if($bDoCreateTable)  {
 //	$sExtraOrgRule = ' CASE  WHEN COUNT(DISTINCT meeting_session) <= 3 THEN COUNT(DISTINCT meeting_session) * 2  WHEN COUNT(DISTINCT meeting_session) <= 6 THEN (3 * (COUNT(DISTINCT meeting_session) - 3)) + 6 WHEN COUNT(DISTINCT meeting_session) <= 9 THEN (4 * (COUNT(DISTINCT meeting_session) - 6)) + 15 WHEN COUNT(DISTINCT meeting_session) <= 12 THEN (5 * (COUNT(DISTINCT meeting_session) - 9)) + 27  END '  ;
 
 	
-	//	$sExtraOrgRule = ' CASE  COUNT(DISTINCT meeting_session) WHEN  1 THEN 1   WHEN 2 THEN 3  WHEN 3 THEN 6 WHEN 4 THEN 10 WHEN 5 THEN 15 WHEN 6 THEN 21 ELSE 0 END '  ;
-	$sExtraOrgRule = ' CASE  COUNT(DISTINCT meeting_session) WHEN  1 THEN 1   WHEN 2 THEN 3  WHEN 3 THEN 6 WHEN 4 THEN 10 WHEN 5 THEN 15 WHEN 6 THEN 21 WHEN 7 THEN 28 WHEN 8 THEN 35 ELSE 0 END '  ;
+	$sExtraOrgRule = ' CASE  COUNT(DISTINCT meeting_session) WHEN  1 THEN 1   WHEN 2 THEN 3  WHEN 3 THEN 6 WHEN 4 THEN 10 WHEN 5 THEN 15 WHEN 6 THEN 21 ELSE 0 END '  ;
 	$sQuery = sprintf(' INSERT INTO %s(code , medlid , meetings  ,meeting_points , name , last_meet_id , last_cus , last_vp_date) ' , $s2015TempTableName);
 	$sQuery .= sprintf(' SELECT "org" , medlid , COUNT(DISTINCT meeting_session) meeting_joins , %s sc_org_points , MAX(navn) name , id , DATE("0000-00-00") , DATE("0000-00-00")  FROM org2 WHERE  %s  GROUP BY medlid ' , $sExtraOrgRule , implode(' AND ' ,$aWhere)) ;
 	$aLogs[] = $sQuery;
@@ -418,16 +417,14 @@ if($bDoCreateTable)  {
 			if($nTheMedlid != $oRow->medlid) {
 				$oRow->meeting_points = $nTheOrgPoints = 1;
 				$nTheMedlid = $oRow->medlid;
-			} else {/*
+			} else {
 				switch($nTheOrgPoints + 1) {
 					case 2 :		$oRow->meeting_points = $nTheOrgPoints = 2; break;
 					case 3 :		$oRow->meeting_points = $nTheOrgPoints = 3; break;
 					case 4 :		$oRow->meeting_points = $nTheOrgPoints = 4; break;
 					case 5 :		$oRow->meeting_points = $nTheOrgPoints = 5; break;
 					case 6 :		$oRow->meeting_points = $nTheOrgPoints = 6; break;				
-				}*/
-
-				$oRow->meeting_points = $nTheOrgPoints = q2015_getOrgPoints($nTheOrgPoints + 1 , 'cumulative');
+				}
 				reset($oRow);
 			}
 
@@ -997,11 +994,7 @@ if($b2015UseNiceName) {
 
 function q2015_getOrgPoints($nTimes ,$sMode='cumulative') {
 
-	if($nTimes > 7) {
-		return $sMode=='cumulative' ? 38  : 8;
-	} else if($nTimes == 7) {
-		return $sMode=='cumulative' ? 28  : 7;
-	} else if($nTimes == 6) {
+	if($nTimes >= 6) {
 		return $sMode=='cumulative' ? 21  : 6;
 	} else if($nTimes == 5) {
 		return $sMode=='cumulative' ? 15  : 5;

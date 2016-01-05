@@ -1,4 +1,5 @@
-<?php
+<?php // æ
+
 
 require_once './includes/initialize.php';
 global $oDB;
@@ -27,8 +28,7 @@ try {
 
 	$oDis = new providiDistributor($oDB);
 	$oDis->loadFromProvidiID($aGET['userId']);
-
-
+	
 	$sSponsor = $oDis->getSponsor();
 	$aTempSponsor = explode(' ' , providiTrimSpaces($sSponsor));
 
@@ -36,7 +36,19 @@ try {
 	$oAtt = new stdClass();
 
 	$oAtt->accountType = $oDis->getAccountType();
-	$oAtt->name = $oDis->getName();
+	### [CBH] 2015-11-05
+	### $oAtt->name = $oDis->getName();
+	$sName = $oDis->getName();
+	$aNames = explode(' ', providiTrimspaces($sName));
+	$oAtt->first_name = $aNames[0];
+	$oAtt->last_name = '';
+	if(count($aNames) > 0) {
+		$oAtt->last_name = $aNames[ count($aNames) - 1 ];
+	}	
+	// added on 2015-11-24
+	$oAtt->id = $oDis->getProvidiID();
+
+
 	$oAtt->address = $oDis->getAddress();
 	$oAtt->city = $oDis->getCity();
 
@@ -52,11 +64,15 @@ try {
 
 	$oAtt->company_name = $oDis->getCompany();
 
+	### [CBH] 2015-1105
+	$oAtt->phone = $oDis->getTelephone();
+
 	$oAtt->reference_code = $oDis->getReferenceCode(); 
 	$oAtt->shipping_cost = $oDis->getCustomShippingCost();
 
 	$oAtt->skype_id = $oDis->getSkypeID();
-	$oAtt->id = $oDis->getProvidiID();
+	// removed on 2015-11-09
+//	$oAtt->id = $oDis->getProvidiID();
 	$oAtt->zipcode = $oDis->getPostNr();
 	
 
@@ -69,16 +85,20 @@ try {
 	$oAtt->quickpay_merchant_id = $oDis->getQuickpayMerchantID();
 
 
+	### 2015-11-20
+	$oAtt->has_webpackage = $oDis->hasWebPackage() ? "true":"false";
+
+
 //	providiGetDistributorInfo
 
 	$oData = new stdClass();
 	$oData->type = 'user';
-	$oData->id = $oAuth->providiID;
+	$oData->id = $oAuth->getProvidiID();
 
 	$oData->attributes = $oAtt;
-	$oResponse = $oData;
-
-
+	// // [=>CBH] fixed on 2015-10-28 , wrong response format
+	//$oResponse = $oData;
+	$oResponse->data = $oData;
 
 
 
@@ -92,37 +112,5 @@ if(isset($_GET['debug'])) {
 }
 
 providiJSONResponse($oResponse);
-/*
 
-{
-  "data": {
-    "type": "user",
-    "id": "SC000XXXXXXX",
-    "attributes": {
-      "accountType": 0,
-      "address": "Main Street 14",
-      "city": "Lovkotsk",
-      "company_name": "My Health Company",
-      "country": "Slovenia",
-      "imageUrl": "http://example.com/default-avatar.jpg",
-      "name": "Gabriel Muresan",
-      "partner_email": "partner@email.com",
-      "partner_name": "Partner Muresan",
-      "partner_skype_id": "partner_skype",
-      "paypal_email": "mypaypal@email.com",
-      "phone": "98765432",
-      "quickpay_api_key": "klusfiuysbf74oha4bfauua42",
-      "quickpay_merchant_id": 765234776,
-      "recruit_firstname": "Recruiter",
-      "recruit_lastname": "Muresan",
-      "reference_code": 765384,
-      "shipping_cost": 80,
-      "skype_id": "seller_skype",
-      "vs_link": "http://www.voressundhed.dk/?customerID=12345678",
-      "vs_name": "My Vores Sundhed Name",
-      "zipcode": 9230
-    }
-  }
-}
-*/
 ?>

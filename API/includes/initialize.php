@@ -1,4 +1,4 @@
-<?php
+<?php // all the scripts should be saved as UTF8 // æ
 
 if($_SERVER['HTTP_HOST']== '127.0.0.1') {
 	require_once './config.local.php';

@@ -1,13 +1,11 @@
 <?php
 
 require_once './includes/initialize.php';
-global $oDB;
+global $oDB , $oAuth;
 $oResponse = new stdClass();
 
 if($_SERVER['HTTP_HOST'] =='127.0.0.1') {
-	$_GET['token'] = '34df1be8182259320d6284ab12e5d4eecc26c2d745984f357c477ca2f0447838';
-	$_GET['userId'] = '22121124';
-	$_GET['period'] = array('this-week' , 'last-week', 'last-30-days');
+	include './inc.local.authorize.php';
 }
 
 $aGET = $_GET;
@@ -28,9 +26,22 @@ try {
 		throw new providiBadRequestException('Invalid request parameter - period expected' , 5103);
 	}
 
+/*	2015-11-05
 	$oResponse->id = $oAuth->providiID;
 	$oResponse->type = 'leaderboards';
-	$oResponse->attribute = providiStatistic::VSmemberLeaderboard($aGET['period']);
+*/
+	require_once './includes/providiStatistic.class.php';
+
+	$oStat = new providiStatistic($oDB);
+
+	//$oResponse->attributes = $oStat->VSmemberLeaderboard($aGET['period'] , @$aGET['country']);
+	// [=>CBH] 2015-10-30 invalid responses format
+	$oData = new stdClass();
+	$oData->id = $oAuth->providiID;
+	$oData->type = 'leaderboards';
+
+	$oData->attributes = $oStat->VSmemberLeaderboard($aGET['period'] , @$aGET['country']);
+	$oResponse->data = $oData;
 
 } catch (Exception $e) {
 	providiJSONErrorHandler($oResponse , $e);

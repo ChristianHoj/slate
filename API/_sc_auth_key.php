@@ -5,8 +5,7 @@ global $oDB;
 $oResponse = new stdClass();
 
 if($_SERVER['HTTP_HOST'] =='127.0.0.1') {
-	$_GET['token'] = 'cb12a5517d6694aa07a33819186eb79963a37df6113d915e5dfad5b23536b13c';
-	$_GET['userId'] = '22121124';
+	include './inc.local.authorize.php';
 }
 
 $aGET = $_GET;
@@ -26,19 +25,24 @@ try {
 		throw new providiUnauthorizeException('Account mismatched - userId' , 5102);
 	}
 
-	$oData = new stdClass();
-	$oData->type = 'user';
-	$oData->id = $oAuth->providiID;
+	if(empty($_GET['token_age'])) {
+		throw new providiUnauthorizeException('Invalid requst parameter - token_age' , 5107);
+	}
 
+	$nVU = time();
+	$nVU += intval($nVU);
+
+	$oData = new stdClass();
+	$oData->id = $aGET['userId'];
+	$oData->type = 'secret_hash';
 	$oAtt = new stdClass();
-	$oAtt->imageUrl = $oAuth->profileImage;
-	$oAtt->accountType = 'distributor';
-	$oAtt->name = $oAuth->fullName;
-	$oData->attributes = $oAtt;
+	$oAtt->hash = getProvidiAuthorizeHash( $aGET['userId'], $nVU);
+	$oAtt->medlid = $aGET['userId'];
+	$oAtt->vu = $nVU;
+	$oData->attributes  = $oAtt;
 
 
 	$oResponse->data = $oData;
-
 
 } catch (Exception $e) {
 	providiJSONErrorHandler($oResponse , $e);
@@ -50,16 +54,16 @@ if(isset($_GET['debug'])) {
 }
 
 providiJSONResponse($oResponse);
-/*
-{
-  "data": {
-    "type": "user",
-    "id": "SC000XXXXXXX",
-    "attributes": {
-      "imageUrl": "http://example.com/default-avatar.jpg",
-      "accountType": 0,
-      "name": "Gabriel Muresan"
-    }
-  }
-}*/
+
+
+if(!function_exists('getProvidiAuthorizeHash')) {
+	function getProvidiAuthorizeHash($sMedlid , $nVU=null){
+		if(empty($nVU)) {
+			$nVU = time() + (60 * 60 * 3); 
+		}
+		return md5(sprintf('%s Avengers @ssemble! %s 2015' ,  $sMedlid , $sVU));
+	}
+}
+
+
 ?>

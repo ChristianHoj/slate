@@ -18,23 +18,32 @@ try {
 		throw new providiUnauthorizeException('Account mismatched - userId' , 5102);
 	}
 
-	$oAtt = new stdClass;
-	$oAtt->data = array();
+
+	$aData = array();
 
 	$sCountry = @strtoupper($aGET['country']);
 	if(in_array($sCountry , array('DK'))) {
-		$oMeeting = new stdClass();
+		/*$oMeeting = new stdClass();
 		$oMeeting->id = 2015;
 		$oMeeting->type = 'promotion';
 		$oMA = new stdClass();
 		$oMA->title = 'Cruise fra New York 2016';
 		$oMeeting->attributes = $oMA;
-		$oAtt->data[] =  $oMeeting;			
+		$oAtt->data[] =  $oMeeting;			*/
+
+		$oMeeting = new stdClass();
+		$oMeeting->id = '2015';
+		$oMeeting->type = 'promotion';
+		$oMA = new stdClass();
+		$oMA->title = 'Cruise fra New York 2016';
+		$oMeeting->attributes = $oMA;
+		$aData[] = $oMeeting;
+
 	}
 
 
 
-	$oResponse = $oAtt;
+	$oResponse->data = $aData;
 
 
 } catch (Exception $e) {

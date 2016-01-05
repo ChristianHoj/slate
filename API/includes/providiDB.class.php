@@ -1,4 +1,4 @@
-<?php
+<?php // all the scripts should be saved as UTF8 // æ
 class providiBlank extends stdClass {
 	function __construct($oIgnored=null) {
 	}
@@ -110,6 +110,29 @@ class ProvidiDB {
 		$aReturn = array();
 		@$aNode = mysqli_fetch_array($oRS);
 		return $aNode[0];
+	}
+
+	
+	function getCurrentCharset() {
+		$sCharset = mysqli_character_set_name($this->oMysql);
+		return $sCharset;
+	}
+	function setCharset($sCharsetName) {
+		return mysqli_set_charset($this->oMysql , $sCharsetName);
+	}
+
+	function setLatin() {
+		$this->setCharset('latin1');
+	}
+	function setUTF8() {
+		$this->setCharset('utf8');
+	}
+	
+	function isLatin(){
+		return $this->getCurrentCharset() == 'latin1';
+	}
+	function isUTF8(){
+		return $this->getCurrentCharset() == 'utf8';
 	}
 
 }

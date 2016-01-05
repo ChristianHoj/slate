@@ -59,6 +59,10 @@ if (responseCode.code === 200) {
                   "id": "old_target_link",
                   "type": "string"
                 },
+                "original_distributor": {
+                  "id": "original_distributor",
+                  "type": "string"
+                },
                 "phone": {
                   "id": "phone",
                   "type": "string"
@@ -73,7 +77,7 @@ if (responseCode.code === 200) {
                 },
                 "unpaid_months": {
                   "id": "unpaid_months",
-                  "type": "string"
+                  "type": "integer"
                 },
                 "username": {
                   "id": "username",

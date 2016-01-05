@@ -1,10 +1,7 @@
-<?php // all the scripts should be saved as UTF8 // æ
-@session_start();
+<?php // æ
 
 require_once './includes/initialize.php';
 global $oDB;
-
-/* $aPOST = $_POST;*/
 
 $aPOST = providiPostBody();
 $oResponse = new stdClass();
@@ -16,25 +13,13 @@ if($_SERVER['HTTP_HOST']=='127.0.0.1') {
 
 try {
 
-/*	$a = $oDB->isLatin();
-	var_dump($a);
-	$a = $oDB->isUTF8();
-	var_dump($a);
-	$oDB->setUTF8();
-	$a = $oDB->isLatin();
-	var_dump($a);
-	$a = $oDB->isUTF8();
-	var_dump($a);
-	
-	exit;
-*/
+
 	if(empty($aPOST['user'])) {
-		throw new providiUnauthorizeException('Invalid request parameter - user expected' , 5000);
+		throw new providiUnauthorizeException('Invalid request parameter - user expected' , 15000);
 	}
 	if(empty($aPOST['pass'])) {
-		throw new providiUnauthorizeException('Invalid request parameter - pass expected' , 5001);
+		throw new providiUnauthorizeException('Invalid request parameter - pass expected' , 15001);
 	}
-	
 
 	##################################
 	### default option????
@@ -43,14 +28,14 @@ try {
 		$aPOST['country'] = 'DK';
 	}
 
-	$oAuthToken = providiAuthentication::Login($oDB , $aPOST['user'] , $aPOST['pass'] ,@$aPOST['country']);
+	$oAuthToken = providiAdminAuthentication::Login($oDB , $aPOST['user'] , $aPOST['pass'] ,@$aPOST['country']);
 
 	if(empty($oAuthToken)) {
-		throw new providiUnauthorizeException('Invalid username or password - pass expected' , 5002);
+		throw new providiUnauthorizeException('Invalid username or password - pass expected' , 15002);
 	}
 
 	$oData = new stdClass();
-	$oData->type = 'user';
+	$oData->type = 'admin';
 	$oData->id = $oAuthToken->getProvidiID();
 	$oAtt = new stdClass();
 	$oAtt->username  = $oAuthToken->getUsername();
@@ -59,15 +44,9 @@ try {
 	//
 	// // [=>CBH] fixed fis_name -> first_name on 2015-10-28
 	$oAtt->first_name  = $aNames[0];
-
 	$oAtt->last_name  = $aNames[ count($aNames) - 1];
-
 	$oAtt->email = $oAuthToken->getEmail();
 	$oAtt->auth_token = $oAuthToken->getAuthToken();
-
-	if($_SERVER['HTTP_HOST'] == '127.0.0.1') {
-		$_SESSION['__local_auth'] = $oAtt->auth_token;
-	}
 
 	$oData->attributes = $oAtt;
 	$oResponse->data = $oData;
