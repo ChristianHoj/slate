@@ -54,7 +54,8 @@ jQuery.ajax({
             "product_count": 2,
             "products": [{
                 "name": "PAKKE 1",
-                "count": 2
+                "count": 2,
+                "price": 895
             }]
         }
     }, {
@@ -87,7 +88,8 @@ jQuery.ajax({
             "product_count": 1,
             "products": [{
                 "name": "PAKKE 2",
-                "count": 1
+                "count": 1,
+                "price": 600
             }]
         }
     }, {
@@ -120,10 +122,12 @@ jQuery.ajax({
             "product_count": 2,
             "products": [{
                 "name": "PAKKE 1",
-                "count": 1
+                "count": 1,
+                "price": 400
             }, {
                 "name": "PAKKE 2",
-                "count": 1
+                "count": 1,
+                "price": 600
             }]
         }
     }]
@@ -219,7 +223,8 @@ jQuery.ajax({
             "product_count": 1,
             "products": [{
                 "name": "PAKKE 2",
-                "count": 1
+                "count": 1,
+                "price": 600
             }]
         }
     }]
@@ -247,58 +252,68 @@ If `skip` and/or `take` are not specified they are considered as 0, meaning do n
 ### Response fields
 The following information is included in the response:
 
-Information               | Key in JSON response | Description
-------------------------- | -------------------- | -----------------------------------
-Array of `Orders`         | `data`               | The wanted result, the `Orders`, are all located inside the `data` attribute in an array
-The `Order` relationships | `relationships`      | Each `Order` has a `Customer` relationship associated, the one who created and (possibly) received the order
-The `Meta` information    | `meta`               | Some information about the way the `data` is structured, the `pagination`, the `status` filter and the `extended` option
+JSON key             | Description
+-------------------- | -----------------------------------
+data                 | The wanted result, the `Orders`, are all located inside the `data` attribute in an array
+relationships        | Each `Order` has a `Customer` relationship associated, the one who created and (possibly) received the order
+meta                 | Some information about the way the `data` is structured, the `pagination`, the `status` filter and the `extended` option
 
-`Order` Information       | Key in JSON response | Description
-------------------------- | -------------------- | -----------------------------------
-The `Order` `Customer`    | `customer`           | The information about the `Customer` who created the `Order`
+#### Relationships
+JSON key             | Description
+-------------------- | -----------------------------------
+customer             | The information about the `Customer` who created the `Order`
 
-`Customer` Information    | Key in JSON response | Description
-------------------------- | -------------------- | -----------------------------------
-Customer ID               | `id`                 |
-Customer first name       | `first_name`         |
-Customer last name        | `last_name`          |
-Customer email            | `email`              |
-Customer phone            | `phone`              |
+#### Customer
+JSON Key             | Description
+-------------------- | ------------------------
+id                   | Customer ID           
+first_name           | Customer first name   
+last_name            | Customer last name    
+email                | Customer email        
+phone                | Customer phone        
 
-`Meta` Information        | Key in JSON response | Description
-------------------------- | -------------------- | -----------------------------------
-The status filter         | `status`             | If the request was filtered by status, then this will appear in the response. For example if the `orderes` were filtered by "canceled" that this will be the value of the `status` property.
-The extended option       | `extended`           | The request can be `extended` or not, meaning that if it is then it includes the products for each order as well
-The `Pagination` info.    | `pagination`         | The `pagination` is the attribute describing the values received by order in relation the whole set of data
+#### Meta
+JSON Key             | Description
+-------------------- | -----------------------------------
+status               | If the request was filtered by status, then this will appear in the response. For example if the `orderes` were filtered by "canceled" that this will be the value of the `status` property.
+extended             | The request can be extended or not, meaning that if it is then it includes the products for each order as well
+pagination           | The pagination is the attribute describing the values received by order in relation the whole set of data
 
 #### Pagination
-`Pagination` Information  | Key in JSON response | Description
-------------------------- | -------------------- | -----------------------------------
-Skip count                | `skipped`            | The number of records skipped from the current query (skipped AFTER filters)
-Count retrieved           | `count`              | The number of records AFTER filtered and skipped
-Total count               | `total_count`        | The total number of records BEFORE skipping, but AFTER filters
+JSON Key             | Description
+-------------------- | -----------------------------------
+skipped              | The number of records skipped from the current query (skipped AFTER filters)
+count                | The number of records AFTER filtered and skipped
+total_count          | The total number of records BEFORE skipping, but AFTER filters
 
+#### Product
+JSON Key             | Description
+-------------------- | -----------------------------------
+name                 | The name or display name of the product
+count                | The number of products of this type in the current order
+price                | The price for 1 product of this kind (not the total)
 
-`Order` Information  | Key in JSON response
+#### Order
+JSON Key             | Description
 -------------------- | --------------------
-Order Number         | `order_number`
-Creation Date        | `order_date`
-Total value          | `order_total`
-Total value currency | `currency`
-The shipping address | `shipping_address`
-The billing address  | `billing_address`
-The billing name     | `billing_name`
-Method of payment    | `payment_method`
-Status of payment    | `payment_status`
-Number of `Products` | `product_count`
-Array of `Products`  | `products`
+order_number         | Order Number        
+order_date           | Creation Date       
+order_total          | Total value         
+currency             | Total value currency
+shipping_address     | The shipping address
+billing_address      | The billing address
+billing_name         | The billing name    
+payment_method       | Method of payment   
+payment_status       | Status of payment   
+product_count        | Number of Products  
+products             | Array of Products   
 
-`Product` Information | Key in JSON response
---------------------- | --------------------
-Order Number          | `order_number`
-Creation Date         | `order_date`
-Total value           | `order_total`
-Total value currency  | `currency`
+JSON Key             | Description
+-------------------- | ---------------------
+order_number         | Order Number         
+order_date           | Creation Date        
+order_total          | Total value          
+currency             | Total value currency
 
 ## View Single Order
 
@@ -350,7 +365,8 @@ jQuery.ajax({
             "product_count": 1,
             "products": [{
                 "name": "PAKKE 2",
-                "count": 1
+                "count": 1,
+                "price": 600
             }]
         }
     }
