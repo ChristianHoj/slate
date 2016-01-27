@@ -1,4 +1,10 @@
 # Changelog
+## 2016-01-27 (unreleased)
+__Changed__
+
+- `leads`: Added 2 more paremeters (`notes`, `status_change_date`) and 3 more statuses (`sms_sent`,`registered_as_new_supervisor`,`contact_later`).
+- `leads`: Changed example to represent changes.
+- `update_leads`: Added the `notes` paremeter and 3 more possible statuses `sms_sent`,`registered_as_new_supervisor`,`contact_later`).
 
 ## 2015-12-10 (unreleased)
 __Changed__

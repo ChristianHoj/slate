@@ -32,7 +32,10 @@ jQuery.ajax({
         "serious": "yes",
         "status": "signed_up",
         "weight_loss": "10-15",
-        "zipcode": "9235"
+        "zipcode": "9235",
+        "notes": "call at 16:40 Wednesday 27 January",
+        "status_change_date": "2015-10-27T14:25:16+01:00",
+        "city": "Svenstrup"
       }
     },
     {
@@ -47,9 +50,12 @@ jQuery.ajax({
         "origin": "idealvaegt.dk",
         "phone": "12345678",
         "serious": "yes",
-        "status": "not_available",
+        "status": "contact_later",
         "weight_loss": "10-15",
-        "zipcode": "9235"
+        "zipcode": "9235",
+        "notes": "call at 16:40 Wednesday 27 January",
+        "status_change_date": "2015-10-27T14:25:16+01:00",
+        "city": "Svenstrup"
       }
     }
   ]
@@ -89,12 +95,15 @@ The following information is included in the response:
 | Message from lead    | `message`            |
 | Name                 | `name`               |
 | Phone                | `phone`              |
-| Status               | `status`             | `not_contacted`, `signed_up`, `not_available`, `no_show`, `no_money`, `not_interested`, `non_existing`, `never_asked_for_contact`, `no`
+| Status               | `status`             | `not_contacted`, `signed_up`, `not_available`, `no_show`, `no_money`, `not_interested`, `non_existing`, `never_asked_for_contact`, `no`, `sms_sent`, `registered_as_new_supervisor`, `contact_later`
 | Weight loss interest | `serious`            | `yes`, `maybe`, `no`
 | Zipcode              | `zipcode`            |
-
+| Personal notes       | `notes`              |
+| Status change date   | `status_change_date` |
+| The city             | `city`               |
 
 ## Update Lead
+
 ```js
 jQuery.post({
   url: "http://providi.eu/API/update_lead.php",
@@ -132,4 +141,5 @@ Parameter | Required? | Description
 token     | Required  | The authentication token for the current user. Obtained from calling [`authenticate`](#authentication).
 userId    | Required  | The id of the current user. Must be paired with `token`.
 leadId    | Required  | The id of the lead to update.
-status    | Required  | Possible values: `not_contacted`, `signed_up`, `not_available`, `no_show`, `no_money`, `not_interested`, `non_existing`, `never_asked_for_contact`, `no`
+status    | Required  | Possible values: `not_contacted`, `signed_up`, `not_available`, `no_show`, `no_money`, `not_interested`, `non_existing`, `never_asked_for_contact`, `no`, `sms_sent`, `registered_as_new_supervisor`, `contact_later`
+notes     | Optional  | Optional field that updates the note field
