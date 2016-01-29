@@ -18,7 +18,7 @@ if (responseCode.code === 200) {
           },
           "id": {
             "id": "id",
-            "type": "integer"
+            "type": "string"
           },
           "attributes": {
             "id": "attributes",
@@ -45,4 +45,6 @@ if (responseCode.code === 200) {
     var message = tv4.error.message + (tv4.error.params? ". Parameter: " + tv4.error.params.key : "") + ". Path: " + tv4.error.dataPath;
     tests[message] = false;
   }
+
+  postman.setEnvironmentVariable("test_event_id", response.data.id);
 }
