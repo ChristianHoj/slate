@@ -546,6 +546,15 @@ class providiDistributor extends providiObject {
 		return !empty($this->image);
 	}
 
+	// 2016-01-07
+	function isActive() {
+		if(empty($this->username) || empty($this->password)) {
+			return false;
+		}
+		return true;
+	
+	}
+
 
 }
 

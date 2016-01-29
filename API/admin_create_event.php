@@ -38,10 +38,11 @@ try {
 	if(empty($aGET['event_type']) || !in_array($aGET['event_type'] , $aAllowedType)) {
 		throw new providiBadRequestException ('Invalid request parameter , type' ,  16001);
 	}
-
+	/* removed on 20160106
 	if(empty($aGET['event_hotel'])) {
 		throw new providiBadRequestException ('Invalid request parameter , event_hotel' ,  16002);
 	}
+	*/
 	if(empty($aGET['meeting_session_from'])) {
 		throw new providiBadRequestException ('Invalid request parameter , meeting_session_from' ,  16003);
 	}
@@ -55,6 +56,11 @@ try {
 	$oEvent->setEventType($aGET['event_type']);
 	$oEvent->setCity($aGET['event_city']);
 	$oEvent->setMeetingSessionFromString($aGET['meeting_session_from']);
+
+	// 20160106 , event hotel is now optional , use the dummy one in table hotel
+	if(empty($aGET['event_hotel'])) {
+		$aGET['event_hotel'] = 'no_info';
+	}
 
 	$oEvent->setHotel($aGET['event_hotel']);
 
