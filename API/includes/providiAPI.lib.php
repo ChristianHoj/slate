@@ -52,7 +52,7 @@ function providiDateTime($sDateText,$sMode='text' , $sTZ=null) {
 	$oDate = new DateTime($sDateText);
 
 	// convert to Denmark TZ +1.0
-	
+
 	if($sTZ !== constant('PROVIDILIB_USE_ORIGINAL_TIMEZONE')) {
 		if(is_null($sTZ)) {
 			$sTZ = 'Europe/Copenhagen';
@@ -149,7 +149,8 @@ function providiNotifyDie( $sMessage , $sSubject  , $sFile ,$eException=null) {
 function providiJSONErrorHandler(&$oResponse , $e)  {
 	$oResponse = new stdClass();
 	$oException = new stdClass();
-	$oException->status = sprintf('%d %s',$e->getCode() , $e->getMessage());
+	// CBH: Place error message in message attribute instead of status since it might be overwritten
+	$oException->message = sprintf('%d %s',$e->getCode() , $e->getMessage());
 	if(isset($_REQUEST['debug'])) {
 		print '<PRE>';
 		var_dump($oResponse);
@@ -162,7 +163,9 @@ function providiJSONErrorHandler(&$oResponse , $e)  {
 		$oException->status = sprintf('400 Bad Request');
 	}
 
-
+	// CBH: Allow errors to be returned
+	header("Content-Type: Application/JSON;charset=utf-8");
+	header("Access-Control-Allow-Origin: *");
 	$oResponse->errors = array($oException);
 	return $oResponse;
 

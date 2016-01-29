@@ -60,7 +60,7 @@ class providiSeminarAttendee extends providiEventAttendee {
 		return '';
 	}
 	 function setCity($sTheValue) {
-		 return $this->bynavn = $sTheValue;	 
+		 return $this->bynavn = $sTheValue;
 	 }
 	 function getCity() {
 		 return $this->bynavn;
@@ -144,7 +144,7 @@ class providiSeminarAttendee extends providiEventAttendee {
 		 $sMS = $oMeeting->getMeetingSession();
 		 $this->meeting_session = $sMS;
 		 $this->meetingID = $oMeeting->id;
-		 $this->providiMeetingID = $oMeeting->id + $this->_getNewCodePrefix();		 		 
+		 $this->providiMeetingID = $oMeeting->id + $this->_getNewCodePrefix();
 	 }
 	 function getMeetingID() {
 		 $this->meetingID;
@@ -164,7 +164,9 @@ class providiSeminarAttendee extends providiEventAttendee {
 			$this->sponsor = $oMe->getSponsor();
 		 }
 
-		 if(empty($this->getID())) {
+		 // Attempt by CBH to fix error: "Fatal error: Can't use method return value in write context in /home/providi/providi.eu/docs/API/includes/providiEventAttendee.class.php on line 169"
+		 $oAttendeeID = $this->getID();
+		 if(empty($oAttendeeID)) {
 			$this->createdOn = providiDateTime(date('Y-m-d H:i:s'), 'SQL');
 			$this->createdBy = providiGetCurrentAuthID();
 			if(empty($this->comments)) {
@@ -172,7 +174,7 @@ class providiSeminarAttendee extends providiEventAttendee {
 			} else {
 				$this->comments .= sprintf("\ncreated by %s" , __FILE__);
 			}
-			
+
 		 }
 
 		 if(empty($this->meetingID)) {
@@ -185,7 +187,7 @@ class providiSeminarAttendee extends providiEventAttendee {
 		 if(empty($this->status)) {
 			$this->status = 'bhip_distributor';
 		 }
-		 parent::save();	 
+		 parent::save();
 	 }
 
 
@@ -195,7 +197,7 @@ class providiSeminarAttendee extends providiEventAttendee {
 
 		 $sQuery = sprintf(' SELECT meeting_session FROM dato_fm1_fm2 WHERE type = "org" AND meeting_session < "%s" ORDER BY meeting_session DESC LIMIT 1 ' , $oM->getMeetingSession());
 		 return $this->_oDB->getVar($sQuery);
-		 
+
 	 }
 	 ################################################
 	 ### _getMeetingSessionText(), such disgrace to programming history, let it rot on this database
@@ -229,7 +231,7 @@ class providiSeminarAttendee extends providiEventAttendee {
 			 if(substr($nMonthTo, 0 , 1) == '0') {
 				$nMonthTo = substr($nMonthTo, 1 , 1);
 			 }
-			return sprintf('%s.%s - %s.%s %s' , $aDates[0], $aMonths[ $nMonth ] , $aDates[1] , $aMonths[ $nMonthTo ] , substr($oM->fra,0,4));		 
+			return sprintf('%s.%s - %s.%s %s' , $aDates[0], $aMonths[ $nMonth ] , $aDates[1] , $aMonths[ $nMonthTo ] , substr($oM->fra,0,4));
 		 }
 		 $nMonth = substr($oM->fra,5,2 );
 		 if(substr($nMonth, 0 , 1) == '0') {
@@ -280,7 +282,7 @@ class providiNewTableAttendee extends providiEventAttendee {
 	}
 
 	 function setCity($sTheValue) {
-		 return '';	 
+		 return '';
 	 }
 	 function getCity() {
 		 return '';
@@ -362,10 +364,10 @@ class providiNewTableAttendee extends providiEventAttendee {
 
 
 	 function setUserID($sNewValue) {
-		 return $this->providiID = $sNewValue;	 
+		 return $this->providiID = $sNewValue;
 	 }
 	 function getUserID() {
-		 return $this->providiID;	 
+		 return $this->providiID;
 	 }
 
 	 function setMeeting($oMeeting) {
@@ -387,13 +389,13 @@ class providiNewTableAttendee extends providiEventAttendee {
 				$this->comments = sprintf("\ncreated by %s on %s" , __FILE__, date('Y-m-d H:i:s'));
 			} else {
 				$this->comments .= sprintf("\ncreated by %s on %s" , __FILE__ , date('Y-m-d H:i:s'));
-			}			
+			}
 		 }
 
 		 if(empty($this->bookerEarningRank)) {
 			 $oBooker = new providiDistributor($this->_oDB);
 			 $oBooker->loadFromProvidiID($this->getProvidiID());
-		 
+
 			$this->bookerEarningRank = $oBooker->getEarningRank();
 		 }
 
@@ -405,15 +407,16 @@ class providiNewTableAttendee extends providiEventAttendee {
 			}
 			$this->bookerLeadershipRank = $oBooker->getleadershipRank();
 		 }
-			 
 
-		if(empty($this->getType())) {
+		 // Attempt by CBH to fix error: "Fatal error: Can't use method return value in write context in /home/providi/providi.eu/docs/API/includes/providiEventAttendee.class.php on line 411"
+		$oType = $this->getType();
+		if(empty($oType)) {
 			$this->setType('self');
 		}
 		$this->bookingScript = basename($_SERVER['REQUEST_URI']);
 
 		parent::save();
-	 
+
 	 }
 
 	function setMeetingID($sTheValue) {
@@ -467,7 +470,7 @@ class providiIntroductionAttendee extends providiEventAttendee {
 		return null;
 	}
 	function setEmail($sTheValue) {
-		return $this->guest_email = $sTheValue;  
+		return $this->guest_email = $sTheValue;
 	}
 	function getEmail() {
 		return $this->guest_email;
@@ -554,8 +557,9 @@ class providiIntroductionAttendee extends providiEventAttendee {
 	}
 
 	function save() {
-		
-		if(empty($this->getType())) {
+		// Attempt by CBH to fix error: "Fatal error: Can't use method return value in write context in /home/providi/providi.eu/docs/API/includes/providiEventAttendee.class.php on line 560"
+		$oType = $this->getType();
+		if(empty($oType)) {
 			$this->setType('SC Introduktionsaften');
 		}
 
@@ -564,10 +568,10 @@ class providiIntroductionAttendee extends providiEventAttendee {
 		$oUser = new providiDistributor($this->_oDB);
 		$oUser->loadFromProvidiID($this->getUserID());
 		if(empty($this->inviter_name)) {
-			$this->inviter_name = $oUser->getName();			
+			$this->inviter_name = $oUser->getName();
 		}
 		if(empty($this->inviter_email)) {
-			$this->inviter_email = $oUser->getEmail();			
+			$this->inviter_email = $oUser->getEmail();
 		}
 		if(empty($this->inviter_status)) {
 			$this->inviter_status = 'providi distributor';
@@ -582,7 +586,7 @@ class providiIntroductionAttendee extends providiEventAttendee {
 			$this->meeting_type = 'SC Introduktionsaften';
 		}
 		parent::save();
-	
+
 	}
 }
 

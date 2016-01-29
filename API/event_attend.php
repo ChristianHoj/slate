@@ -11,8 +11,8 @@ if($_SERVER['HTTP_HOST'] =='127.0.0.1') {
 
 
 
-require_once './includes/providiEvent.class.php'; 
-require_once './includes/providiEventAttendee.class.php'; 
+require_once './includes/providiEvent.class.php';
+require_once './includes/providiEventAttendee.class.php';
 
 
 
@@ -33,8 +33,8 @@ try {
 
 	if(count($aGET['attendees']) <= 0) {
 		throw new providiUnauthorizeException('Invalid request parameter - attendees' , 5102);
-	
-	} 
+
+	}
 
 
 	$oAuth = ProvidiAuthentication::loadFromAuthToken($oDB , $aGET['token']);
@@ -46,7 +46,9 @@ try {
 	$oEvent = new providiEvent($oDB);
 	$oEvent->load($aGET['event_id']);
 
-	if(empty($oEvent->getId())) {
+	// Attempt by CBH to fix error: "Fatal error: Can't use method return value in write context in /home/providi/providi.eu/docs/API/event_attend.php on line 49"
+	$oEventId = $oEvent->getId();
+	if(empty($oEventId)) {
 		throw new providiBadRequestException('Invalid event id - ' . $aGET['event_id'],  5104);
 	}
 
@@ -61,12 +63,12 @@ try {
 	while(list($sUnusedKey , $aAtt) = each($aGET['attendees'])) {
 
 		switch($sMeetingType) {
-			case 'seminar'					:	$oAtt = new providiSeminarAttendee($oDB);  break;	
+			case 'seminar'					:	$oAtt = new providiSeminarAttendee($oDB);  break;
 			case 'intro'						:	$oAtt = new providiIntroductionAttendee($oDB); break;
 			case 'startup'					:	$oAtt = new providiStartupAttendee($oDB);  break;	;
 			case 'sales_training'			:	$oAtt = new providiCustomerSalesAttendee($oDB);  break;	;;
 			case 'vs_club_evening'		:	break;
-			default							:	throw new providiBadRequestException('Invalid event type ' . $sMeetingType , 301);	
+			default							:	throw new providiBadRequestException('Invalid event type ' . $sMeetingType , 301);
 		}
 
 		$oAtt->setMeeting($oEvent);
@@ -77,7 +79,7 @@ try {
 			$bFailCount++;
 			continue;
 		} else {
-			
+
 			$oAtt->setEmail($aAtt['email']);
 		}
 
@@ -128,7 +130,7 @@ try {
 
 		$oAtt->save();
 		$aSavedIDs[] = $oAtt->getID();
-	
+
 	}
 
 	$oData = new stdClass();
@@ -146,7 +148,7 @@ try {
 
 	}
 
-	
+
 	$oResponse->data = $oData;
 
 } catch (Exception $e) {
@@ -155,7 +157,7 @@ try {
 
 if(isset($aGET['debug'])) {
 	print '<PRE>';
-	print_r($oResponse);	
+	print_r($oResponse);
 }
 
 providiJSONResponse($oResponse);
