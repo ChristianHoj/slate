@@ -45,3 +45,12 @@ Some requests will need to specify the currency of a specific sold or bought pro
 | ---- | ------- |
 | Danish krone | DKK |
 | Japanese yen | JPY |
+
+## User Roles
+The user roles are described as follows:
+
+| User role       | Description
+| --------------- | -----------
+|  member         | Normal user and default value for user role
+|  superuser      | User that has access to the cockpit menu
+|  administrator  | User with administrator rights with access to the management menu

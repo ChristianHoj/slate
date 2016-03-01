@@ -1,4 +1,13 @@
 # Changelog
+## 2016-03-01 (unreleased)
+__Changed__
+
+- `user_profile`: Added `role` description to [Introduction](#introduction) in [User Roles](#user-roles)
+- `user_profile`: Added the `role` parameter to [User Profile](#user-profile) [Response fields and POST Body](#response-fields-and-post-body)
+- `user_profile`: Added the `cockpit_link` parameter to [User Profile](#user-profile) [Response fields and POST Body](#response-fields-and-post-body)
+- `user_profile`: Added the `management_link` parameter to [User Profile](#user-profile) [Response fields and POST Body](#response-fields-and-post-body)
+-`user_profile`: Changed examples and added new ones to exemplify the `role`
+
 ## 2016-01-27 (unreleased)
 __Changed__
 

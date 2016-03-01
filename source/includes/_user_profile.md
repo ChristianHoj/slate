@@ -10,7 +10,7 @@ jQuery.ajax({
 });
 ```
 
-> Successful response
+> Successful response member
 
 ```json
 {
@@ -41,7 +41,41 @@ jQuery.ajax({
       "skype_id": "seller_skype",
       "vs_link": "http://www.voressundhed.dk/?customerID=12345678",
       "vs_name": "My Vores Sundhed Name",
-      "zipcode": "9230"
+      "zipcode": "9230",
+      "role": "member"
+    }
+  }
+}
+```
+
+> Successful response superuser
+
+```json
+{
+  "data": {
+    "type": "user",
+    "id": "SC000XXXXXXX",
+    "attributes": {
+      ...
+      "role": "superuser",
+      "cockpit_link": "http://example.com/cockpit"
+    }
+  }
+}
+```
+
+> Successful response administrator
+
+```json
+{
+  "data": {
+    "type": "user",
+    "id": "SC000XXXXXXX",
+    "attributes": {
+      ...
+      "role": "administrator",
+      "cockpit_link": "http://example.com/cockpit",
+      "management_link": "http://example.com/management"
     }
   }
 }
@@ -92,3 +126,10 @@ The following information is included in the response and can be sent in the POS
 | User id                    | `id`
 | User last name             | `last_name`
 | Zipcode                    | `zipcode`
+| User role                  | `role` see [User Roles](#user-roles)
+| Link to cockpit            | `cockpit_link`
+| Link to management         | `management_link`
+
+<aside class="notice">
+The link to <b>cockpit</b> and <b>management</b> are only received for the users that have the necessary <a href="#user-roles">user role</a>.
+</aside>
