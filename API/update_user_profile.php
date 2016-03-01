@@ -143,7 +143,7 @@ try {
 		}
 
 	}
-		
+
 	if($bDirty) {
 		$oDis->save();
 	}
@@ -170,7 +170,7 @@ try {
 
 if(isset($_GET['debug'])) {
 	print '<PRE>';
-	print_r($oResponse);	
+	print_r($oResponse);
 }
 
 providiJSONResponse($oResponse);
