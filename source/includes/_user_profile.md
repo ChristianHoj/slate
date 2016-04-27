@@ -42,7 +42,8 @@ jQuery.ajax({
       "vs_link": "http://www.voressundhed.dk/?customerID=12345678",
       "vs_name": "My Vores Sundhed Name",
       "zipcode": "9230",
-      "role": "member"
+      "role": "member",
+      "front_page_html": "<div><h3>Hello World</h3></div>"
     }
   }
 }
@@ -129,6 +130,7 @@ The following information is included in the response and can be sent in the POS
 | User role                  | `role` see [User Roles](#user-roles)
 | Link to cockpit            | `cockpit_link`
 | Link to management         | `management_link`
+| Shop front page html       | `front_page_html`
 
 <aside class="notice">
 The link to <b>cockpit</b> and <b>management</b> are only received for the users that have the necessary <a href="#user-roles">user role</a>.
