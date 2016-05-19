@@ -1,44 +1,21 @@
 # Changelog
-## 2016-05-19 (unreleased)
+## 2016-05-19
+__New functions__
+
+- `order_list`: See [documentation and example successful responses](#view-order-list)
+- `order`: See [documentation and example successful responses](#view-single-order)
+- `shop_access_codes`: Added definitions for [Shop Access Codes](#shop-access-codes)
+
+
 __Changed__
 
-- `shop_access_codes`: added definitions for [Shop Access Codes](#shop-access-codes)
-
-## 2016-05-17 (unreleased)
-__Changed__
-
-- `user_profile`: added upload image information to [User Profile](#user-profile) so that profile image can be updated
-
-## 2016-04-27 (unreleased)
-__Changed__
-
-- `user_profile`: Added `front_page_html` parameter to [User Profile](#user-profile) [Response fields and POST Body](#response-fields-and-post-body)
-## 2016-03-01 (unreleased)
-__Changed__
-
+- `leads`: Added 2 more parameters (`notes`, `status_change_date`) and 3 more statuses (`sms_sent`, `registered_as_new_supervisor`, `contact_later`) [Updated documentation](#view-leads)
+- `update_leads`: Added the `notes` parameter and 3 more possible statuses `sms_sent`, `registered_as_new_supervisor`, `contact_later`) [Updated documentation](#update-lead)
+- `update_user_profile`: Add example response and expand [documentation](#user-profile)
+- `user_profile`: Added `cockpit_link`, `front_page_html`, `management_link` and `role` parameters to [User Profile](#user-profile) [Response fields and POST Body](#response-fields-and-post-body).
+  - [More info on `front_page_html`](https://providi.atlassian.net/projects/PROV/issues/PROV-61)
 - `user_profile`: Added `role` description to [Introduction](#introduction) in [User Roles](#user-roles)
-- `user_profile`: Added the `role` parameter to [User Profile](#user-profile) [Response fields and POST Body](#response-fields-and-post-body)
-- `user_profile`: Added the `cockpit_link` parameter to [User Profile](#user-profile) [Response fields and POST Body](#response-fields-and-post-body)
-- `user_profile`: Added the `management_link` parameter to [User Profile](#user-profile) [Response fields and POST Body](#response-fields-and-post-body)
--`user_profile`: Changed examples and added new ones to exemplify the `role`
-
-## 2016-01-27 (unreleased)
-__Changed__
-
-- `leads`: Added 2 more paremeters (`notes`, `status_change_date`) and 3 more statuses (`sms_sent`,`registered_as_new_supervisor`,`contact_later`).
-- `leads`: Changed example to represent changes.
-- `update_leads`: Added the `notes` paremeter and 3 more possible statuses `sms_sent`,`registered_as_new_supervisor`,`contact_later`).
-
-## 2015-12-10 (unreleased)
-__Changed__
-
-- `order_list`: Added documentation and example successful responses for `order_list` endpoint.
-- `order`: Added documentation and example successful responses for `order` endpoint.
-
-## 2015-12-04
-__Changed__
-
-- `update_user_profile`: Add example response and expand documentation
+- `user_profile`: Added upload image information to [User Profile](#user-profile) so that profile image can be updated
 
 ## 2015-11-18
 __Changed__
