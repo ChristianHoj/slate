@@ -1,4 +1,9 @@
 # Changelog
+## 2016-05-19 (unreleased)
+__Changed__
+
+- `shop_access_codes`: added definitions for [Shop Access Codes](#shop-access-codes)
+
 ## 2016-05-17 (unreleased)
 __Changed__
 
