@@ -1,6 +1,17 @@
 # Changelog
+## 2016-05-19 (unreleased)
+__Changed__
+
+- `shop_access_codes`: added definitions for [Shop Access Codes](#shop-access-codes)
+
+## 2016-05-17 (unreleased)
+__Changed__
+
+- `user_profile`: added upload image information to [User Profile](#user-profile) so that profile image can be updated
+
 ## 2016-04-27 (unreleased)
 __Changed__
+
 - `user_profile`: Added `front_page_html` parameter to [User Profile](#user-profile) [Response fields and POST Body](#response-fields-and-post-body)
 ## 2016-03-01 (unreleased)
 __Changed__
