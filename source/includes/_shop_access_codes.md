@@ -4,7 +4,7 @@
 
 ```js
 jQuery.ajax({
-  url: "http://providi.eu/API/customer_shop_access_codes.php",
+  url: "http://providi.eu/API/create_shop_access_code.php",
   data: {
       distributorRef: 10000,
       name: "Gabriel Muresan",
@@ -20,12 +20,12 @@ jQuery.ajax({
 {
   "data": {
     "type": "create_shop_access_code",
-    "id": "31321227",
+    "id": "4163",
     "attributes": {
       "status": "OK",
-      "email": "gabriel@email.com",
+      "email": "muresan.gabriel.m@gmail.com",
       "name": "Gabriel Muresan",
-      "phone": "12345678"
+      "phone": "71537640"
     }
   }
 }
@@ -36,7 +36,7 @@ Creates a new shop access code for a specific distributor
 This request is for use by unknown users so it does not require a `token` and `userId` for authentication.
 </aside>
 ### HTTP Request
-`POST http://providi.eu/API/customer_shop_access_codes.php`
+`POST http://providi.eu/API/create_shop_access_code.php`
 
 ### Request Parameters
 
@@ -73,27 +73,28 @@ jQuery.ajax({
 
 ```json
 {
-    "data": {
-        "type": "shop_access_code",
-        "id": "0",
-        "attributes": {
-          "codes": [
-            {
-              "email": "gabriel@email.com",
-              "name": "Gabriel Marcel Muresan",
-              "phone": "12345678",
-              "code": "",
-              "requested_date": "2015-09-28T13:49:16+02:00"
-            },{
-              "email": "phantom@email.com",
-              "name": "Spooky Adam",
-              "phone": "12345678",
-              "code": "SoScared",
-              "requested_date": "2015-09-28T13:49:16+02:00"
-            }
-          ]
+  "data": {
+    "type": "shop_access_code",
+    "id": "31321227",
+    "attributes": {
+      "codes": [
+        {
+          "email": "muresan0@gmail.com",
+          "name": "Gabriel Muresan",
+          "phone": "71537640",
+          "code": "",
+          "requested_date": "2016-06-27T11:08:37+02:00"
+        },
+        {
+          "email": "muresan1@gmail.com",
+          "name": "Gabriel Muresan",
+          "phone": "71537640",
+          "code": "1234",
+          "requested_date": "2016-06-27T11:03:42+02:00"
         }
+      ]
     }
+  }
 }
 ```
 
@@ -119,7 +120,7 @@ requests             | Represents a list of requests for the distributor.
 
 ```js
 jQuery.ajax({
-  url: "http://providi.eu/API/customer_shop_access_codes.php",
+  url: "http://providi.eu/API/update_shop_access_code.php",
   data: {
       token: "tokenAsdf",
       userId: 1,
@@ -135,11 +136,11 @@ jQuery.ajax({
 {
   "data": {
     "type": "shop_access_code",
-    "id": 1,
+    "id": "4163",
     "attributes": {
       "status": "OK",
-      "email": "gabriel@email.com",
-      "code": "NewCodeForGabriel"
+      "email": "muresan.gabriel.m@gmail.com",
+      "code": "1234"
     }
   }
 }
@@ -147,7 +148,7 @@ jQuery.ajax({
 
 Updates a shop access code for a specific distributor and customer
 ### HTTP Request
-`PUT http://providi.eu/API/customer_shop_access_codes.php`
+`PUT http://providi.eu/API/update_shop_access_code.php`
 
 ### Request Parameters
 
