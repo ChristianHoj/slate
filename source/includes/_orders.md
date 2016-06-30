@@ -50,7 +50,7 @@ jQuery.ajax({
             "billing_address": "Another galaxy",
             "billing_name": "My billing name",
             "payment_method": "PayPal",
-            "payment_status": "completed",
+            "order_status": "completed",
             "product_count": 2,
             "products": [{
                 "name": "PAKKE 1",
@@ -84,7 +84,7 @@ jQuery.ajax({
             "billing_address": "Another galaxy",
             "billing_name": "My billing name",
             "payment_method": "PayPal",
-            "payment_status": "pending",
+            "order_status": "pending",
             "product_count": 1,
             "products": [{
                 "name": "PAKKE 2",
@@ -118,7 +118,7 @@ jQuery.ajax({
             "billing_address": "Another galaxy",
             "billing_name": "My billing name",
             "payment_method": "PayPal",
-            "payment_status": "canceled",
+            "order_status": "canceled",
             "product_count": 2,
             "products": [{
                 "name": "PAKKE 1",
@@ -173,7 +173,7 @@ jQuery.ajax({
             "billing_address": "Another galaxy",
             "billing_name": "My billing name",
             "payment_method": "PayPal",
-            "payment_status": "pending",
+            "order_status": "pending",
             "product_count": 1
         }
     }]
@@ -219,7 +219,7 @@ jQuery.ajax({
             "billing_address": "Another galaxy",
             "billing_name": "My billing name",
             "payment_method": "PayPal",
-            "payment_status": "pending",
+            "order_status": "pending",
             "product_count": 1,
             "products": [{
                 "name": "PAKKE 2",
@@ -244,7 +244,7 @@ token     | Required  |           | The authentication token for the current use
 userId    | Required  |           | The id of the current user. Must be paired with `token`.
 skip      | Optional  | 0         | (For pagination) The number of results to skip from result set.
 take      | Optional  | 0         | (For pagination) The number of results to take in the result set. 0 for all
-status    | Optional  | all       | Filter the results by status (all, canceled, pending, completed)
+status    | Optional  | all       | Filter the results by status (all, processing, on_hold, completed, failed, canceled)
 extended  | Optional  | `false`   | If extended is set to be `true`, the products are included in each order, else the `products` attribute should not be included
 
 If `skip` and/or `take` are not specified they are considered as 0, meaning do not skip anything and take all.
@@ -304,7 +304,7 @@ shipping_address     | The shipping address
 billing_address      | The billing address
 billing_name         | The billing name    
 payment_method       | Method of payment   
-payment_status       | Status of payment   
+order_status         | Status of order   
 product_count        | Number of Products  
 products             | Array of Products   
 
@@ -361,7 +361,7 @@ jQuery.ajax({
             "billing_address": "Another galaxy",
             "billing_name": "My billing name",
             "payment_method": "PayPal",
-            "payment_status": "pending",
+            "order_status": "pending",
             "product_count": 1,
             "products": [{
                 "name": "PAKKE 2",
@@ -406,7 +406,7 @@ jQuery.ajax({
             "billing_address": "Another galaxy",
             "billing_name": "My billing name",
             "payment_method": "PayPal",
-            "payment_status": "pending",
+            "order_status": "pending",
             "product_count": 1
         }
     }
@@ -425,3 +425,29 @@ Parameter | Required? | Default | Description
 token     | Required  |         | The authentication token for the current user. Obtained from calling [`authenticate`](#authentication).
 userId    | Required  |         | The id of the current user. Must be paired with `token`.
 extended  | Optional  | true    | If extended is set to be false, the products are excluded in each order, else the `products` attribute should not be included NOTICE: this is the opposite way on the order_list endpoint where extended defaults to false.
+
+## Update Single Order
+Update one single order by id
+
+```
+{
+  "data": {
+    "token": "token value",
+    "userId": "31321227",
+    "orderId": "1234"
+    "status": "on_hold"
+  }
+}
+```
+
+### HTTP Request
+`POST http://providi.eu/API/update_order.php`
+
+### Request Parameters
+
+Parameter | Required? | Default | Description
+--------- | --------- | ------- | ----------------------------------------------------------------------------------------------------------------------------
+token     | Required  |         | The authentication token for the current user. Obtained from calling [`authenticate`](#authentication).
+userId    | Required  |         | The id of the current user. Must be paired with `token`.
+orderId   | Required  |         | The id to identify the order.
+status    | Required  |         | The status to update the order with.
