@@ -8,6 +8,7 @@ language_tabs:
 includes:
   - authentication
   - user_profile
+  - profile_subdomain
   - shop_access_codes
   - sponsors
   - events

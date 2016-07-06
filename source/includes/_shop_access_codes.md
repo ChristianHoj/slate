@@ -33,7 +33,7 @@ jQuery.ajax({
 
 Creates a new shop access code for a specific distributor
 <aside class="notice">
-This request is `unauthorized` and does not require a `token` and `userId` for authentication.
+This request is for use by unknown users so it does not require a `token` and `userId` for authentication.
 </aside>
 ### HTTP Request
 `POST http://providi.eu/API/customer_shop_access_codes.php`

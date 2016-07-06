@@ -56,7 +56,8 @@ jQuery.ajax({
       "vs_name": "My Vores Sundhed Name",
       "zipcode": "9230",
       "role": "member",
-      "front_page_html": "<div><h3>Hello World</h3></div>"
+      "front_page_html": "<div><h3>Hello World</h3></div>",
+      "front_page_description": "My description that will appear on the bhip shop frontpage"
     }
   }
 }
@@ -87,6 +88,7 @@ jQuery.ajax({
     "vs_name": "My Vores Sundhed Name",
     "zipcode": "9230",
     "front_page_html": "<div><h3>Hello World</h3></div>",
+    "front_page_description": "My NEW description that will appear on the bhip shop frontpage",
     "image": {
       "type": "image/png",
       "size": 5132,
@@ -177,6 +179,7 @@ The following information is included in the response and can be sent in the POS
 | Link to cockpit                 | `cockpit_link`
 | Link to management              | `management_link`
 | Shop front page html            | `front_page_html`
+| Shop front page description     | `front_page_description`
 | Profile image meta and content  | `image` ( `image['data']`, `image['size']`, `image['type']` )
 
 <aside class="notice">
