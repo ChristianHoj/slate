@@ -45,6 +45,27 @@ Get the value of the profile subdomain
 ### HTTP Request
 `GET http://providi.eu/API/profile_subdomain.php`
 
+## Get userId from Subdomain
+
+> Successful response
+
+```json
+{
+  "data": {
+    "type": "profile_subdomain",
+    "id": "SC000XXXXXXX",
+    "attributes": {
+      "userId": "SC000XXXXXXX"
+    }
+  }
+}
+```
+
+Get the user id based on the profile subdomain
+
+### HTTP Request
+`GET http://providi.eu/API/profile_subdomain.php?subdomain=gabrielmuresan`
+
 ## Check Profile Subdomain
 
 > Parameters used in the POST body
