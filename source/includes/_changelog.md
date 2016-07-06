@@ -1,4 +1,8 @@
 # Changelog
+## 2016-07-06
+__Changed__
+- `user_profile`: Added `front_page_description` parameter to the user profile.
+
 ## 2016-05-19
 __New functions__
 
