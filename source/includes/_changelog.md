@@ -1,9 +1,10 @@
 # Changelog
-## 2016-07-06
+## 2016-07-11
 __New functions__
 - `profile_subdomain`: Added definitions for [Profile Subdomain](#profile-subdomain)
 __Changed__
 - `user_profile`: Added `front_page_description` parameter to the user profile.
+- `shop_access_code`: Updated API to match the implemented version.
 
 ## 2016-05-19
 __New functions__
